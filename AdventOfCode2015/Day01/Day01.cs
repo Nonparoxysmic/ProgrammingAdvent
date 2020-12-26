@@ -24,6 +24,8 @@ namespace AdventOfCode2015
             }
             
             int floor = 0;
+            bool basementFound = false;
+            int basementFoundPosition = 0;
             for (int i = 0; i < input1.Length; i++)
             {
                 if (input1[i] == '(') floor++;
@@ -32,9 +34,15 @@ namespace AdventOfCode2015
                 {
                     Print.PrintErrorAndExit("Unaccepted character in input file " + input1Path);
                 }
+                if (!basementFound && floor < 0)
+                {
+                    basementFoundPosition = i + 1;
+                    basementFound = true;
+                }
             }
             
             Console.WriteLine("Day 1 Part One Answer: " + floor);
+            Console.WriteLine("Day 1 Part Two Answer: " + basementFoundPosition);
         }
     }
 }
