@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode2015
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            Console.Title = "AdventOfCode2015 by Nonparoxysmic";
+
+            Day01.Solve();
+
+            Console.ReadKey(true);
         }
     }
 }
