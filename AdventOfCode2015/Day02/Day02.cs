@@ -24,6 +24,7 @@ namespace AdventOfCode2015
             }
 
             int totalAreaNeeded = 0;
+            int totalRibbonNeeded = 0;
             foreach (string line in input1)
             {
                 int dimension0 = 0;
@@ -49,9 +50,14 @@ namespace AdventOfCode2015
                 int area2 = dimension1 * dimension2;
                 int areaNeeded = 2 * (area0 + area1 + area2) + Math.Min(area0, Math.Min(area1, area2));
                 totalAreaNeeded += areaNeeded;
+
+                int volume = dimension0 * dimension1 * dimension2;
+                int wrapLength = 2 * (dimension0 + dimension1 + dimension2 - Math.Max(dimension0, Math.Max(dimension1, dimension2)));
+                totalRibbonNeeded += wrapLength + volume;
             }
             
             Console.WriteLine("Day 2 Part One Answer: " + totalAreaNeeded);
+            Console.WriteLine("Day 2 Part Two Answer: " + totalRibbonNeeded);
         }
     }
 }
