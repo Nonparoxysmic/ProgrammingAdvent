@@ -1,0 +1,6 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/2
+
+This program will read the following input files from this folder:
+
+Input1.txt
+A text file containing a list. Each line is a set of three integers greater than zero. The integers are separated by the letter 'x'. For example, "4x23x21".
