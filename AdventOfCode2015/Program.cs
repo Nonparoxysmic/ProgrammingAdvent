@@ -9,7 +9,8 @@ namespace AdventOfCode2015
             Console.Title = "AdventOfCode2015 by Nonparoxysmic";
 
             //Day01.Solve();
-            Day02.Solve();
+            //Day02.Solve();
+            Day03.Solve();
 
             Console.ReadKey(true);
         }

@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Day02\Day02.cs" />
+    <Compile Include="Day03\Day03.cs" />
     <Compile Include="Print.cs" />
     <Compile Include="Day01\Day01.cs" />
     <Compile Include="Program.cs" />
@@ -69,6 +70,13 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Day02\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day03\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day03\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day03\Puzzle\PuzzleDay03.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
