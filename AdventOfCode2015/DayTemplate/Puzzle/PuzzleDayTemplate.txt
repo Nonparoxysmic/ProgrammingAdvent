@@ -1,0 +1,4 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/ TEMPLATE
+
+This program will read the following input files from this folder:
+
