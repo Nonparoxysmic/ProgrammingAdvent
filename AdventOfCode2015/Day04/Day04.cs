@@ -35,24 +35,50 @@ namespace AdventOfCode2015
                 }
             }
 
+            // THIS IS SLOW AND BAD
+            Console.WriteLine("This implementation is way too slow.");
+            Console.Write("Working...");
+
             int answer1 = 0;
+            int answer2 = 0;
             using (MD5 algorithm = MD5.Create())
             {
-                bool coinHashFound = false;
-                while (!coinHashFound)
+                bool coinHash1Found = false;
+                bool coinHash2Found = false;
+                while (!(coinHash1Found && coinHash2Found))
                 {
-                    answer1++;
-                    byte[] testValue = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(input1) + answer1);
-                    byte[] hash1 = algorithm.ComputeHash(testValue);
-                    string firstFive = BitConverter.ToString(hash1).Replace("-", "").Substring(0, 5);
-                    if (firstFive == "00000")
+                    if (!coinHash1Found)
                     {
-                        coinHashFound = true;
+                        answer1++;
+                    }
+                    if (!coinHash2Found)
+                    {
+                        answer2++;
+                    }
+                    byte[] testValue = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(input1) + answer2);
+                    byte[] hash1 = algorithm.ComputeHash(testValue);
+                    if (!coinHash1Found)
+                    {
+                        string firstFive = BitConverter.ToString(hash1).Replace("-", "").Substring(0, 5);
+                        if (firstFive == "00000" && !coinHash1Found)
+                        {
+                            coinHash1Found = true;
+                        }
+                    }
+                    if (!coinHash2Found)
+                    {
+                        string firstSix = BitConverter.ToString(hash1).Replace("-", "").Substring(0, 6);
+                        if (firstSix == "000000" && !coinHash2Found)
+                        {
+                            coinHash2Found = true;
+                        }
                     }
                 }
             }
 
+            Console.WriteLine();
             Console.WriteLine("Day 4 Part One Answer: " + answer1);
+            Console.WriteLine("Day 4 Part Two Answer: " + answer2);
         }
     }
 }
