@@ -4,9 +4,9 @@
 // https://github.com/Nonparoxysmic/AdventOfCode
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Security.Cryptography;
 
 namespace AdventOfCode2015
 {
@@ -14,71 +14,68 @@ namespace AdventOfCode2015
     {
         public static void Solve()
         {
-            string input1Path = @"Day04\Puzzle\Input1.txt";
-            byte[] input1 = new byte[0];
+            string inputPath = @"Day04\Puzzle\Input1.txt";
+            byte[] inputRaw = new byte[0];
+            byte[] input;
             try
             {
-                input1 = File.ReadAllBytes(input1Path);
+                inputRaw = File.ReadAllBytes(inputPath);
             }
             catch (Exception e)
             {
-                Print.PrintErrorAndExit("Unable to load input file " + input1Path + Environment.NewLine + e.GetType());
+                Print.PrintErrorAndExit("Unable to load input file " + inputPath + Environment.NewLine + e.GetType());
             }
-            // Remove the Unicode byte order mark if there is one at the beginning of the file
-            if (input1[0] == 239 && input1[1] == 187 && input1[2] == 191)
+            // Remove the Unicode byte order mark if there is one at the beginning of the file:
+            if (inputRaw[0] == 239 && inputRaw[1] == 187 && inputRaw[2] == 191)
             {
-                byte[] input1Raw = input1;
-                input1 = new byte[input1Raw.Length - 3];
-                for (int i = 0; i < input1.Length; i++)
+                input = new byte[inputRaw.Length - 3];
+                for (int i = 0; i < input.Length; i++)
                 {
-                    input1[i] = input1Raw[i + 3];
+                    input[i] = inputRaw[i + 3];
                 }
             }
-
-            // THIS IS SLOW AND BAD
-            Console.WriteLine("This implementation is way too slow.");
-            Console.Write("Working...");
-
-            int answer1 = 0;
-            int answer2 = 0;
-            using (MD5 algorithm = MD5.Create())
+            else
             {
-                bool coinHash1Found = false;
-                bool coinHash2Found = false;
-                while (!(coinHash1Found && coinHash2Found))
-                {
-                    if (!coinHash1Found)
-                    {
-                        answer1++;
-                    }
-                    if (!coinHash2Found)
-                    {
-                        answer2++;
-                    }
-                    byte[] testValue = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(input1) + answer2);
-                    byte[] hash1 = algorithm.ComputeHash(testValue);
-                    if (!coinHash1Found)
-                    {
-                        string firstFive = BitConverter.ToString(hash1).Replace("-", "").Substring(0, 5);
-                        if (firstFive == "00000" && !coinHash1Found)
-                        {
-                            coinHash1Found = true;
-                        }
-                    }
-                    if (!coinHash2Found)
-                    {
-                        string firstSix = BitConverter.ToString(hash1).Replace("-", "").Substring(0, 6);
-                        if (firstSix == "000000" && !coinHash2Found)
-                        {
-                            coinHash2Found = true;
-                        }
-                    }
-                }
+                input = inputRaw;
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Day 4 Part One Answer: " + answer1);
-            Console.WriteLine("Day 4 Part Two Answer: " + answer2);
+            Console.WriteLine("Day 4 may take a moment to calculate. Please wait...");
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            byte[] hashFunctionInput = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(input) + 1);
+            bool fiveLeadingZeroesFound = false;
+            bool sixLeadingZeroesFound = false;
+            for (int i = 1; i < int.MaxValue; i++)
+            {
+                byte[] hash = AdventMD5.ComputeHash(hashFunctionInput);
+                if (hash[0] == 0 && hash[1] == 0)
+                {
+                    if (hash[2] < 0x10 && !fiveLeadingZeroesFound)
+                    {
+                        Console.WriteLine("Day 4 Part One Answer: " + i);
+                        fiveLeadingZeroesFound = true;
+                    }
+                    if (hash[2] == 0 && !sixLeadingZeroesFound)
+                    {
+                        sw.Stop();
+                        Console.WriteLine("Day 4 Part Two Answer: {0} (Time: {1:F1} seconds)", i, sw.ElapsedMilliseconds * 0.001);
+                        sixLeadingZeroesFound = true;
+                    }
+                }
+                if (fiveLeadingZeroesFound && sixLeadingZeroesFound) break;
+                
+                // Recalculate the hash function input if the last byte reaches '9' (57):
+                if (hashFunctionInput[hashFunctionInput.GetUpperBound(0)] > 56)
+                {
+                    hashFunctionInput = Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(input) + (i + 1));
+                }
+                // Increment the counter on the hash function input by incrementing the last byte:
+                else
+                {
+                    hashFunctionInput[hashFunctionInput.GetUpperBound(0)]++;
+                }
+            }
         }
     }
 }
