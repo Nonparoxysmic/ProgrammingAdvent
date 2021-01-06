@@ -63,6 +63,46 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 5 Part One Answer: " + numOfNiceStrings);
+
+            numOfNiceStrings = 0;
+            foreach (string line in input1)
+            {
+                bool hasGapRepeat = false;
+                bool hasTwoPair = false;
+
+                if (line.Length > 3)
+                {
+                    for (int i = 2; i < line.Length; i++)
+                    {
+                        if (line[i - 2] == line[i])
+                        {
+                            hasGapRepeat = true;
+                            break;
+                        }
+                    }
+                    if (hasGapRepeat)
+                    {
+                        for (int i = 0; i < line.Length - 3; i++)
+                        {
+                            for (int j = i + 2; j < line.Length - 1; j++)
+                            {
+                                if ((line[i] == line[j]) && (line[i + 1] == line[j + 1]))
+                                {
+                                    hasTwoPair = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (hasTwoPair && hasGapRepeat)
+                {
+                    numOfNiceStrings++;
+                }
+            }
+
+            Console.WriteLine("Day 5 Part Two Answer: " + numOfNiceStrings);
         }
 
         static bool IsVowel(char c)
