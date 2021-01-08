@@ -48,6 +48,8 @@
     <Compile Include="Day04\Day04.cs" />
     <Compile Include="Day04\AdventMD5.cs" />
     <Compile Include="Day05\Day05.cs" />
+    <Compile Include="Day06\Day06.cs" />
+    <Compile Include="Day06\LightGrid.cs" />
     <Compile Include="DayTemplate\DayTemplate.cs" />
     <Compile Include="Print.cs" />
     <Compile Include="Day01\Day01.cs" />
@@ -98,6 +100,14 @@
     </Content>
     <Content Include="Day05\Puzzle\PuzzleText1.txt" />
     <Content Include="Day05\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day06\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day06\Puzzle\PuzzleDay06.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day06\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day06\Puzzle\PuzzleText2.txt" />
     <Content Include="DayTemplate\Puzzle\Input1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

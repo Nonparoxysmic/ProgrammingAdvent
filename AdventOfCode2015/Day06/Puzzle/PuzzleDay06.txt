@@ -1,0 +1,12 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/6
+
+This program will read the following input files from this folder:
+
+Input1.txt
+A text file containing a list of instructions. Each line is an instruction to 
+"toggle", "turn off", or "turn on", followed by a range of integer coordinate 
+pairs using the numbers 0 through 999, describing a rectangle of coordinates.
+Example:
+toggle 461,550 through 564,900
+turn off 370,39 through 425,839
+turn on 599,989 through 806,993
