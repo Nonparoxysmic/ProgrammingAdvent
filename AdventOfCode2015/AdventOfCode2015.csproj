@@ -49,6 +49,8 @@
     <Compile Include="Day04\AdventMD5.cs" />
     <Compile Include="Day05\Day05.cs" />
     <Compile Include="Day06\Day06.cs" />
+    <Compile Include="Day06\BasicLightGrid.cs" />
+    <Compile Include="Day06\DeluxeLightGrid.cs" />
     <Compile Include="Day06\LightGrid.cs" />
     <Compile Include="DayTemplate\DayTemplate.cs" />
     <Compile Include="Print.cs" />

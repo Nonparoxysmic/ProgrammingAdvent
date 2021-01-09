@@ -6,47 +6,10 @@ using System;
 
 namespace AdventOfCode2015
 {
-    class LightGrid
+    abstract class LightGrid
     {
-        readonly bool[,] lights;
+        public abstract void ToggleRectangle(int x1, int x2, int y1, int y2);
 
-        public LightGrid()
-        {
-            lights = new bool[1000, 1000];
-        }
-
-        public int CountLightsOn()
-        {
-            int count = 0;
-            foreach (bool light in lights)
-            {
-                if (light) count++;
-            }
-            return count;
-        }
-
-        public void ToggleRectangle(int x1, int x2, int y1, int y2)
-        {
-            if ((x1 > x2) || (y1 > y2)) throw new ArgumentOutOfRangeException();
-            for (int x = x1; x <= x2; x++)
-            {
-                for (int y = y1; y <= y2; y++)
-                {
-                    lights[x, y] = !lights[x, y];
-                }
-            }
-        }
-
-        public void SetRectangle(int x1, int x2, int y1, int y2, bool value)
-        {
-            if ((x1 > x2) || (y1 > y2)) throw new ArgumentOutOfRangeException();
-            for (int x = x1; x <= x2; x++)
-            {
-                for (int y = y1; y <= y2; y++)
-                {
-                    lights[x, y] = value;
-                }
-            }
-        }
+        public abstract void SetRectangle(int x1, int x2, int y1, int y2, bool value);
     }
 }

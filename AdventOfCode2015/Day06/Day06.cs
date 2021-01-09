@@ -23,7 +23,8 @@ namespace AdventOfCode2015
                 Print.PrintErrorAndExit("Unable to load input file " + input1Path + Environment.NewLine + e.GetType());
             }
 
-            LightGrid lightGrid = new LightGrid();
+            BasicLightGrid basicGrid = new BasicLightGrid();
+            DeluxeLightGrid deluxeGrid = new DeluxeLightGrid();
 
             foreach (string line in input1)
             {
@@ -36,13 +37,16 @@ namespace AdventOfCode2015
                 switch (command)
                 {
                     case "toggle ":
-                        ProcessInstruction(-1, line.Substring(7), lightGrid);
+                        ProcessInstruction(-1, line.Substring(7), basicGrid);
+                        ProcessInstruction(-1, line.Substring(7), deluxeGrid);
                         break;
                     case "turn of":
-                        ProcessInstruction(0, line.Substring(9), lightGrid);
+                        ProcessInstruction(0, line.Substring(9), basicGrid);
+                        ProcessInstruction(0, line.Substring(9), deluxeGrid);
                         break;
                     case "turn on":
-                        ProcessInstruction(1, line.Substring(8), lightGrid);
+                        ProcessInstruction(1, line.Substring(8), basicGrid);
+                        ProcessInstruction(1, line.Substring(8), deluxeGrid);
                         break;
                     default:
                         PrintErrorInInput(line);
@@ -50,7 +54,8 @@ namespace AdventOfCode2015
                 }
             }
 
-            Console.WriteLine("Day 6 Part One Answer: " + lightGrid.CountLightsOn());
+            Console.WriteLine("Day 6 Part One Answer: " + basicGrid.CountLightsOn());
+            Console.WriteLine("Day 6 Part Two Answer: " + deluxeGrid.SumBrightness());
         }
 
         static void ProcessInstruction(int command, string input, LightGrid lightGrid)
