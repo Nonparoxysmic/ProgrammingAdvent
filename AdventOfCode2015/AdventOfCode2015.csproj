@@ -52,6 +52,7 @@
     <Compile Include="Day06\BasicLightGrid.cs" />
     <Compile Include="Day06\DeluxeLightGrid.cs" />
     <Compile Include="Day06\LightGrid.cs" />
+    <Compile Include="Day07\Day07.cs" />
     <Compile Include="DayTemplate\DayTemplate.cs" />
     <Compile Include="Print.cs" />
     <Compile Include="Day01\Day01.cs" />
@@ -110,6 +111,14 @@
     </Content>
     <Content Include="Day06\Puzzle\PuzzleText1.txt" />
     <Content Include="Day06\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day07\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day07\Puzzle\PuzzleDay07.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day07\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day07\Puzzle\PuzzleText2.txt" />
     <Content Include="DayTemplate\Puzzle\Input1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
