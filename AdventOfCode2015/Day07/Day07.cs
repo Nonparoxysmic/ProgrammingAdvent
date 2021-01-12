@@ -84,11 +84,10 @@ namespace AdventOfCode2015
 
             Dictionary<string, ushort> wireValues = new Dictionary<string, ushort>();
 
-            int connectionsMade = 1;
-            int loopCount = 0;
-            while (connectionsMade > 0)
+            bool connectionsMade;
+            do
             {
-                connectionsMade = 0;
+                connectionsMade = false;
                 foreach (Connection connection in connections)
                 {
                     if (wireValues.ContainsKey(connection.output)) continue;
@@ -98,66 +97,69 @@ namespace AdventOfCode2015
                             if (ushort.TryParse(connection.inputA, out ushort value))
                             {
                                 wireValues.Add(connection.output, value);
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             else if (wireValues.TryGetValue(connection.inputA, out ushort value2))
                             {
                                 wireValues.Add(connection.output, value2);
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             break;
                         case Gate.Not:
                             if (wireValues.TryGetValue(connection.inputA, out ushort value3))
                             {
                                 wireValues.Add(connection.output, (ushort)~value3);
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             break;
                         case Gate.And:
                             if (wireValues.TryGetValue(connection.inputA, out ushort value4) && wireValues.TryGetValue(connection.inputB, out ushort value5))
                             {
                                 wireValues.Add(connection.output, (ushort)(value4 & value5));
-                                connectionsMade++;
+                                connectionsMade = true;
+                            }
+                            else if (ushort.TryParse(connection.inputA, out ushort value4b) && wireValues.TryGetValue(connection.inputB, out ushort value5b))
+                            {
+                                // In my input some of the instructions are "1 AND [wire]".
+                                // I don't know if other possible inputs combine numerical 
+                                // values with the logical operations in other ways.
+                                wireValues.Add(connection.output, (ushort)(value4b & value5b));
+                                connectionsMade = true;
                             }
                             break;
                         case Gate.Or:
                             if (wireValues.TryGetValue(connection.inputA, out ushort value6) && wireValues.TryGetValue(connection.inputB, out ushort value7))
                             {
                                 wireValues.Add(connection.output, (ushort)(value6 | value7));
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             break;
                         case Gate.LShift:
                             if (wireValues.TryGetValue(connection.inputA, out ushort value8) && ushort.TryParse(connection.inputB, out ushort value9))
                             {
                                 wireValues.Add(connection.output, (ushort)(value8 << value9));
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             break;
                         case Gate.RShift:
                             if (wireValues.TryGetValue(connection.inputA, out ushort value10) && ushort.TryParse(connection.inputB, out ushort value11))
                             {
                                 wireValues.Add(connection.output, (ushort)(value10 >> value11));
-                                connectionsMade++;
+                                connectionsMade = true;
                             }
                             break;
                     }
                 }
-                loopCount++;
-                Console.WriteLine("wireValues.Count = {0}", wireValues.Count);
-            }
+            } while (connectionsMade);
 
-            Console.WriteLine("wires.Count = {0}", wires.Count);
-            Console.WriteLine("loopcount = {0}", loopCount);
-
-
-            foreach (KeyValuePair<string, ushort> kvp in wireValues)
+            if (wireValues.TryGetValue("a", out ushort partOneAnswer))
             {
-                Console.WriteLine("Wire {0} = {1}", kvp.Key, kvp.Value);
+                Console.WriteLine("Day 7 Part One Answer: " + partOneAnswer);
             }
-
-            Console.WriteLine("NOT COMPLETE - WORK IN PROGRESS");
-
+            else
+            {
+                Console.WriteLine("Day 7 Part One Answer Not Found");
+            }
         }
 
         static void PrintErrorInInput(string text)
