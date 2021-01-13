@@ -11,7 +11,9 @@ namespace AdventOfCode2015
 {
     static class Day07
     {
-        public static void Solve()
+        public static void Solve() => Solve(false);
+
+        public static void Solve(bool overrideB, ushort overrideValue = 0)
         {
             string input1Path = @"Day07\Puzzle\Input1.txt";
             string[] input1 = new string[0];
@@ -84,6 +86,11 @@ namespace AdventOfCode2015
 
             Dictionary<string, ushort> wireValues = new Dictionary<string, ushort>();
 
+            if (overrideB)
+            {
+                wireValues.Add("b", overrideValue);
+            }
+
             bool connectionsMade;
             do
             {
@@ -152,13 +159,28 @@ namespace AdventOfCode2015
                 }
             } while (connectionsMade);
 
-            if (wireValues.TryGetValue("a", out ushort partOneAnswer))
+            if (overrideB)
             {
-                Console.WriteLine("Day 7 Part One Answer: " + partOneAnswer);
+                if (wireValues.TryGetValue("a", out ushort partTwoAnswer))
+                {
+                    Console.WriteLine("Day 7 Part Two Answer: " + partTwoAnswer);
+                }
+                else
+                {
+                    Console.WriteLine("Day 7 Part Two Answer Not Found");
+                }
             }
             else
             {
-                Console.WriteLine("Day 7 Part One Answer Not Found");
+                if (wireValues.TryGetValue("a", out ushort partOneAnswer))
+                {
+                    Console.WriteLine("Day 7 Part One Answer: " + partOneAnswer);
+                    Solve(true, partOneAnswer);
+                }
+                else
+                {
+                    Console.WriteLine("Day 7 Part One Answer Not Found");
+                }
             }
         }
 
