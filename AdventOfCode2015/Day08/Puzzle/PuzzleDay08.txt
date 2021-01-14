@@ -1,0 +1,12 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/8
+
+This program will read the following input files from this folder:
+
+Input1.txt
+A text file containing a list of double-quoted string literals, one on each line. The only escape sequences used are \\ (which represents a single backslash), \" (which represents a lone double-quote character), and \x plus two hexadecimal characters (which represents a single character with that ASCII code).
+Example:
+"qxfcsmh"
+"byc\x9dyxuafof\\\xa6uf\\axfozomj\\olh\x6a"
+"wzntebpxnnt\"vqndz\"i\x47vvjqo\""
+""
+"aae\x60arr"
