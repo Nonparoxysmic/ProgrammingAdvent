@@ -27,6 +27,8 @@ namespace AdventOfCode2015
             string[] strings = new string[input1.Length];
             StringBuilder sb = new StringBuilder();
 
+            int partTwoExtraChars = 0;
+
             for (int ln = 0; ln < input1.Length; ln++)
             {
                 if (input1[ln].Length == 0)
@@ -40,6 +42,8 @@ namespace AdventOfCode2015
                     continue;
                 }
 
+                int lineExtraChars = 0;
+
                 for (int ch = 1; ch < input1[ln].Length - 1; ch++)
                 {
                     if (input1[ln][ch] == '\\')
@@ -47,10 +51,12 @@ namespace AdventOfCode2015
                         if (input1[ln][ch + 1] == '\\')
                         {
                             sb.Append('\\');
+                            lineExtraChars += 2;
                         }
                         else if (input1[ln][ch + 1] == '\"')
                         {
                             sb.Append('\"');
+                            lineExtraChars += 2;
                         }
                         else if (input1[ln][ch + 1] == 'x')
                         {
@@ -64,16 +70,27 @@ namespace AdventOfCode2015
                                 PrintErrorInInput("«\\x" + code + "» in «" + input1[ln] + "»");
                             }
                             ch += 2;
+                            lineExtraChars++;
                         }
-                        else PrintErrorInInput("«" + input1[ln][ch] + input1[ln][ch + 1] + "» in «" + input1[ln] + "»");
-
+                        else
+                        {
+                            PrintErrorInInput("«\\" + input1[ln][ch + 1] + "» in «" + input1[ln] + "»");
+                            lineExtraChars++;
+                        }
                         ch++;
+                    }
+                    else if (input1[ln][ch] == '\"')
+                    {
+                        sb.Append(input1[ln][ch]);
+                        lineExtraChars++;
                     }
                     else sb.Append(input1[ln][ch]);
                 }
 
                 strings[ln] = sb.ToString();
                 sb.Clear();
+
+                partTwoExtraChars += lineExtraChars + 4;
             }
 
             int partOneAnswer = 0;
@@ -82,6 +99,8 @@ namespace AdventOfCode2015
                 partOneAnswer += input1[ln].Length - strings[ln].Length;
             }
             Console.WriteLine("Day 8 Part One Answer: " + partOneAnswer);
+
+            Console.WriteLine("Day 8 Part Two Answer: " + partTwoExtraChars);
         }
 
         static void PrintErrorInInput(string text)
