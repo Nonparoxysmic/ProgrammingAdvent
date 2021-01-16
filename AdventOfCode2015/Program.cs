@@ -15,7 +15,8 @@ namespace AdventOfCode2015
             //Day05.Solve();
             //Day06.Solve();
             //Day07.Solve();
-            Day08.Solve();
+            //Day08.Solve();
+            Day09.Solve();
 
             Console.ReadKey(true);
         }
