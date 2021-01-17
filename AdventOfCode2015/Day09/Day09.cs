@@ -63,11 +63,27 @@ namespace AdventOfCode2015
                 SetValue(location, location, 0, distanceTable);
             }
 
-            int numOfPermutations = Factorial(locations.Count);
+            int shortestDistance = int.MaxValue;
 
+            int[] permutation = new int[locations.Count];
+            for (int i = 0; i < permutation.Length; i++) permutation[i] = i;
+            while (true)
+            {
+                int permutationDistance = 0;
+                for (int i = 0; i < permutation.Length - 1; i++)
+                {
+                    permutationDistance += GetValue(locations[permutation[i]], locations[permutation[i + 1]], distanceTable);
+                }
 
+                shortestDistance = Math.Min(shortestDistance, permutationDistance);
 
-            Console.WriteLine("Day 9 Part One Answer: " + "TO BE IMPLEMENTED");
+                if (!TryNextPermutation(permutation, out permutation))
+                {
+                    break;
+                }
+            }
+
+            Console.WriteLine("Day 9 Part One Answer: " + shortestDistance);
         }
 
         static void AddRowAndColumn(string name, DataTable table)
@@ -92,16 +108,61 @@ namespace AdventOfCode2015
             return (int)row[name2];
         }
 
-        static int Factorial(int n)
+        // https://en.wikipedia.org/wiki/Permutation#Generation_in_lexicographic_order
+        static bool TryNextPermutation(int[] input, out int[] output)
         {
-            if (n < 0) throw new ArgumentOutOfRangeException();
-            int output = 1;
-            while (n > 1)
+            if (input.Length < 2)
             {
-                output *= n;
-                n--;
+                output = input;
+                return false;
             }
-            return output;
+            // 1. Find the largest index k such that a[k] < a[k + 1].
+            int kilo = -1;
+            for (int i = input.Length - 2; i >= 0; i--)
+            {
+                if (input[i] < input[i + 1])
+                {
+                    kilo = i;
+                    break;
+                }
+            }
+            // 1. If no such index exists, the permutation is the last permutation.
+            if (kilo < 0)
+            {
+                output = input;
+                return false;
+            }
+            // 2. Find the largest index l greater than k such that a[k] < a[l].
+            int lima = -1;
+            for (int i = input.Length - 1; i > kilo; i--)
+            {
+                if (input[kilo] < input[i])
+                {
+                    lima = i;
+                    break;
+                }
+            }
+            // 3. Swap the value of a[k] with that of a[l].
+            SwapValues(kilo, lima, input);
+            // 4. Reverse the sequence from a[k + 1] up to and including the final element a[n].
+            int start = kilo + 1;
+            int end = input.Length - 1;
+            while (end > start)
+            {
+                SwapValues(start, end, input);
+                start++;
+                end--;
+            }
+
+            output = input;
+            return true;
+        }
+
+        static void SwapValues(int a, int b, int[] array)
+        {
+            int temp = array[a];
+            array[a] = array[b];
+            array[b] = temp;
         }
 
         static void PrintErrorInInput(string text)
