@@ -6,3 +6,10 @@ Input1.txt
 A text file listing the distances between each pair in a set of locations.
 Each line is formatted as "[PlaceName] to [OtherPlaceName] = [IntegerDistance]".
 Place names do not contain whitespace.
+Example:
+Sol to AlphaCentauri = 437
+Sol to Sirius = 866
+Sol to Ran = 1045
+AlphaCentauri to Sirius = 959
+AlphaCentauri to Ran = 1256
+Sirius to Ran = 783

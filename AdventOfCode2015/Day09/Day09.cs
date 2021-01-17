@@ -64,6 +64,7 @@ namespace AdventOfCode2015
             }
 
             int shortestDistance = int.MaxValue;
+            int longestDistance = 0;
 
             int[] permutation = new int[locations.Count];
             for (int i = 0; i < permutation.Length; i++) permutation[i] = i;
@@ -76,6 +77,7 @@ namespace AdventOfCode2015
                 }
 
                 shortestDistance = Math.Min(shortestDistance, permutationDistance);
+                longestDistance = Math.Max(longestDistance, permutationDistance);
 
                 if (!TryNextPermutation(permutation, out permutation))
                 {
@@ -84,6 +86,7 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 9 Part One Answer: " + shortestDistance);
+            Console.WriteLine("Day 9 Part Two Answer: " + longestDistance);
         }
 
         static void AddRowAndColumn(string name, DataTable table)
