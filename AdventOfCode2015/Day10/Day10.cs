@@ -34,6 +34,13 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 9 Part One Answer: " + result.Length);
+
+            for (int i = 0; i < 10; i++)
+            {
+                result = LookAndSay(result, sb);
+            }
+
+            Console.WriteLine("Day 9 Part Two Answer: " + result.Length);
         }
 
         static string LookAndSay(string input, StringBuilder sb)
