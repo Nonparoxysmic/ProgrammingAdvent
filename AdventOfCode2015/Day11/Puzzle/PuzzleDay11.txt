@@ -1,0 +1,6 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/11
+
+This program will read the following input files from this folder:
+
+Input1.txt
+A text file using UTF-8 encoding, containing only one line with eight lowercase letters.
