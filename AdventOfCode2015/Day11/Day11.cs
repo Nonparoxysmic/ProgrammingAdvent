@@ -50,6 +50,14 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 11 Part One Answer: " + ByteArrayToString(nextValidPassword));
+
+            while (true)
+            {
+                nextValidPassword = IncrementLetterByteArray(nextValidPassword);
+                if (PasswordIsValid(nextValidPassword)) break;
+            }
+
+            Console.WriteLine("Day 11 Part Two Answer: " + ByteArrayToString(nextValidPassword));
         }
 
         static string ByteArrayToString(byte[] input)
