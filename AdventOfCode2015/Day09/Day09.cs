@@ -112,7 +112,7 @@ namespace AdventOfCode2015
         }
 
         // https://en.wikipedia.org/wiki/Permutation#Generation_in_lexicographic_order
-        static bool TryNextPermutation(int[] input, out int[] output)
+        public static bool TryNextPermutation(int[] input, out int[] output)
         {
             if (input.Length < 2)
             {

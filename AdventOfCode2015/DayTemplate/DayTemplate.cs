@@ -12,7 +12,8 @@ namespace AdventOfCode2015
     {
         public static void Solve()
         {
-
+            
+            Console.WriteLine("Day TEMPLATE Part One Answer: ");
         }
     }
 }
