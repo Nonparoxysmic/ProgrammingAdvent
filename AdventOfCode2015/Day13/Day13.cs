@@ -68,6 +68,29 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 13 Part One Answer: " + bestTotalHappiness);
+
+            Guest self = new Guest("self");
+            guests.Add(self);
+
+            for (int i = 0; i < guests.Count - 1; i++)
+            {
+                self.friends.Add(guests[i].name, 0);
+                guests[i].friends.Add(self.name, 0);
+            }
+
+            permutation = new int[guests.Count];
+            for (int i = 0; i < guests.Count; i++) permutation[i] = i;
+            bestTotalHappiness = 0;
+            while (true)
+            {
+                int permutationHappiness = TotalHappiness(guests, permutation);
+
+                bestTotalHappiness = Math.Max(bestTotalHappiness, permutationHappiness);
+
+                if (!Day09.TryNextPermutation(permutation, out permutation)) break;
+            }
+
+            Console.WriteLine("Day 13 Part Two Answer: " + bestTotalHappiness);
         }
 
         static int TotalHappiness(List<Guest> guests, int[] permutation)
