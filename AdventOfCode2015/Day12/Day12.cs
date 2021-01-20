@@ -36,30 +36,47 @@ namespace AdventOfCode2015
             
             JsonElement root = jd.RootElement;
 
-            int sum = AddNumbersInJSON(root);
+            int sum = AddNumbersInJSON(root, false);
 
             Console.WriteLine("Day 12 Part One Answer: " + sum);
+
+            sum = AddNumbersInJSON(root, true);
+
+            Console.WriteLine("Day 12 Part Two Answer: " + sum);
         }
 
-        static int AddNumbersInJSON(JsonElement element)
+        static int AddNumbersInJSON(JsonElement element, bool ignoreRed)
         {
             int sum = 0;
 
-            JsonValueKind valueKind = element.ValueKind;
-            switch (valueKind)
+            switch (element.ValueKind)
             {
                 case JsonValueKind.Object:
                     JsonElement.ObjectEnumerator objectEnumerator = element.EnumerateObject();
+                    if (ignoreRed)
+                    {
+                        bool isRed = false;
+                        foreach (JsonProperty jp in objectEnumerator)
+                        {
+                            JsonElement e = element.GetProperty(jp.Name);
+                            if ((e.ValueKind == JsonValueKind.String) && e.ValueEquals("red"))
+                            {
+                                isRed = true;
+                                break;
+                            }
+                        }
+                        if (isRed) break;
+                    }
                     foreach (JsonProperty jp in objectEnumerator)
                     {
-                        sum += AddNumbersInJSON(element.GetProperty(jp.Name));
+                        sum += AddNumbersInJSON(element.GetProperty(jp.Name), ignoreRed);
                     }
                     break;
                 case JsonValueKind.Array:
                     JsonElement.ArrayEnumerator arrayEnumerator = element.EnumerateArray();
                     foreach (JsonElement je in arrayEnumerator)
                     {
-                        sum += AddNumbersInJSON(je);
+                        sum += AddNumbersInJSON(je, ignoreRed);
                     }
                     break;
                 case JsonValueKind.Number:
