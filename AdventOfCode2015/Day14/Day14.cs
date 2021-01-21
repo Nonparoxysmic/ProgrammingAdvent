@@ -51,6 +51,32 @@ namespace AdventOfCode2015
             }
 
             Console.WriteLine("Day 14 Part One Answer: " + longestDistance);
+
+            foreach (Reindeer r in reindeer)
+            {
+                r.position = 0;
+            }
+
+            for (int seconds = 0; seconds < raceDuration1; seconds++)
+            {
+                int leaderPos = 0;
+                foreach (Reindeer r in reindeer)
+                {
+                    leaderPos = Math.Max(leaderPos, r.NextPosition());
+                }
+                foreach (Reindeer r in reindeer)
+                {
+                    if (r.position == leaderPos) r.score++;
+                }
+            }
+
+            int highestScore = 0;
+            foreach (Reindeer r in reindeer)
+            {
+                highestScore = Math.Max(highestScore, r.score);
+            }
+
+            Console.WriteLine("Day 14 Part Two Answer: " + highestScore);
         }
     }
 
@@ -62,6 +88,10 @@ namespace AdventOfCode2015
         public int restDuration;
         public int position;
 
+        public int score;
+        int flyingCountdown;
+        int restingCountdown;
+
         public Reindeer(string name, int topSpeed, int topSpeedDuration, int restDuration)
         {
             this.name = name;
@@ -69,6 +99,10 @@ namespace AdventOfCode2015
             this.topSpeedDuration = topSpeedDuration;
             this.restDuration = restDuration;
             position = 0;
+
+            score = 0;
+            flyingCountdown = topSpeedDuration;
+            restingCountdown = 0;
         }
 
         public void Race(int duration)
@@ -81,6 +115,23 @@ namespace AdventOfCode2015
                 timeRemaining -= flyingTime;
                 timeRemaining -= Math.Min(timeRemaining, restDuration);
             }
+        }
+
+        public int NextPosition()
+        {
+            if (flyingCountdown > 0)
+            {
+                position += topSpeed;
+                flyingCountdown--;
+                if (flyingCountdown == 0) restingCountdown = restDuration;
+            }
+            else
+            {
+                restingCountdown--;
+                if (restingCountdown == 0) flyingCountdown = topSpeedDuration;
+            }
+
+            return position;
         }
     }
 }
