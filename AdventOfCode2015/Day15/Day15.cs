@@ -12,6 +12,7 @@ namespace AdventOfCode2015
     static class Day15
     {
         public static int bestScore;
+        public static int best500CalScore;
 
         public static void Solve()
         {
@@ -54,6 +55,7 @@ namespace AdventOfCode2015
             NextQuantity(ingredients, recipe, 0, 0);
 
             Console.WriteLine("Day 15 Part One Answer: " + bestScore);
+            Console.WriteLine("Day 15 Part Two Answer: " + best500CalScore);
         }
 
         static void NextQuantity(List<Ingredient> ingredients, int[] recipe, int pos, int quantitySoFar)
@@ -63,6 +65,10 @@ namespace AdventOfCode2015
                 recipe[pos] = 100 - quantitySoFar;
                 Cookie cookie = new Cookie(ingredients, recipe);
                 bestScore = Math.Max(bestScore, cookie.CalculateScore());
+                if (cookie.calories == 500)
+                {
+                    best500CalScore = Math.Max(best500CalScore, cookie.score);
+                }
                 return;
             }
             else
@@ -99,7 +105,8 @@ namespace AdventOfCode2015
     class Cookie
     {
         readonly Dictionary<Ingredient, int> ingredients;
-        int score = -1;
+        public int score = -1;
+        public int calories = 0;
 
         public Cookie()
         {
@@ -133,6 +140,8 @@ namespace AdventOfCode2015
                 durability += i.Key.durability * i.Value;
                 flavor += i.Key.flavor * i.Value;
                 texture += i.Key.texture * i.Value;
+
+                calories += i.Key.calories * i.Value;
             }
             if (capacity < 1 || durability < 1 || flavor < 1 || texture < 1)
             {
