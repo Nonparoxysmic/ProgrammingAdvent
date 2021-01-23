@@ -89,6 +89,48 @@ namespace AdventOfCode2015
             {
                 Print.PrintErrorAndExit("Invalid input for Day 16 Part One: Multiple possible answers: " + String.Join(", ", potentialMatches.ToArray()));
             }
+
+            potentialMatches = new List<string>();
+            Dictionary<string, int> comparisons = new Dictionary<string, int>();
+            int[] comparisonValues = new int[] { 0, 1, 0, -1, 0, 0, -1, 1, 0, 0 };
+            for (int i = 0; i < comparisonValues.Length; i++)
+            {
+                comparisons.Add(columnNames[i], comparisonValues[i]);
+            }
+            foreach (DataRow row in sueTable.Rows)
+            {
+                bool hasConflicts = false;
+                foreach (string column in columnNames)
+                {
+                    if (row[column] == DBNull.Value) continue;
+                    if (comparisons[column] == 0)
+                    {
+                        if ((int)row[column] != trueSue[column]) hasConflicts = true;
+                    }
+                    else if (comparisons[column] > 0)
+                    {
+                        if (!((int)row[column] > trueSue[column])) hasConflicts = true;
+                    }
+                    else
+                    {
+                        if (!((int)row[column] < trueSue[column])) hasConflicts = true;
+                    }
+                }
+                if (!hasConflicts) potentialMatches.Add(row["id"].ToString());
+            }
+
+            if (potentialMatches.Count == 0)
+            {
+                Print.PrintErrorAndExit("Invalid input for Day 16 Part Two: No valid answer");
+            }
+            else if (potentialMatches.Count == 1)
+            {
+                Console.WriteLine("Day 16 Part Two Answer: " + potentialMatches[0]);
+            }
+            else
+            {
+                Print.PrintErrorAndExit("Invalid input for Day 16 Part Two: Multiple possible answers: " + String.Join(", ", potentialMatches.ToArray()));
+            }
         }
     }
 }
