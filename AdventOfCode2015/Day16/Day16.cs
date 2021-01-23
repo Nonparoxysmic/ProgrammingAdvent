@@ -34,6 +34,12 @@ namespace AdventOfCode2015
             {
                 sueTable.Columns.Add(new DataColumn() { DataType = typeof(int), ColumnName = name });
             }
+            Dictionary<string, int> trueSue = new Dictionary<string, int>();
+            int[] trueValues = new int[] { 3, 7, 2, 3, 0, 0, 5, 3, 2, 1 };
+            for (int i = 0; i < trueValues.Length; i++)
+            {
+                trueSue.Add(columnNames[i], trueValues[i]);
+            }
 
             foreach (string line in input1)
             {
@@ -59,74 +65,30 @@ namespace AdventOfCode2015
                 sueTable.Rows.Add(row);
             }
 
-            Console.WriteLine("Number of rows in input = {0}", sueTable.Rows.Count);
-
-
             List<string> potentialMatches = new List<string>();
-
-            foreach (string line in input1)
+            foreach (DataRow row in sueTable.Rows)
             {
-                if (line.Contains("children: ") && !line.Contains("children: 3"))
+                bool hasConflicts = false;
+                foreach (string column in columnNames)
                 {
-                    continue;
+                    if (row[column] == DBNull.Value) continue;
+                    if ((int)row[column] != trueSue[column]) hasConflicts = true;
                 }
-                if (line.Contains("cats: ") && !line.Contains("cats: 7"))
-                {
-                    continue;
-                }
-                if (line.Contains("samoyeds: ") && !line.Contains("samoyeds: 2"))
-                {
-                    continue;
-                }
-                if (line.Contains("pomeranians: ") && !line.Contains("pomeranians: 3"))
-                {
-                    continue;
-                }
-                if (line.Contains("akitas: ") && !line.Contains("akitas: 0"))
-                {
-                    continue;
-                }
-                if (line.Contains("vizslas: ") && !line.Contains("vizslas: 0"))
-                {
-                    continue;
-                }
-                if (line.Contains("goldfish: ") && !line.Contains("goldfish: 5"))
-                {
-                    continue;
-                }
-                if (line.Contains("trees: ") && !line.Contains("trees: 3"))
-                {
-                    continue;
-                }
-                if (line.Contains("cars: ") && !line.Contains("cars: 2"))
-                {
-                    continue;
-                }
-                if (line.Contains("perfumes: ") && !line.Contains("perfumes: 1"))
-                {
-                    continue;
-                }
-                potentialMatches.Add(line);
+                if (!hasConflicts) potentialMatches.Add(row["id"].ToString());
             }
 
             if (potentialMatches.Count == 0)
             {
-                Console.WriteLine("Day 16 Part One: No Valid Answer");
+                Print.PrintErrorAndExit("Invalid input for Day 16 Part One: No valid answer");
             }
             else if (potentialMatches.Count == 1)
             {
-                string sueNumber = potentialMatches[0].Split()[1].Trim(':');
-                Console.WriteLine("Day 16 Part One Answer: " + sueNumber);
+                Console.WriteLine("Day 16 Part One Answer: " + potentialMatches[0]);
             }
             else
             {
-                // Manual check by user. Didn't need this for my solution.
-                Console.WriteLine("Day 16 Part One: Compare the following potential matches manually.");
-                foreach (string sue in potentialMatches) Console.WriteLine(" >> " + sue);
+                Print.PrintErrorAndExit("Invalid input for Day 16 Part One: Multiple possible answers: " + String.Join(", ", potentialMatches.ToArray()));
             }
-
-
-            Console.WriteLine("Day 16 Part One Answer: " + "To Be Implemented Properly");
         }
     }
 }
