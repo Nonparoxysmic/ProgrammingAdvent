@@ -1,0 +1,6 @@
+﻿Puzzle Text: https://adventofcode.com/2015/day/17
+
+This program will read the following input files from this folder:
+
+Input1.txt
+A text file containing a list of integers greater than zero, one integer on each line.

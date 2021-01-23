@@ -90,6 +90,7 @@
     <Compile Include="Day14\Day14.cs" />
     <Compile Include="Day15\Day15.cs" />
     <Compile Include="Day16\Day16.cs" />
+    <Compile Include="Day17\Day17.cs" />
     <Compile Include="DayTemplate\DayTemplate.cs" />
     <Compile Include="Print.cs" />
     <Compile Include="Day01\Day01.cs" />
@@ -229,6 +230,14 @@
     </Content>
     <Content Include="Day16\Puzzle\PuzzleText1.txt" />
     <Content Include="Day16\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day17\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day17\Puzzle\PuzzleDay17.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day17\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day17\Puzzle\PuzzleText2.txt" />
     <Content Include="DayTemplate\Puzzle\Input1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
