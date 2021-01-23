@@ -12,6 +12,8 @@ namespace AdventOfCode2015
     {
         const int target = 150;
         static int numOfCombinations = 0;
+        static int minContainersUsed = int.MaxValue;
+        static int minContainerCombinations = 0;
 
         public static void Solve()
         {
@@ -30,23 +32,33 @@ namespace AdventOfCode2015
                 Print.PrintErrorAndExit("Unable to load input file " + inputPath + Environment.NewLine + e.GetType());
             }
 
-            CalculateCombinations(input, 0, 0);
+            CalculateCombinations(input, 0, 0, 0);
 
             Console.WriteLine("Day 17 Part One Answer: " + numOfCombinations);
+            Console.WriteLine("Day 17 Part Two Answer: " + minContainerCombinations);
         }
 
-        static void CalculateCombinations(int[] input, int pos, int quantitySoFar)
+        static void CalculateCombinations(int[] input, int pos, int quantitySoFar, int containersUsed)
         {
             for (int i = pos; i < input.Length; i++)
             {
                 if (quantitySoFar + input[i] == target)
                 {
                     numOfCombinations++;
+                    if (containersUsed + 1 == minContainersUsed)
+                    {
+                        minContainerCombinations++;
+                    }
+                    else if (containersUsed + 1 < minContainersUsed)
+                    {
+                        minContainersUsed = containersUsed + 1;
+                        minContainerCombinations = 1;
+                    }
                     continue;
                 }
                 else if (quantitySoFar + input[i] < target)
                 {
-                    CalculateCombinations(input, i + 1, quantitySoFar + input[i]);
+                    CalculateCombinations(input, i + 1, quantitySoFar + input[i], containersUsed + 1);
                 }
             }
         }
