@@ -26,6 +26,7 @@ namespace AdventOfCode2015
             if (input1[0].Length == 0) Print.PrintErrorAndExit("Day 18: Cannot process empty lines in " + input1Path);
 
             int[,] lightGrid = new int[input1.Length, input1[0].Length];
+            int[,] lightGrid2 = new int[input1.Length, input1[0].Length];
 
             for (int row = 0; row < input1.Length; row++)
             {
@@ -39,13 +40,19 @@ namespace AdventOfCode2015
                     {
                         case '#':
                             lightGrid[row, col] = 1;
+                            lightGrid2[row, col] = 1;
                             break;
                         case '.':
                             lightGrid[row, col] = 0;
+                            lightGrid2[row, col] = 0;
                             break;
                         default:
                             Print.PrintErrorAndExit("Day 18: Invalid character '" + input1[row][col] + "' in " + input1Path);
                             break;
+                    }
+                    if (((row == 0) || (row == input1.Length - 1)) && ((col == 0) || (col == input1[row].Length - 1)))
+                    {
+                        lightGrid2[row, col] = 1;
                     }
                 }
             }
@@ -53,12 +60,16 @@ namespace AdventOfCode2015
             for (int iterations = 0; iterations < 100; iterations++)
             {
                 lightGrid = StepLightGrid(lightGrid);
+                lightGrid2 = StepLightGrid(lightGrid2, true);
             }
 
             Console.WriteLine("Day 18 Part One Answer: " + SumArray(lightGrid));
+            Console.WriteLine("Day 18 Part Two Answer: " + SumArray(lightGrid2));
         }
 
-        static int[,] StepLightGrid(int[,] input)
+        static int[,] StepLightGrid(int[,] input) => StepLightGrid(input, false);
+
+        static int[,] StepLightGrid(int[,] input, bool cornersOn)
         {
             int rows = input.GetLength(0);
             int cols = input.GetLength(1);
@@ -67,6 +78,11 @@ namespace AdventOfCode2015
             {
                 for (int col = 0; col < cols; col++)
                 {
+                    if (cornersOn && ((row == 0) || (row == rows - 1)) && ((col == 0) || (col == cols - 1)))
+                    {
+                        output[row, col] = 1;
+                        continue;
+                    }
                     output[row, col] = input[row, col];
                     int neighbors = CountNeighborsOn(row, col, input);
                     if (input[row, col] == 1 && neighbors != 2 && neighbors != 3)
