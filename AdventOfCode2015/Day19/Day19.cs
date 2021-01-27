@@ -68,6 +68,8 @@ namespace AdventOfCode2015
             molecules = molecules.Distinct().ToList();
 
             Console.WriteLine("Day 19 Part One Answer: " + molecules.Count);
+
+            Console.WriteLine("Day 19 Part Two not attempted.");
         }
 
         static void GetSingleReplacementMolecules(List<string> molecules, string startingMolecule, Dictionary<string, List<string>> replacements, string match, int pos, int len)
