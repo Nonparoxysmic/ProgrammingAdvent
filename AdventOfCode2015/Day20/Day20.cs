@@ -28,28 +28,55 @@ namespace AdventOfCode2015
                 Print.PrintErrorAndExit("Day 19: Cannot parse \"" + inputRaw[0] + "\" as an integer.");
             }
 
-            int houseNumber = 0;
-            while (true)
-            {
-                houseNumber++;
-                int gifts = 10 * SumOfDivisors(houseNumber);
-                if (gifts >= input) break;
-            }
+            // Replaced the initial Part One solution.
+            //
+            //int houseNumber = 0;
+            //while (true)
+            //{
+            //    houseNumber++;
+            //    int gifts = 10 * SumOfDivisors(houseNumber);
+            //    if (gifts >= input) break;
+            //}
+            //Console.WriteLine("Day 20 Part One Answer: " + houseNumber);
 
-            Console.WriteLine("Day 20 Part One Answer: " + houseNumber);
+            Console.WriteLine("Day 20 Part One Answer: " + FirstHouse(input, 10, int.MaxValue));
+            Console.WriteLine("Day 20 Part Two Answer: " + FirstHouse(input, 11, 50));
         }
 
-        static int SumOfDivisors(int number)
+        //static int SumOfDivisors(int number)
+        //{
+        //    if (number < 2) return number;
+        //    double squareRoot = Math.Sqrt(number);
+        //    int sum = number + 1;
+        //    for (int i = 2; i < squareRoot; i++)
+        //    {
+        //        if (number % i == 0) sum += number / i + i;
+        //    }
+        //    if (squareRoot % 1 == 0) sum += (int)squareRoot;
+        //    return sum;
+        //}
+
+        static string FirstHouse(int giftTarget, int giftRatio, int houseLimit)
         {
-            if (number < 2) return number;
-            double squareRoot = Math.Sqrt(number);
-            int sum = number + 1;
-            for (int i = 2; i < squareRoot; i++)
+            int limit = (giftTarget + giftRatio) / giftRatio;
+            int[] gifts = new int[limit];
+
+            for (int elf = 1; elf < limit; elf++)
             {
-                if (number % i == 0) sum += number / i + i;
+                int houseCount = 0;
+                for (int house = elf; house < limit; house += elf)
+                {
+                    gifts[house] += elf * giftRatio;
+                    houseCount++;
+                    if (houseCount >= houseLimit) break;
+                }
             }
-            if (squareRoot % 1 == 0) sum += (int)squareRoot;
-            return sum;
+
+            for (int i = 0; i < gifts.Length; i++)
+            {
+                if (gifts[i] >= giftTarget) return i.ToString();
+            }
+            return "ERROR";
         }
     }
 }
