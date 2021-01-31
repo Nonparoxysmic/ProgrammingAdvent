@@ -82,6 +82,7 @@ namespace AdventOfCode2015
             }
 
             int minimumWinCost = int.MaxValue;
+            int maximumLossCost = -1;
             for (int weaponChoice = 0; weaponChoice < weapons.Rows.Count; weaponChoice++)
             {
                 for (int armorChoice = 0; armorChoice < armor.Rows.Count; armorChoice++)
@@ -90,16 +91,21 @@ namespace AdventOfCode2015
                     {
                         int playerDamage = (int)weapons.Rows[weaponChoice]["Damage"] + (int)ringOptions.Rows[ringChoice]["Damage"];
                         int playerArmor = (int)armor.Rows[armorChoice]["Armor"] + (int)ringOptions.Rows[ringChoice]["Armor"];
+                        int cost = (int)weapons.Rows[weaponChoice]["Cost"] + (int)armor.Rows[armorChoice]["Cost"] + (int)ringOptions.Rows[ringChoice]["Cost"];
                         if (PlayerWins(100, playerDamage, playerArmor, bossHP, bossDamage, bossArmor))
                         {
-                            int cost = (int)weapons.Rows[weaponChoice]["Cost"] + (int)armor.Rows[armorChoice]["Cost"] + (int)ringOptions.Rows[ringChoice]["Cost"];
                             if (cost < minimumWinCost) minimumWinCost = cost;
+                        }
+                        else
+                        {
+                            if (cost > maximumLossCost) maximumLossCost = cost;
                         }
                     }
                 }
             }
 
             Console.WriteLine("Day 21 Part One Answer: " + minimumWinCost);
+            Console.WriteLine("Day 21 Part Two Answer: " + maximumLossCost);
         }
 
         static bool PlayerWins(int playerHP, int playerDamage, int playerArmor, int bossHP, int bossDamage, int bossArmor)
