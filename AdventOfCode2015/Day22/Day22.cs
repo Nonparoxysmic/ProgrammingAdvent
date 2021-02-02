@@ -12,6 +12,7 @@ namespace AdventOfCode2015
     {
         static int leastManaRequired = int.MaxValue;
         static int bossDamage;
+        static bool hardDifficulty = false;
 
         public static void Solve()
         {
@@ -41,10 +42,22 @@ namespace AdventOfCode2015
             DoPlayerTurn(50, 500, 0, bossHP, 0, 0, 0);
 
             Console.WriteLine("Day 22 Part One Answer: " + leastManaRequired);
+
+            leastManaRequired = int.MaxValue;
+            hardDifficulty = true;
+            DoPlayerTurn(50, 500, 0, bossHP, 0, 0, 0);
+
+            Console.WriteLine("Day 22 Part Two Answer: " + leastManaRequired);
         }
 
         static void DoPlayerTurn(int playerHP, int playerMana, int manaSpent, int bossHP, int shieldTimer, int poisonTimer, int rechargeTimer)
         {
+            // Part Two: Process extra effect
+            if (hardDifficulty)
+            {
+                playerHP--;
+                if (playerHP < 1) return;
+            }
             // Process effects at start of player turn
             if (shieldTimer > 0) shieldTimer--;
             if (poisonTimer > 0)
