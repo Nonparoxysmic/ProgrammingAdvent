@@ -23,8 +23,17 @@ namespace AdventOfCode2015
                 Print.PrintErrorAndExit("Unable to load input file " + input1Path + Environment.NewLine + e.GetType());
             }
 
-            int registerA = 0;
-            int registerB = 0;
+            int partOneAnswer = RunProgram(instructions, 0, 0);
+
+            Console.WriteLine("Day 23 Part One Answer: " + partOneAnswer);
+
+            int partTwoAnswer = RunProgram(instructions, 1, 0);
+
+            Console.WriteLine("Day 23 Part Two Answer: " + partTwoAnswer);
+        }
+
+        static int RunProgram(string[] instructions, int registerA, int registerB)
+        {
             int currentInstructionIndex = 0;
             while (currentInstructionIndex >= 0 && currentInstructionIndex < instructions.Length)
             {
@@ -110,8 +119,7 @@ namespace AdventOfCode2015
                 }
                 if (invalidInstruction) Print.PrintErrorAndExit("Day 23: Invalid instruction \"" + currentInstruction + "\" in input.");
             }
-
-            Console.WriteLine("Day 23 Part One Answer: " + registerB);
+            return registerB;
         }
     }
 }
