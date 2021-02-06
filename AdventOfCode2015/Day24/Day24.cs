@@ -44,9 +44,18 @@ namespace AdventOfCode2015
             packageWeights.Sort();
             packageWeights.Reverse();
 
-            FindPartOne(packageWeights);
+            FindAnswer(packageWeights, 3);
 
             Console.WriteLine("Day 24 Part One Answer: " + idealEntanglement);
+
+            if (totalWeight % 4 != 0) Print.PrintErrorAndExit("Day 24 Part Two: Invalid sum of values in " + input1Path);
+
+            groupWeight = totalWeight / 4;
+            idealEntanglement = long.MaxValue;
+
+            FindAnswer(packageWeights, 4);
+
+            Console.WriteLine("Day 24 Part Two Answer: " + idealEntanglement);
         }
 
         static bool CanBeDividedEvenly(List<int> input)
@@ -69,9 +78,9 @@ namespace AdventOfCode2015
             return false;
         }
 
-        static int LengthOfBestThird(List<int> input) => LengthOfBestThird(input, new List<int>(), 0, 0, 0);
+        static int LengthOfBestGroup(List<int> input, int divisor) => LengthOfBestGroup(input, new List<int>(), 0, 0, 0, divisor);
 
-        static int LengthOfBestThird(List<int> input, List<int> output, int index, int sumSoFar, int numSoFar)
+        static int LengthOfBestGroup(List<int> input, List<int> output, int index, int sumSoFar, int numSoFar, int divisor)
         {
             for (int i = index; i < input.Count; i++)
             {
@@ -80,7 +89,11 @@ namespace AdventOfCode2015
                     List<int> remainingInput = new List<int>(input);
                     foreach (int j in output) remainingInput.Remove(j);
                     remainingInput.Remove(input[i]);
-                    if (CanBeDividedEvenly(remainingInput))
+                    if (divisor == 3 && CanBeDividedEvenly(remainingInput))
+                    {
+                        return numSoFar + 1;
+                    }
+                    if (divisor == 4 && LengthOfBestGroup(remainingInput, 3) > 0)
                     {
                         return numSoFar + 1;
                     }
@@ -91,19 +104,19 @@ namespace AdventOfCode2015
                     {
                         input[i]
                     };
-                    return LengthOfBestThird(input, nextOutput, i + 1, sumSoFar + input[i], numSoFar + 1);
+                    return LengthOfBestGroup(input, nextOutput, i + 1, sumSoFar + input[i], numSoFar + 1, divisor);
                 }
             }
             return -1;
         }
 
-        static void FindPartOne(List<int> input)
+        static void FindAnswer(List<int> input, int divisor)
         {
-            int combinationLength = LengthOfBestThird(input);
-            FindPartOne(input, combinationLength, 0, 0, 0, 1);
+            int combinationLength = LengthOfBestGroup(input, divisor);
+            FindAnswer(input, combinationLength, 0, 0, 0, 1);
         }
 
-        static void FindPartOne(List<int> input, int combinationLength, int currentDepth, int index, int sumSoFar, long productSoFar)
+        static void FindAnswer(List<int> input, int combinationLength, int currentDepth, int index, int sumSoFar, long productSoFar)
         {
             for (int i = index; i < input.Count - combinationLength + currentDepth + 1; i++)
             {
@@ -115,7 +128,7 @@ namespace AdventOfCode2015
                 {
                     if (currentDepth + 1 < combinationLength)
                     {
-                        FindPartOne(input, combinationLength, currentDepth + 1, i + 1, sumSoFar + input[i], productSoFar * input[i]);
+                        FindAnswer(input, combinationLength, currentDepth + 1, i + 1, sumSoFar + input[i], productSoFar * input[i]);
                     }
                 }
             }

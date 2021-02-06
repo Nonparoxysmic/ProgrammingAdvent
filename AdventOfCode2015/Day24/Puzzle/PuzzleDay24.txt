@@ -6,3 +6,4 @@ Input1.txt
 A text file containing a list of integers, one on each line.
 Each integer is greater than zero.
 There is at least one way that the integers can be divided into three groups with each group having the same sum.
+There is at least one way that the integers can be divided into four groups with each group having the same sum.
