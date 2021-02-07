@@ -8,12 +8,12 @@ using System.IO;
 
 namespace AdventOfCode2015
 {
-    static class DayTemplate
+    static class Day25
     {
         public static void Solve()
         {
             
-            Console.WriteLine("Day TEMPLATE Part One Answer: ");
+            Console.WriteLine("Day 25 Part One Answer: ");
         }
     }
 }
