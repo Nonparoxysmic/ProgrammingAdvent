@@ -69,7 +69,9 @@ namespace AdventOfCode2015
 
             Console.WriteLine("Day 19 Part One Answer: " + molecules.Count);
 
-            Console.WriteLine("Day 19 Part Two not attempted.");
+            int steps = UseSecretPattern(startingMolecule);
+
+            Console.WriteLine("Day 19 Part Two Answer: " + steps);
         }
 
         static void GetSingleReplacementMolecules(List<string> molecules, string startingMolecule, Dictionary<string, List<string>> replacements, string match, int pos, int len)
@@ -79,6 +81,53 @@ namespace AdventOfCode2015
                 string newMolecule = startingMolecule.Substring(0, pos) + output + startingMolecule.Substring(pos + len);
                 molecules.Add(newMolecule);
             }
+        }
+
+        static int UseSecretPattern(string startingMolecule)
+        {
+            // There is a secret pattern in the input that is not mentioned in the puzzle text.
+            // https://old.reddit.com/r/adventofcode/comments/3xflz8/day_19_solutions/cy4p1td/?context=1
+            // https://old.reddit.com/r/adventofcode/comments/3xhkeb/day_19_part_2_proof_that_everyones_posted/cy8mzev/?context=3
+            // A critical secret constraint for creating a general solution: the production rules are identical for all valid inputs.
+
+            int sumRnAr = 0;
+            int sumY = 0;
+            int sumTotal = 0;
+            for (int i = 0; i < startingMolecule.Length; i++)
+            {
+                sumTotal++;
+                if (startingMolecule[i] == 'C' && i < startingMolecule.Length - 1 && startingMolecule[i + 1] == 'a')
+                {
+                    i++;
+                }
+                else if ("CHFONPB".Contains(startingMolecule[i])) { }
+                else if (startingMolecule[i] == 'Y')
+                {
+                    sumY++;
+                }
+                else if (i < startingMolecule.Length - 1)
+                {
+                    string element = startingMolecule[i].ToString() + startingMolecule[i + 1];
+                    switch (element)
+                    {
+                        case "Mg":
+                        case "Al":
+                        case "Si":
+                        case "Ti":
+                        case "Th":
+                            break;
+                        case "Rn":
+                        case "Ar":
+                            sumRnAr++;
+                            break;
+                        default:
+                            Print.PrintErrorAndExit("Unknown error in Day 19 Part Two.");
+                            break;
+                    }
+                    i++;
+                }
+            }
+            return sumTotal - sumRnAr - 2 * sumY - 1;
         }
     }
 }

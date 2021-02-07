@@ -253,6 +253,7 @@
     </Content>
     <Content Include="Day18\Puzzle\PuzzleText1.txt" />
     <Content Include="Day18\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day19\Puzzle\Input2.txt" />
     <Content Include="Day19\Puzzle\Input1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
