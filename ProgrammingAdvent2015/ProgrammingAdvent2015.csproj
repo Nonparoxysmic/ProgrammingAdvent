@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{05DDAF24-1569-42A0-85F6-66532AD3CF7E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ProgrammingAdvent2015</RootNamespace>
+    <AssemblyName>ProgrammingAdvent2015</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Encodings.Web.5.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Text.Json.5.0.1\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Day02\Day02.cs" />
+    <Compile Include="Day03\Day03.cs" />
+    <Compile Include="Day04\Day04.cs" />
+    <Compile Include="Day04\AdventMD5.cs" />
+    <Compile Include="Day05\Day05.cs" />
+    <Compile Include="Day06\Day06.cs" />
+    <Compile Include="Day06\BasicLightGrid.cs" />
+    <Compile Include="Day06\DeluxeLightGrid.cs" />
+    <Compile Include="Day06\LightGrid.cs" />
+    <Compile Include="Day07\Day07.cs" />
+    <Compile Include="Day08\Day08.cs" />
+    <Compile Include="Day09\Day09.cs" />
+    <Compile Include="Day10\Day10.cs" />
+    <Compile Include="Day11\Day11.cs" />
+    <Compile Include="Day12\Day12.cs" />
+    <Compile Include="Day13\Day13.cs" />
+    <Compile Include="Day14\Day14.cs" />
+    <Compile Include="Day15\Day15.cs" />
+    <Compile Include="Day16\Day16.cs" />
+    <Compile Include="Day17\Day17.cs" />
+    <Compile Include="Day18\Day18.cs" />
+    <Compile Include="Day19\Day19.cs" />
+    <Compile Include="Day20\Day20.cs" />
+    <Compile Include="Day21\Day21.cs" />
+    <Compile Include="Day22\Day22.cs" />
+    <Compile Include="Day23\Day23.cs" />
+    <Compile Include="Day24\Day24.cs" />
+    <Compile Include="Day25\Day25.cs" />
+    <Compile Include="Print.cs" />
+    <Compile Include="Day01\Day01.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Day12\Puzzle\Input1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Day01\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day01\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day01\Puzzle\PuzzleDay01.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day01\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day02\Puzzle\PuzzleDay02.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day02\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day02\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day02\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day03\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day03\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day03\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day03\Puzzle\PuzzleDay03.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day04\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day04\Puzzle\PuzzleDay04.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day04\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day04\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day05\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day05\Puzzle\PuzzleDay05.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day05\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day05\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day06\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day06\Puzzle\PuzzleDay06.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day06\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day06\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day07\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day07\Puzzle\PuzzleDay07.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day07\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day07\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day08\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day08\Puzzle\PuzzleDay08.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day08\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day08\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day09\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day09\Puzzle\PuzzleDay09.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day09\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day09\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day10\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day10\Puzzle\PuzzleDay10.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day10\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day10\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day11\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day11\Puzzle\PuzzleDay11.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day11\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day11\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day12\Puzzle\PuzzleDay12.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day12\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day12\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day13\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day13\Puzzle\PuzzleDay13.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day13\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day13\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day14\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day14\Puzzle\PuzzleDay14.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day14\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day14\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day15\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day15\Puzzle\PuzzleDay15.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day15\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day15\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day16\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day16\Puzzle\PuzzleDay16.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day16\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day16\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day17\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day17\Puzzle\PuzzleDay17.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day17\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day17\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day18\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day18\Puzzle\PuzzleDay18.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day18\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day18\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day19\Puzzle\Input2.txt" />
+    <Content Include="Day19\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day19\Puzzle\PuzzleDay19.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day19\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day19\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day20\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day20\Puzzle\PuzzleDay20.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day20\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day20\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day21\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day21\Puzzle\PuzzleDay21.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day21\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day21\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day22\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day22\Puzzle\PuzzleDay22.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day22\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day22\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day23\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day23\Puzzle\PuzzleDay23.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day23\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day23\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day24\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day24\Puzzle\PuzzleDay24.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day24\Puzzle\PuzzleText1.txt" />
+    <Content Include="Day24\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day25\Puzzle\Input1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day25\Puzzle\PuzzleDay25.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Day25\Puzzle\PuzzleText2.txt" />
+    <Content Include="Day25\Puzzle\PuzzleText1.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
