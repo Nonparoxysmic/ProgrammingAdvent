@@ -31,7 +31,8 @@ namespace ProgrammingAdvent2015
             //Day21.Solve();
             //Day22.Solve();
             //Day23.Solve();
-            Day24.Solve();
+            //Day24.Solve();
+            Day25.Solve();
 
             Console.ReadKey(true);
         }
