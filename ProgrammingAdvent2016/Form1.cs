@@ -16,5 +16,17 @@ namespace ProgrammingAdvent2016
         {
             InitializeComponent();
         }
+
+        private void ButtonDay1_Click(object sender, EventArgs e)
+        {
+            textBoxPart1Day1.Text = "[Day 1 Part 1 solution here]";
+            textBoxPart2Day1.Text = "[Day 1 Part 2 solution here]";
+        }
+
+        private void ButtonDay2_Click(object sender, EventArgs e)
+        {
+            textBoxPart1Day2.Text = "[Day 2 Part 1 solution here]";
+            textBoxPart2Day2.Text = "[Day 2 Part 2 solution here]";
+        }
     }
 }
