@@ -25,8 +25,8 @@ namespace ProgrammingAdvent2016
 
         private void ButtonDay2_Click(object sender, EventArgs e)
         {
-            textBoxPart1Day2.Text = "[Day 2 Part 1 solution here]";
-            textBoxPart2Day2.Text = "[Day 2 Part 2 solution here]";
+            textBoxPart1Day2.Text = DayTEMPLATE.PartOneSolution();
+            textBoxPart2Day2.Text = DayTEMPLATE.PartTwoSolution();
         }
     }
 }
