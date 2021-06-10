@@ -1,17 +1,14 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace ProgrammingAdvent2016
 {
     public static class DayTEMPLATE
     {
-        public static string PartOneSolution()
+        public static void SetSolutionText(TextBox partOneTextBox, TextBox partTwoTextBox)
         {
-            return "Solution Not Yet Implemented";
-        }
-
-        public static string PartTwoSolution()
-        {
-            return "Solution Not Yet Implemented";
+            partOneTextBox.Text = "Solution Not Yet Implemented";
+            partTwoTextBox.Text = "Solution Not Yet Implemented";
         }
     }
 }
