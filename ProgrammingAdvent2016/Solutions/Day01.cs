@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -19,6 +20,7 @@ namespace ProgrammingAdvent2016
                 return;
             }
             string[] instructions = input.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
             int direction = 0;
             int x = 0;
             int y = 0;
@@ -48,9 +50,53 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            partOneTextBox.Text = (x + y).ToString();
+            partOneTextBox.Text = (Math.Abs(x) + Math.Abs(y)).ToString();
 
-            partTwoTextBox.Text = "Part 2 Solution Not Yet Implemented";
+            List<long> intersections = new List<long> { 0 };
+            direction = 0;
+            x = 0;
+            y = 0;
+            foreach (string instruction in instructions)
+            {
+                if (instruction[0] == 'R') direction++;
+                else if (instruction[0] == 'L') direction--;
+                else continue;
+                if (direction < 0) direction += 4;
+                direction %= 4;
+                if (int.TryParse(instruction.Substring(1), out int steps))
+                {
+                    while (steps > 0)
+                    {
+                        steps--;
+                        switch (direction)
+                        {
+                            case 0:
+                                y += 1;
+                                break;
+                            case 1:
+                                x += 1;
+                                break;
+                            case 2:
+                                y -= 1;
+                                break;
+                            case 3:
+                                x -= 1;
+                                break;
+                        }
+                        long intersection = (long)x << 32 | (uint)y;
+                        if (intersections.Contains(intersection))
+                        {
+                            partTwoTextBox.Text = (Math.Abs(x) + Math.Abs(y)).ToString();
+                            return;
+                        }
+                        else
+                        {
+                            intersections.Add(intersection);
+                        }
+                    }
+                }
+            }
+            partTwoTextBox.Text = "No Solution Found";
         }
     }
 }
