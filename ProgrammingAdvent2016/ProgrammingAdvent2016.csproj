@@ -55,6 +55,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solutions\Day01.cs" />
+    <Compile Include="Solutions\Day02.cs" />
     <Compile Include="Solutions\DayTEMPLATE.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -83,6 +84,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="InputFiles\InputDay02Part1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="InputFiles\InputDay01Part1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

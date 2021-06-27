@@ -24,7 +24,7 @@ namespace ProgrammingAdvent2016
 
         public void ButtonDay2_Click(object sender, EventArgs e)
         {
-            DayTEMPLATE.SetSolutionText(textBoxPart1Day2, textBoxPart2Day2);
+            Day02.SetSolutionText(textBoxPart1Day2, textBoxPart2Day2);
         }
     }
 }
