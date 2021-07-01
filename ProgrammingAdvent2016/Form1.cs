@@ -17,6 +17,17 @@ namespace ProgrammingAdvent2016
             InitializeComponent();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ClickAllButtons();
+        }
+
+        public void ClickAllButtons()
+        {
+            ButtonDay1_Click(null, null);
+            ButtonDay2_Click(null, null);
+        }
+
         public void ButtonDay1_Click(object sender, EventArgs e)
         {
             Day01.SetSolutionText(textBoxPart1Day1, textBoxPart2Day1);
