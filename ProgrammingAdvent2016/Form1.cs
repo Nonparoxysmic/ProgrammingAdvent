@@ -17,7 +17,7 @@ namespace ProgrammingAdvent2016
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             ClickAllButtons();
         }
@@ -26,16 +26,22 @@ namespace ProgrammingAdvent2016
         {
             ButtonDay1_Click(null, null);
             ButtonDay2_Click(null, null);
+            ButtonDay3_Click(null, null);
         }
 
-        public void ButtonDay1_Click(object sender, EventArgs e)
+        private void ButtonDay1_Click(object sender, EventArgs e)
         {
             Day01.SetSolutionText(textBoxPart1Day1, textBoxPart2Day1);
         }
 
-        public void ButtonDay2_Click(object sender, EventArgs e)
+        private void ButtonDay2_Click(object sender, EventArgs e)
         {
             Day02.SetSolutionText(textBoxPart1Day2, textBoxPart2Day2);
+        }
+
+        private void ButtonDay3_Click(object sender, EventArgs e)
+        {
+            Day03.SetSolutionText(textBoxPart1Day3, textBoxPart2Day3);
         }
     }
 }
