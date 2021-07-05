@@ -46,7 +46,6 @@ namespace ProgrammingAdvent2016
             this.labelPart2Day2 = new System.Windows.Forms.Label();
             this.textBoxPart1Day2 = new System.Windows.Forms.TextBox();
             this.textBoxPart2Day2 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanelDay3 = new System.Windows.Forms.TableLayoutPanel();
             this.labelDay3 = new System.Windows.Forms.Label();
             this.buttonDay3 = new System.Windows.Forms.Button();
@@ -54,6 +53,7 @@ namespace ProgrammingAdvent2016
             this.labelPart2Day3 = new System.Windows.Forms.Label();
             this.textBoxPart1Day3 = new System.Windows.Forms.TextBox();
             this.textBoxPart2Day3 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanelDays.SuspendLayout();
@@ -171,6 +171,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay1.SetRowSpan(this.buttonDay1, 2);
             this.buttonDay1.Size = new System.Drawing.Size(75, 23);
             this.buttonDay1.TabIndex = 1;
+            this.buttonDay1.TabStop = false;
             this.buttonDay1.Text = "Solve";
             this.buttonDay1.UseVisualStyleBackColor = true;
             this.buttonDay1.Click += new System.EventHandler(this.ButtonDay1_Click);
@@ -203,6 +204,7 @@ namespace ProgrammingAdvent2016
             this.textBoxPart1Day1.ReadOnly = true;
             this.textBoxPart1Day1.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart1Day1.TabIndex = 4;
+            this.textBoxPart1Day1.TabStop = false;
             // 
             // textBoxPart2Day1
             // 
@@ -212,6 +214,7 @@ namespace ProgrammingAdvent2016
             this.textBoxPart2Day1.ReadOnly = true;
             this.textBoxPart2Day1.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart2Day1.TabIndex = 5;
+            this.textBoxPart2Day1.TabStop = false;
             // 
             // tableLayoutPanelDay2
             // 
@@ -255,6 +258,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay2.SetRowSpan(this.buttonDay2, 2);
             this.buttonDay2.Size = new System.Drawing.Size(75, 23);
             this.buttonDay2.TabIndex = 1;
+            this.buttonDay2.TabStop = false;
             this.buttonDay2.Text = "Solve";
             this.buttonDay2.UseVisualStyleBackColor = true;
             this.buttonDay2.Click += new System.EventHandler(this.ButtonDay2_Click);
@@ -287,6 +291,7 @@ namespace ProgrammingAdvent2016
             this.textBoxPart1Day2.ReadOnly = true;
             this.textBoxPart1Day2.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart1Day2.TabIndex = 4;
+            this.textBoxPart1Day2.TabStop = false;
             // 
             // textBoxPart2Day2
             // 
@@ -296,17 +301,7 @@ namespace ProgrammingAdvent2016
             this.textBoxPart2Day2.ReadOnly = true;
             this.textBoxPart2Day2.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart2Day2.TabIndex = 5;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button1.Location = new System.Drawing.Point(304, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Solve All";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.textBoxPart2Day2.TabStop = false;
             // 
             // tableLayoutPanelDay3
             // 
@@ -350,6 +345,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay3.SetRowSpan(this.buttonDay3, 2);
             this.buttonDay3.Size = new System.Drawing.Size(75, 23);
             this.buttonDay3.TabIndex = 1;
+            this.buttonDay3.TabStop = false;
             this.buttonDay3.Text = "Solve";
             this.buttonDay3.UseVisualStyleBackColor = true;
             this.buttonDay3.Click += new System.EventHandler(this.ButtonDay3_Click);
@@ -382,6 +378,7 @@ namespace ProgrammingAdvent2016
             this.textBoxPart1Day3.ReadOnly = true;
             this.textBoxPart1Day3.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart1Day3.TabIndex = 4;
+            this.textBoxPart1Day3.TabStop = false;
             // 
             // textBoxPart2Day3
             // 
@@ -391,6 +388,19 @@ namespace ProgrammingAdvent2016
             this.textBoxPart2Day3.ReadOnly = true;
             this.textBoxPart2Day3.Size = new System.Drawing.Size(232, 20);
             this.textBoxPart2Day3.TabIndex = 5;
+            this.textBoxPart2Day3.TabStop = false;
+            // 
+            // button1
+            // 
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Location = new System.Drawing.Point(304, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.TabStop = false;
+            this.button1.Text = "Solve All";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // Form1
             // 
