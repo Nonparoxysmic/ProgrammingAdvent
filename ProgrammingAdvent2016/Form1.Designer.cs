@@ -410,6 +410,7 @@ namespace ProgrammingAdvent2016
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "ProgrammingAdvent2016 by Nonparoxysmic";
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanelDays.ResumeLayout(false);

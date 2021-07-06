@@ -15,6 +15,12 @@ namespace ProgrammingAdvent2016
         public Form1()
         {
             InitializeComponent();
+            Form1_Resize(null, null);
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            tableLayoutPanelDays.Location = new Point((panel1.Width - tableLayoutPanelDays.Width) / 2 - 8, tableLayoutPanelDays.Location.Y);
         }
 
         private void Button1_Click(object sender, EventArgs e)
