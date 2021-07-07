@@ -12,6 +12,9 @@ namespace ProgrammingAdvent2016
 {
     public partial class Form1 : Form
     {
+        int buttonsClicked = 0;
+        const int buttonsImplemented = 3;
+
         public Form1()
         {
             InitializeComponent();
@@ -36,22 +39,33 @@ namespace ProgrammingAdvent2016
             if (buttonDay3.Enabled) ButtonDay3_Click(null, null);
         }
 
+        private void DayButtonClicked()
+        {
+            if (++buttonsClicked == buttonsImplemented)
+            {
+                button1.Enabled = false;
+            }
+        }
+
         private void ButtonDay1_Click(object sender, EventArgs e)
         {
             Day01.SetSolutionText(textBoxPart1Day1, textBoxPart2Day1);
             buttonDay1.Enabled = false;
+            DayButtonClicked();
         }
 
         private void ButtonDay2_Click(object sender, EventArgs e)
         {
             Day02.SetSolutionText(textBoxPart1Day2, textBoxPart2Day2);
             buttonDay2.Enabled = false;
+            DayButtonClicked();
         }
 
         private void ButtonDay3_Click(object sender, EventArgs e)
         {
             Day03.SetSolutionText(textBoxPart1Day3, textBoxPart2Day3);
             buttonDay3.Enabled = false;
+            DayButtonClicked();
         }
     }
 }
