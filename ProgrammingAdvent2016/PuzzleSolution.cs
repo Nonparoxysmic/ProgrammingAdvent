@@ -7,7 +7,7 @@ namespace ProgrammingAdvent2016
         string partOneSolution;
         string partTwoSolution;
         long partOneMilliseconds;
-        long partTwoMilliseconds;
+        long totalMilliseconds;
 
         public PuzzleSolution()
         {
@@ -15,25 +15,27 @@ namespace ProgrammingAdvent2016
             partTwoSolution = "Part Two Solution Not Yet Implemented";
         }
 
-        public long ElapsedMilliseconds(int part)
+        public string PartOneSolution()
         {
-            if (part == 1)
-                return partOneMilliseconds;
-            else if (part == 2)
-                return partTwoMilliseconds;
-            throw new ArgumentOutOfRangeException();
+            return partOneSolution;
         }
 
-        public string Solution(int part)
+        public string PartTwoSolution()
         {
-            if (part == 1)
-                return partOneSolution;
-            else if (part == 2)
-                return partTwoSolution;
-            throw new ArgumentOutOfRangeException();
+            return partTwoSolution;
         }
 
-        public void SetSolution(int part, string solution, long milliseconds)
+        public long PartOneMilliseconds()
+        {
+            return partOneMilliseconds;
+        }
+
+        public long TotalMilliseconds()
+        {
+            return totalMilliseconds;
+        }
+
+        public void WriteSolution(int part, string solution, long milliseconds)
         {
             if (part == 1)
             {
@@ -43,9 +45,8 @@ namespace ProgrammingAdvent2016
             else if (part == 2)
             {
                 partTwoSolution = solution;
-                partTwoMilliseconds = milliseconds;
+                totalMilliseconds = milliseconds;
             }
-            throw new ArgumentOutOfRangeException();
         }
     }
 }

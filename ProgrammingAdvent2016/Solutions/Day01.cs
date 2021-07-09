@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -19,8 +20,19 @@ namespace ProgrammingAdvent2016
                 partOneTextBox.Text = "ERROR: Unable to read input file.";
                 return;
             }
-            string[] instructions = input.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+            PuzzleSolution solution = Solution(input);
+            partOneTextBox.Text = solution.PartOneSolution();
+            partTwoTextBox.Text = solution.PartTwoSolution();
+        }
+
+        public static PuzzleSolution Solution(string input)
+        {
+            PuzzleSolution solution = new PuzzleSolution();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
+            string[] instructions = input.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             int direction = 0;
             int x = 0;
             int y = 0;
@@ -50,7 +62,7 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            partOneTextBox.Text = (Math.Abs(x) + Math.Abs(y)).ToString();
+            solution.WriteSolution(1, (Math.Abs(x) + Math.Abs(y)).ToString(), stopwatch.ElapsedMilliseconds);
 
             List<long> intersections = new List<long> { 0 };
             direction = 0;
@@ -86,8 +98,8 @@ namespace ProgrammingAdvent2016
                         long intersection = (long)x << 32 | (uint)y;
                         if (intersections.Contains(intersection))
                         {
-                            partTwoTextBox.Text = (Math.Abs(x) + Math.Abs(y)).ToString();
-                            return;
+                            solution.WriteSolution(2, (Math.Abs(x) + Math.Abs(y)).ToString(), stopwatch.ElapsedMilliseconds);
+                            return solution;
                         }
                         else
                         {
@@ -96,7 +108,8 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            partTwoTextBox.Text = "No Solution Found";
+            solution.WriteSolution(2, "No Solution Found", stopwatch.ElapsedMilliseconds);
+            return solution;
         }
     }
 }
