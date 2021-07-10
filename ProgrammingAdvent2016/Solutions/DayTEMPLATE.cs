@@ -1,15 +1,19 @@
 ﻿using System;
-using System.IO;
-using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
     public static class DayTEMPLATE
     {
-        public static void SetSolutionText(TextBox partOneTextBox, TextBox partTwoTextBox)
+        public static PuzzleSolution Solution(string input)
         {
-            partOneTextBox.Text = "Solution Not Yet Implemented";
-            partTwoTextBox.Text = "Solution Not Yet Implemented";
+            PuzzleSolution solution = new PuzzleSolution();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            
+            
+            return solution;
         }
     }
 }
