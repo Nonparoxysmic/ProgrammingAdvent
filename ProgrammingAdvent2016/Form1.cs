@@ -49,7 +49,20 @@ namespace ProgrammingAdvent2016
 
         private void ButtonDay1_Click(object sender, EventArgs e)
         {
-            Day01.SetSolutionText(textBoxPart1Day1, textBoxPart2Day1);
+            string input;
+            try
+            {
+                input = System.IO.File.ReadAllText(@"InputFiles\InputDay01Part1.txt").Trim();
+            }
+            catch
+            {
+                textBoxPart1Day1.Text = "ERROR: Unable to read input file.";
+                return;
+            }
+
+            PuzzleSolution solution = Day01.Solution(input);
+            textBoxPart1Day1.Text = solution.PartOneSolution();
+            textBoxPart2Day1.Text = solution.PartTwoSolution();
             buttonDay1.Enabled = false;
             DayButtonClicked();
         }

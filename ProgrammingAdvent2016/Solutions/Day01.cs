@@ -1,31 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Windows.Forms;
 
 namespace ProgrammingAdvent2016
 {
     public static class Day01
     {
-        public static void SetSolutionText(TextBox partOneTextBox, TextBox partTwoTextBox)
-        {
-            string input;
-            try
-            {
-                input = File.ReadAllText(@"InputFiles\InputDay01Part1.txt").Trim();
-            }
-            catch
-            {
-                partOneTextBox.Text = "ERROR: Unable to read input file.";
-                return;
-            }
-
-            PuzzleSolution solution = Solution(input);
-            partOneTextBox.Text = solution.PartOneSolution();
-            partTwoTextBox.Text = solution.PartTwoSolution();
-        }
-
         public static PuzzleSolution Solution(string input)
         {
             PuzzleSolution solution = new PuzzleSolution();
