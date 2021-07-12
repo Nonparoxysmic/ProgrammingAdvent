@@ -69,14 +69,40 @@ namespace ProgrammingAdvent2016
 
         private void ButtonDay2_Click(object sender, EventArgs e)
         {
-            Day02.SetSolutionText(textBoxPart1Day2, textBoxPart2Day2);
+            string input;
+            try
+            {
+                input = System.IO.File.ReadAllText(@"InputFiles\InputDay02Part1.txt");
+            }
+            catch
+            {
+                textBoxPart1Day2.Text = "ERROR: Unable to read input file.";
+                return;
+            }
+
+            PuzzleSolution solution = Day02.Solution(input);
+            textBoxPart1Day2.Text = solution.PartOneSolution();
+            textBoxPart2Day2.Text = solution.PartTwoSolution();
             buttonDay2.Enabled = false;
             DayButtonClicked();
         }
 
         private void ButtonDay3_Click(object sender, EventArgs e)
         {
-            Day03.SetSolutionText(textBoxPart1Day3, textBoxPart2Day3);
+            string input;
+            try
+            {
+                input = System.IO.File.ReadAllText(@"InputFiles\InputDay03Part1.txt");
+            }
+            catch
+            {
+                textBoxPart1Day3.Text = "ERROR: Unable to read input file.";
+                return;
+            }
+
+            PuzzleSolution solution = Day03.Solution(input);
+            textBoxPart1Day3.Text = solution.PartOneSolution();
+            textBoxPart2Day3.Text = solution.PartTwoSolution();
             buttonDay3.Enabled = false;
             DayButtonClicked();
         }

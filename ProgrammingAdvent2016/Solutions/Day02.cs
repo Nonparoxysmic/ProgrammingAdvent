@@ -1,23 +1,16 @@
 ﻿using System;
-using System.IO;
-using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
     public static class Day02
     {
-        public static void SetSolutionText(TextBox partOneTextBox, TextBox partTwoTextBox)
+        public static PuzzleSolution Solution(string input)
         {
-            string[] input;
-            try
-            {
-                input = File.ReadAllLines(@"InputFiles\InputDay02Part1.txt");
-            }
-            catch
-            {
-                partOneTextBox.Text = "ERROR: Unable to read input file.";
-                return;
-            }
+            string[] inputLines = input.ToLines();
+            PuzzleSolution solution = new PuzzleSolution();
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             // 1 2 3
             // 4 5 6
@@ -25,8 +18,9 @@ namespace ProgrammingAdvent2016
             int row = 1;
             int col = 1;
             string partOneAnswer = "";
-            foreach (string line in input)
+            foreach (string line in inputLines)
             {
+                if (line.Length == 0) continue;
                 for (int i = 0; i < line.Length; i++)
                 {
                     switch (line[i])
@@ -47,7 +41,7 @@ namespace ProgrammingAdvent2016
                 }
                 partOneAnswer += (row * 3 + col + 1);
             }
-            partOneTextBox.Text = partOneAnswer;
+            solution.WriteSolution(1, partOneAnswer, stopwatch.ElapsedMilliseconds);
 
             //     1
             //   2 3 4
@@ -62,8 +56,9 @@ namespace ProgrammingAdvent2016
             col = 0;
             row = 2;
             string partTwoAnswer = "";
-            foreach (string line in input)
+            foreach (string line in inputLines)
             {
+                if (line.Length == 0) continue;
                 for (int i = 0; i < line.Length; i++)
                 {
                     switch (line[i])
@@ -84,7 +79,8 @@ namespace ProgrammingAdvent2016
                 }
                 partTwoAnswer += grid[col, row];
             }
-            partTwoTextBox.Text = partTwoAnswer;
+            solution.WriteSolution(2, partTwoAnswer, stopwatch.ElapsedMilliseconds);
+            return solution;
         }
     }
 }
