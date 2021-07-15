@@ -13,7 +13,7 @@ namespace ProgrammingAdvent2016
             Application.Run(new Form1());
         }
 
-        public static bool ReadInputFile(out string text, string path)
+        public static bool ReadInputFile(string path, out string text)
         {
             try
             {
