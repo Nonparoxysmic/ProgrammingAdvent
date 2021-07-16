@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProgrammingAdvent2016
@@ -60,7 +54,8 @@ namespace ProgrammingAdvent2016
                 return;
             }
 
-            PuzzleSolution solution = Day01.Solution(input);
+            Day01 day = new Day01();
+            PuzzleSolution solution = day.FindSolution(input);
             textBoxPart1Day1.Text = solution.PartOneSolution();
             textBoxPart2Day1.Text = solution.PartTwoSolution();
             buttonDay1.Enabled = false;
@@ -80,7 +75,8 @@ namespace ProgrammingAdvent2016
                 return;
             }
 
-            PuzzleSolution solution = Day02.Solution(input);
+            Day02 day = new Day02();
+            PuzzleSolution solution = day.FindSolution(input);
             textBoxPart1Day2.Text = solution.PartOneSolution();
             textBoxPart2Day2.Text = solution.PartTwoSolution();
             buttonDay2.Enabled = false;
@@ -100,7 +96,8 @@ namespace ProgrammingAdvent2016
                 return;
             }
 
-            PuzzleSolution solution = Day03.Solution(input);
+            Day03 day = new Day03();
+            PuzzleSolution solution = day.FindSolution(input);
             textBoxPart1Day3.Text = solution.PartOneSolution();
             textBoxPart2Day3.Text = solution.PartTwoSolution();
             buttonDay3.Enabled = false;

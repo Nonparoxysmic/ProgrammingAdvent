@@ -4,12 +4,18 @@ using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
-    public static class Day01
+    public class Day01
     {
-        public static PuzzleSolution Solution(string input)
+        readonly PuzzleSolution solution = new PuzzleSolution();
+        readonly Stopwatch stopwatch = new Stopwatch();
+
+        public PuzzleSolution Solution()
         {
-            PuzzleSolution solution = new PuzzleSolution();
-            Stopwatch stopwatch = new Stopwatch();
+            return solution;
+        }
+
+        public PuzzleSolution FindSolution(string input)
+        {
             stopwatch.Start();
             
             string[] instructions = input.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -89,6 +95,8 @@ namespace ProgrammingAdvent2016
                 }
             }
             solution.WriteSolution(2, "No Solution Found", stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
             return solution;
         }
     }

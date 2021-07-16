@@ -3,16 +3,24 @@ using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
-    public static class DayTEMPLATE
+    public class DayTEMPLATE
     {
-        public static PuzzleSolution Solution(string input)
+        readonly PuzzleSolution solution = new PuzzleSolution();
+        readonly Stopwatch stopwatch = new Stopwatch();
+
+        public PuzzleSolution Solution()
         {
-            PuzzleSolution solution = new PuzzleSolution();
-            Stopwatch stopwatch = new Stopwatch();
+            return solution;
+        }
+
+        public PuzzleSolution FindSolution(string input)
+        {
+            // string[] inputLines = input.ToLines();
             stopwatch.Start();
 
-            
-            
+
+
+            stopwatch.Reset();
             return solution;
         }
     }

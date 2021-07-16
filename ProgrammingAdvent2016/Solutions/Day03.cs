@@ -3,13 +3,19 @@ using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
-    public static class Day03
+    public class Day03
     {
-        public static PuzzleSolution Solution(string input)
+        readonly PuzzleSolution solution = new PuzzleSolution();
+        readonly Stopwatch stopwatch = new Stopwatch();
+
+        public PuzzleSolution Solution()
+        {
+            return solution;
+        }
+
+        public PuzzleSolution FindSolution(string input)
         {
             string[] inputLines = input.ToLines();
-            PuzzleSolution solution = new PuzzleSolution();
-            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             int possibleTriangles = 0;
@@ -61,6 +67,8 @@ namespace ProgrammingAdvent2016
                 }
             }
             solution.WriteSolution(2, possibleTriangles.ToString(), stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
             return solution;
         }
     }

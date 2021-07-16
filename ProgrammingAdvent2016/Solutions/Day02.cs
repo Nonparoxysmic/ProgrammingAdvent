@@ -3,13 +3,19 @@ using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
-    public static class Day02
+    public class Day02
     {
-        public static PuzzleSolution Solution(string input)
+        readonly PuzzleSolution solution = new PuzzleSolution();
+        readonly Stopwatch stopwatch = new Stopwatch();
+
+        public PuzzleSolution Solution()
+        {
+            return solution;
+        }
+
+        public PuzzleSolution FindSolution(string input)
         {
             string[] inputLines = input.ToLines();
-            PuzzleSolution solution = new PuzzleSolution();
-            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
             // 1 2 3
@@ -80,6 +86,8 @@ namespace ProgrammingAdvent2016
                 partTwoAnswer += grid[col, row];
             }
             solution.WriteSolution(2, partTwoAnswer, stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
             return solution;
         }
     }
