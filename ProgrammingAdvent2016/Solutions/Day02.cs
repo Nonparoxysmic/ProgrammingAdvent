@@ -3,17 +3,17 @@ using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
 {
-    public class Day02
+    public class Day02 : Day
     {
         readonly PuzzleSolution solution = new PuzzleSolution();
         readonly Stopwatch stopwatch = new Stopwatch();
 
-        public PuzzleSolution Solution()
+        public override PuzzleSolution Solution()
         {
             return solution;
         }
 
-        public PuzzleSolution FindSolution(string input)
+        public override PuzzleSolution FindSolution(string input)
         {
             string[] inputLines = input.ToLines();
             stopwatch.Start();
