@@ -6,13 +6,41 @@ namespace ProgrammingAdvent2016
 {
     public partial class Form1 : Form
     {
+        #region Array Declarations
+        readonly string[] inputFilePaths = new string[] { "",
+            @"InputFiles\InputDay01Part1.txt",
+            @"InputFiles\InputDay02Part1.txt",
+            @"InputFiles\InputDay03Part1.txt" };
+        readonly Day[] dayClasses = new Day[] { null,
+            new Day01(),
+            new Day02(),
+            new Day03() };
+        readonly TextBox[] partOneTextBoxes;
+        readonly TextBox[] partTwoTextBoxes;
+        readonly Button[] dayButtons;
+        #endregion
+
         int buttonsClicked = 0;
-        const int buttonsImplemented = 3;
 
         public Form1()
         {
             InitializeComponent();
             Form1_Resize(null, null);
+
+            #region Array Initialization
+            partOneTextBoxes = new TextBox[] { null,
+                textBoxPart1Day1,
+                textBoxPart1Day2,
+                textBoxPart1Day3 };
+            partTwoTextBoxes = new TextBox[] { null,
+                textBoxPart2Day1,
+                textBoxPart2Day2,
+                textBoxPart2Day3 };
+            dayButtons = new Button[] { null,
+                buttonDay1,
+                buttonDay2,
+                buttonDay3 };
+            #endregion
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -20,10 +48,10 @@ namespace ProgrammingAdvent2016
             tableLayoutPanelDays.Location = new Point((panel1.Width - tableLayoutPanelDays.Width) / 2 - 8, tableLayoutPanelDays.Location.Y);
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void ButtonSolveAll_Click(object sender, EventArgs e)
         {
+            buttonSolveAll.Enabled = false;
             ClickAllButtons();
-            button1.Enabled = false;
         }
 
         public void ClickAllButtons()
@@ -33,75 +61,35 @@ namespace ProgrammingAdvent2016
             if (buttonDay3.Enabled) ButtonDay3_Click(null, null);
         }
 
-        private void DayButtonClicked()
+        private void DayButtonClicked(int day)
         {
-            if (++buttonsClicked == buttonsImplemented)
+            if (day < 1 || day >= inputFilePaths.Length) return;
+            if (Program.ReadInputFile(inputFilePaths[day], out string input))
             {
-                button1.Enabled = false;
+                PuzzleSolution solution = dayClasses[day].FindSolution(input);
+                partOneTextBoxes[day].Text = solution.PartOneSolution();
+                partTwoTextBoxes[day].Text = solution.PartTwoSolution();
+                dayButtons[day].Enabled = false;
+                if (++buttonsClicked == dayClasses.Length - 1)
+                {
+                    buttonSolveAll.Enabled = false;
+                }
             }
         }
 
         private void ButtonDay1_Click(object sender, EventArgs e)
         {
-            string input;
-            try
-            {
-                input = System.IO.File.ReadAllText(@"InputFiles\InputDay01Part1.txt").Trim();
-            }
-            catch
-            {
-                textBoxPart1Day1.Text = "ERROR: Unable to read input file.";
-                return;
-            }
-
-            Day01 day = new Day01();
-            PuzzleSolution solution = day.FindSolution(input);
-            textBoxPart1Day1.Text = solution.PartOneSolution();
-            textBoxPart2Day1.Text = solution.PartTwoSolution();
-            buttonDay1.Enabled = false;
-            DayButtonClicked();
+            DayButtonClicked(1);
         }
 
         private void ButtonDay2_Click(object sender, EventArgs e)
         {
-            string input;
-            try
-            {
-                input = System.IO.File.ReadAllText(@"InputFiles\InputDay02Part1.txt");
-            }
-            catch
-            {
-                textBoxPart1Day2.Text = "ERROR: Unable to read input file.";
-                return;
-            }
-
-            Day02 day = new Day02();
-            PuzzleSolution solution = day.FindSolution(input);
-            textBoxPart1Day2.Text = solution.PartOneSolution();
-            textBoxPart2Day2.Text = solution.PartTwoSolution();
-            buttonDay2.Enabled = false;
-            DayButtonClicked();
+            DayButtonClicked(2);
         }
 
         private void ButtonDay3_Click(object sender, EventArgs e)
         {
-            string input;
-            try
-            {
-                input = System.IO.File.ReadAllText(@"InputFiles\InputDay03Part1.txt");
-            }
-            catch
-            {
-                textBoxPart1Day3.Text = "ERROR: Unable to read input file.";
-                return;
-            }
-
-            Day03 day = new Day03();
-            PuzzleSolution solution = day.FindSolution(input);
-            textBoxPart1Day3.Text = solution.PartOneSolution();
-            textBoxPart2Day3.Text = solution.PartTwoSolution();
-            buttonDay3.Enabled = false;
-            DayButtonClicked();
+            DayButtonClicked(3);
         }
     }
 }
