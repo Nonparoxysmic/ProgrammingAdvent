@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Advent of Code 2016
+// https://adventofcode.com/2016
+// ProgrammingAdvent2016 by Nonparoxysmic
+// https://github.com/Nonparoxysmic/ProgrammingAdvent
+
+using System;
 using System.Windows.Forms;
 
 namespace ProgrammingAdvent2016
