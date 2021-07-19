@@ -15,11 +15,13 @@ namespace ProgrammingAdvent2016
         readonly string[] inputFilePaths = new string[] { "",
             @"InputFiles\InputDay1.txt",
             @"InputFiles\InputDay2.txt",
-            @"InputFiles\InputDay3.txt" };
+            @"InputFiles\InputDay3.txt",
+            @"InputFiles\InputDay4.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),
-            new Day03() };
+            new Day03(),
+            new Day04() };
         readonly TextBox[] partOneTextBoxes;
         readonly TextBox[] partTwoTextBoxes;
         readonly Button[] dayButtons;
@@ -36,15 +38,18 @@ namespace ProgrammingAdvent2016
             partOneTextBoxes = new TextBox[] { null,
                 textBoxPart1Day1,
                 textBoxPart1Day2,
-                textBoxPart1Day3 };
+                textBoxPart1Day3,
+                textBoxPart1Day4 };
             partTwoTextBoxes = new TextBox[] { null,
                 textBoxPart2Day1,
                 textBoxPart2Day2,
-                textBoxPart2Day3 };
+                textBoxPart2Day3,
+                textBoxPart2Day4 };
             dayButtons = new Button[] { null,
                 buttonDay1,
                 buttonDay2,
-                buttonDay3 };
+                buttonDay3,
+                buttonDay4 };
             #endregion
         }
 
@@ -64,6 +69,7 @@ namespace ProgrammingAdvent2016
             if (buttonDay1.Enabled) ButtonDay1_Click(null, null);
             if (buttonDay2.Enabled) ButtonDay2_Click(null, null);
             if (buttonDay3.Enabled) ButtonDay3_Click(null, null);
+            if (buttonDay4.Enabled) ButtonDay4_Click(null, null);
         }
 
         private void DayButtonClicked(int day)
@@ -99,6 +105,11 @@ namespace ProgrammingAdvent2016
         private void ButtonDay3_Click(object sender, EventArgs e)
         {
             DayButtonClicked(3);
+        }
+
+        private void ButtonDay4_Click(object sender, EventArgs e)
+        {
+            DayButtonClicked(4);
         }
     }
 }
