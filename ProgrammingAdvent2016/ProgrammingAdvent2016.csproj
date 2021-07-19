@@ -87,13 +87,16 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="InputFiles\InputDay03Part1.txt">
+    <Content Include="InputFiles\InputDay3.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay02Part1.txt">
+    <Content Include="InputFiles\InputDay2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay01Part1.txt">
+    <Content Include="InputFiles\InputDay1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="InputFiles\Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

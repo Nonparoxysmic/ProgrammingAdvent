@@ -8,9 +8,9 @@ namespace ProgrammingAdvent2016
     {
         #region Array Declarations
         readonly string[] inputFilePaths = new string[] { "",
-            @"InputFiles\InputDay01Part1.txt",
-            @"InputFiles\InputDay02Part1.txt",
-            @"InputFiles\InputDay03Part1.txt" };
+            @"InputFiles\InputDay1.txt",
+            @"InputFiles\InputDay2.txt",
+            @"InputFiles\InputDay3.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),
@@ -74,6 +74,10 @@ namespace ProgrammingAdvent2016
                 {
                     buttonSolveAll.Enabled = false;
                 }
+            }
+            else
+            {
+                partOneTextBoxes[day].Text = "Cannot read \\" + inputFilePaths[day];
             }
         }
 
