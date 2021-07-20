@@ -26,6 +26,8 @@ namespace ProgrammingAdvent2016
             stopwatch.Start();
 
             int roomNumberSum = 0;
+            int northPoleRoomNumber = -1;
+            bool multipleNorthPoleRooms = false;
             foreach (string line in inputLines)
             {
                 int delimiterPos = line.LastIndexOf('-');
@@ -39,11 +41,23 @@ namespace ProgrammingAdvent2016
                     string checksum = roomData.Substring(checksumPos + 1);
                     if (checksum == MostCommonLowercaseLetters(roomName))
                     {
+                        // Room is real.
                         roomNumberSum += roomNumber;
+                        string roomNameDecrypted = ShiftFoward(roomName, roomNumber);
+                        if (roomNameDecrypted.Contains("north") && roomNameDecrypted.Contains("pole"))
+                        {
+                            if (northPoleRoomNumber < 0) northPoleRoomNumber = roomNumber;
+                            else multipleNorthPoleRooms = true;
+                        }
                     }
                 }
             }
             solution.WriteSolution(1, roomNumberSum.ToString(), stopwatch.ElapsedMilliseconds);
+            if (multipleNorthPoleRooms)
+            {
+                solution.WriteSolution(2, "ERROR: Multiple North Pole rooms found.", solution.PartOneMilliseconds());
+            }
+            else solution.WriteSolution(2, northPoleRoomNumber.ToString(), solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;
@@ -73,6 +87,21 @@ namespace ProgrammingAdvent2016
                         letterCount[c - 97] = 0;
                     }
                 }
+            }
+            return sb.ToString();
+        }
+
+        string ShiftFoward(string input, int number)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in input)
+            {
+                if (c >= 97 && c <= 122)
+                {
+                    sb.Append((char)((c - 97 + number) % 26 + 97));
+                }
+                else if (c == '-') sb.Append(' ');
+                else sb.Append(c);
             }
             return sb.ToString();
         }
