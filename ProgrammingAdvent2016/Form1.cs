@@ -16,12 +16,14 @@ namespace ProgrammingAdvent2016
             @"InputFiles\InputDay1.txt",
             @"InputFiles\InputDay2.txt",
             @"InputFiles\InputDay3.txt",
-            @"InputFiles\InputDay4.txt" };
+            @"InputFiles\InputDay4.txt",
+            @"InputFiles\InputDay5.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),
             new Day03(),
-            new Day04() };
+            new Day04(),
+            new Day05() };
         readonly TextBox[] partOneTextBoxes;
         readonly TextBox[] partTwoTextBoxes;
         readonly Button[] dayButtons;
@@ -39,17 +41,20 @@ namespace ProgrammingAdvent2016
                 textBoxPart1Day1,
                 textBoxPart1Day2,
                 textBoxPart1Day3,
-                textBoxPart1Day4 };
+                textBoxPart1Day4,
+                textBoxPart1Day5 };
             partTwoTextBoxes = new TextBox[] { null,
                 textBoxPart2Day1,
                 textBoxPart2Day2,
                 textBoxPart2Day3,
-                textBoxPart2Day4 };
+                textBoxPart2Day4,
+                textBoxPart2Day5 };
             dayButtons = new Button[] { null,
                 buttonDay1,
                 buttonDay2,
                 buttonDay3,
-                buttonDay4 };
+                buttonDay4,
+                buttonDay5 };
             #endregion
         }
 
@@ -70,6 +75,7 @@ namespace ProgrammingAdvent2016
             if (buttonDay2.Enabled) ButtonDay2_Click(null, null);
             if (buttonDay3.Enabled) ButtonDay3_Click(null, null);
             if (buttonDay4.Enabled) ButtonDay4_Click(null, null);
+            if (buttonDay5.Enabled) ButtonDay5_Click(null, null);
         }
 
         private void DayButtonClicked(int day)
@@ -110,6 +116,11 @@ namespace ProgrammingAdvent2016
         private void ButtonDay4_Click(object sender, EventArgs e)
         {
             DayButtonClicked(4);
+        }
+
+        private void ButtonDay5_Click(object sender, EventArgs e)
+        {
+            DayButtonClicked(5);
         }
     }
 }
