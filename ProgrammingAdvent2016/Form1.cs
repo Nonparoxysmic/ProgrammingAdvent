@@ -83,10 +83,12 @@ namespace ProgrammingAdvent2016
             if (day < 1 || day >= inputFilePaths.Length) return;
             if (Program.ReadInputFile(inputFilePaths[day], out string input))
             {
+                dayButtons[day].Text = "Solving...";
+                dayButtons[day].Enabled = false;
                 PuzzleSolution solution = dayClasses[day].FindSolution(input);
+                dayButtons[day].Text = "Solved";
                 partOneTextBoxes[day].Text = solution.PartOneSolution();
                 partTwoTextBoxes[day].Text = solution.PartTwoSolution();
-                dayButtons[day].Enabled = false;
                 if (++buttonsClicked == dayClasses.Length - 1)
                 {
                     buttonSolveAll.Enabled = false;
