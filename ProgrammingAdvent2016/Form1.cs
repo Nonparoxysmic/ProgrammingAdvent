@@ -5,6 +5,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProgrammingAdvent2016
@@ -78,14 +79,14 @@ namespace ProgrammingAdvent2016
             if (buttonDay5.Enabled) ButtonDay5_Click(null, null);
         }
 
-        private void DayButtonClicked(int day)
+        private async void DayButtonClicked_Async(int day)
         {
             if (day < 1 || day >= inputFilePaths.Length) return;
             if (Program.ReadInputFile(inputFilePaths[day], out string input))
             {
                 dayButtons[day].Text = "Solving...";
                 dayButtons[day].Enabled = false;
-                PuzzleSolution solution = dayClasses[day].FindSolution(input);
+                PuzzleSolution solution = await Task.Run(() => dayClasses[day].FindSolution(input));
                 dayButtons[day].Text = "Solved";
                 partOneTextBoxes[day].Text = solution.PartOneSolution();
                 partTwoTextBoxes[day].Text = solution.PartTwoSolution();
@@ -102,27 +103,27 @@ namespace ProgrammingAdvent2016
 
         private void ButtonDay1_Click(object sender, EventArgs e)
         {
-            DayButtonClicked(1);
+            DayButtonClicked_Async(1);
         }
 
         private void ButtonDay2_Click(object sender, EventArgs e)
         {
-            DayButtonClicked(2);
+            DayButtonClicked_Async(2);
         }
 
         private void ButtonDay3_Click(object sender, EventArgs e)
         {
-            DayButtonClicked(3);
+            DayButtonClicked_Async(3);
         }
 
         private void ButtonDay4_Click(object sender, EventArgs e)
         {
-            DayButtonClicked(4);
+            DayButtonClicked_Async(4);
         }
 
         private void ButtonDay5_Click(object sender, EventArgs e)
         {
-            DayButtonClicked(5);
+            DayButtonClicked_Async(5);
         }
     }
 }
