@@ -24,7 +24,10 @@ namespace ProgrammingAdvent2016
             input = input.Trim();
             stopwatch.Start();
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder partOnePassword = new StringBuilder();
+            long partOneTime = 0;
+            char[] partTwoPassword = new char[8];
+            int partTwoCharsFound = 0;
             byte[] hashFunctionInput = Encoding.UTF8.GetBytes(input + "0");
             for (int i = 1; i < int.MaxValue; i++)
             {
@@ -32,8 +35,22 @@ namespace ProgrammingAdvent2016
                 if (hash[0] == 0 && hash[1] == 0 && hash[2] < 0x10)
                 {
                     // Five leading zeroes found.
-                    sb.Append(hash[2].ToString("x"));
-                    if (sb.Length >= 8) break;
+                    if (partOnePassword.Length < 8)
+                    {
+                        partOnePassword.Append(hash[2].ToString("x"));
+                        partOneTime = stopwatch.ElapsedMilliseconds;
+                    }
+                    if (hash[2] < 8)
+                    {
+                        // Sixth character is a valid position.
+                        if (partTwoPassword[hash[2]] == 0)
+                        {
+                            // Character in this position has not yet been set.
+                            partTwoPassword[hash[2]] = (hash[3] >> 4).ToString("x")[0];
+                            partTwoCharsFound++;
+                        }
+                    }
+                    if (partOnePassword.Length >= 8 && partTwoCharsFound >= 8) break;
                 }
 
                 // Recalculate the hash function input if the last byte reaches '9' (57):
@@ -47,7 +64,8 @@ namespace ProgrammingAdvent2016
                     hashFunctionInput[hashFunctionInput.GetUpperBound(0)]++;
                 }
             }
-            solution.WriteSolution(1, sb.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(1, partOnePassword.ToString(), partOneTime);
+            solution.WriteSolution(2, new string(partTwoPassword), stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
