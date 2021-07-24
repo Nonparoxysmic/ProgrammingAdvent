@@ -28,6 +28,7 @@ namespace ProgrammingAdvent2016
         readonly TextBox[] partOneTextBoxes;
         readonly TextBox[] partTwoTextBoxes;
         readonly Button[] dayButtons;
+        readonly Label[] timeLabels;
         #endregion
 
         int buttonsClicked = 0;
@@ -56,6 +57,12 @@ namespace ProgrammingAdvent2016
                 buttonDay3,
                 buttonDay4,
                 buttonDay5 };
+            timeLabels = new Label[] { null,
+                labelTimeDay1,
+                labelTimeDay2,
+                labelTimeDay3,
+                labelTimeDay4,
+                labelTimeDay5 };
             #endregion
         }
 
@@ -84,12 +91,19 @@ namespace ProgrammingAdvent2016
             if (day < 1 || day >= inputFilePaths.Length) return;
             if (Program.ReadInputFile(inputFilePaths[day], out string input))
             {
-                dayButtons[day].Text = "Solving...";
+                dayButtons[day].Text = "";
                 dayButtons[day].Enabled = false;
+                timeLabels[day].Text = "Time: TBD";
                 PuzzleSolution solution = await Task.Run(() => dayClasses[day].FindSolution(input));
                 dayButtons[day].Text = "Solved";
                 partOneTextBoxes[day].Text = solution.PartOneSolution();
                 partTwoTextBoxes[day].Text = solution.PartTwoSolution();
+                double solutionTime = Math.Ceiling(Math.Max(solution.TotalMilliseconds(), 1) / 10.0) / 100.0;
+                if (solutionTime < 10)
+                {
+                    timeLabels[day].Text = "Time: " + solutionTime.ToString("F2") + " s";
+                }
+                else timeLabels[day].Text = "Time: " + solutionTime.ToString("F1") + " s";
                 if (++buttonsClicked == dayClasses.Length - 1)
                 {
                     buttonSolveAll.Enabled = false;
