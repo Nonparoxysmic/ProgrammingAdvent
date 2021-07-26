@@ -53,19 +53,34 @@ namespace ProgrammingAdvent2016
                 }
             }
             StringBuilder partOneMessage = new StringBuilder();
+            StringBuilder partTwoMessage = new StringBuilder();
             for (int i = 0; i < messageLength; i++)
             {
                 int mostCommon = letterFrequencies[i].Max();
+                int leastCommon = int.MaxValue;
+                foreach (int value in letterFrequencies[i])
+                {
+                    if (value == 0) continue;
+                    leastCommon = Math.Min(leastCommon, value);
+                }
+                char mostCommonChar = '_';
+                char leastCommonChar = '_';
                 for (int j = 0; j < 26; j++)
                 {
                     if (letterFrequencies[i][j] == mostCommon)
                     {
-                        partOneMessage.Append((char)(j + 97));
-                        break;
+                        mostCommonChar = (char)(j + 97);
+                    }
+                    if (letterFrequencies[i][j] == leastCommon)
+                    {
+                        leastCommonChar = (char)(j + 97);
                     }
                 }
+                partOneMessage.Append(mostCommonChar);
+                partTwoMessage.Append(leastCommonChar);
             }
             solution.WriteSolution(1, partOneMessage.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, partTwoMessage.ToString(), solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;
