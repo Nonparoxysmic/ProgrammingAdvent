@@ -28,13 +28,49 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
+            int numberOfTLS = 0;
             foreach (string line in inputLines)
             {
-                
+                string[] terms = line.Split(new char[] { '[', ']' });
+                if (terms.Length == 0) continue;
+                if (terms.Length == 1)
+                {
+                    if (ContainsABBA(terms[0])) numberOfTLS++;
+                }
+                if (terms.Length > 1)
+                {
+                    bool hasGoodABBA = false;
+                    bool hasBadABBA = false;
+                    for (int i = 0; i < terms.Length; i+=2)
+                    {
+                        if (ContainsABBA(terms[i])) hasGoodABBA = true;
+                    }
+                    for (int i = 1; i < terms.Length; i += 2)
+                    {
+                        if (ContainsABBA(terms[i])) hasBadABBA = true;
+                    }
+                    if (hasGoodABBA && !hasBadABBA) numberOfTLS++;
+                }
             }
+            solution.WriteSolution(1, numberOfTLS.ToString(), stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
+        }
+
+        bool ContainsABBA(string input)
+        {
+            if (input.Length < 4) return false;
+            for (int i = 0; i <= input.Length - 4; i++)
+            {
+                if (input[i] == input[i + 3] 
+                    && input[i + 1] == input[i + 2] 
+                    && input[i] != input[i + 1])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
