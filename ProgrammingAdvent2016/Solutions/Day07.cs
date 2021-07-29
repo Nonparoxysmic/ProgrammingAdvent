@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace ProgrammingAdvent2016
 {
@@ -29,6 +30,7 @@ namespace ProgrammingAdvent2016
             stopwatch.Start();
 
             int numberOfTLS = 0;
+            int numberOfSSL = 0;
             foreach (string line in inputLines)
             {
                 string[] terms = line.Split(new char[] { '[', ']' });
@@ -41,18 +43,38 @@ namespace ProgrammingAdvent2016
                 {
                     bool hasGoodABBA = false;
                     bool hasBadABBA = false;
+                    string ABAs = "";
+                    string BABs = "";
+
                     for (int i = 0; i < terms.Length; i+=2)
                     {
                         if (ContainsABBA(terms[i])) hasGoodABBA = true;
+                        ABAs += GetABAs(terms[i], false);
                     }
                     for (int i = 1; i < terms.Length; i += 2)
                     {
                         if (ContainsABBA(terms[i])) hasBadABBA = true;
+                        BABs += GetABAs(terms[i], true);
                     }
+
                     if (hasGoodABBA && !hasBadABBA) numberOfTLS++;
+
+                    bool hasSSL = false;
+                    for (int i = 0; i < ABAs.Length; i += 2)
+                    {
+                        for (int j = 0; j < BABs.Length; j += 2)
+                        {
+                            if (ABAs[i] == BABs[j] && ABAs[i + 1] == BABs[j + 1])
+                            {
+                                hasSSL = true;
+                            }
+                        }
+                    }
+                    if (hasSSL) numberOfSSL++;
                 }
             }
             solution.WriteSolution(1, numberOfTLS.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, numberOfSSL.ToString(), solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;
@@ -71,6 +93,21 @@ namespace ProgrammingAdvent2016
                 }
             }
             return false;
+        }
+
+        string GetABAs(string input, bool isBAB)
+        {
+            if (input.Length < 3) return "";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i <= input.Length - 3; i++)
+            {
+                if (input[i] == input[i + 2] && input[i] != input[i + 1])
+                {
+                    if (isBAB) sb.Append(input[i + 1].ToString() + input[i]);
+                    else sb.Append(input[i].ToString() + input[i + 1]);
+                }
+            }
+            return sb.ToString();
         }
     }
 }
