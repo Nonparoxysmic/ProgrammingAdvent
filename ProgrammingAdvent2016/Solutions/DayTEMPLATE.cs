@@ -20,7 +20,12 @@ namespace ProgrammingAdvent2016
 
         public override PuzzleSolution FindSolution(string input)
         {
-            // string[] inputLines = input.ToLines();
+            string[] inputLines = input.ToLines();
+            if (inputLines.Length == 0)
+            {
+                solution.WriteSolution(1, "ERROR: No input.", 0);
+                return solution;
+            }
             stopwatch.Start();
 
 
