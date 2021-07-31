@@ -31,8 +31,37 @@ namespace ProgrammingAdvent2016
             LittleScreen screen = new LittleScreen(50, 6);
             foreach (string line in inputLines)
             {
-                // TODO: process each instruction
+                string[] terms = line.Split();
+                if (terms.Length < 2) continue;
+                switch (terms[0])
+                {
+                    case "rect":
+                        string[] values = terms[1].Split('x');
+                        if (values.Length == 2 && int.TryParse(values[0], out int rectWidth) && int.TryParse(values[1], out int rectHeight))
+                        {
+                            screen.Rect(rectWidth, rectHeight);
+                        }
+                        break;
+                    case "rotate":
+                        if (terms.Length != 5 || terms[3] != "by" || terms[2].Length < 3) continue;
+                        if (int.TryParse(terms[2].Substring(2), out int rowOrCol)
+                            && int.TryParse(terms[4], out int steps))
+                        {
+                            if (terms[1] == "row")
+                            {
+                                screen.RotateRow(rowOrCol, steps);
+                            }
+                            else if (terms[1] == "column")
+                            {
+                                screen.RotateColumn(rowOrCol, steps);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
+            solution.WriteSolution(1, screen.PixelsLit().ToString(), stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
@@ -65,22 +94,51 @@ namespace ProgrammingAdvent2016
 
         public void RotateRow(int row, int steps)
         {
-            bool wrap = pixels[width - 1, row];
-            for (int i = 0; i < width - 1; i++)
+            for (int i = 0; i < steps; i++)
             {
-                pixels[i + 1, row] = pixels[i, row];
+                RotateRow(row);
+            }
+        }
+
+        void RotateRow(int row)
+        {
+            bool wrap = pixels[width - 1, row];
+            for (int i = width - 1; i > 0; i--)
+            {
+                pixels[i, row] = pixels[i - 1, row];
             }
             pixels[0, row] = wrap;
         }
 
         public void RotateColumn(int col, int steps)
         {
-            bool wrap = pixels[col, height - 1];
-            for (int i = 0; i < height - 1; i++)
+            for (int i = 0; i < steps; i++)
             {
-                pixels[col, i + 1] = pixels[col, i];
+                RotateColumn(col);
+            }
+        }
+
+        void RotateColumn(int col)
+        {
+            bool wrap = pixels[col, height - 1];
+            for (int i = height - 1; i > 0; i--)
+            {
+                pixels[col, i] = pixels[col, i - 1];
             }
             pixels[col, 0] = wrap;
+        }
+
+        public int PixelsLit()
+        {
+            int count = 0;
+            for (int col = 0; col < width; col++)
+            {
+                for (int row = 0; row < height; row++)
+                {
+                    if (pixels[col, row]) count++;
+                }
+            }
+            return count;
         }
     }
 }
