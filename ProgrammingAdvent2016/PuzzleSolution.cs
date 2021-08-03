@@ -4,6 +4,7 @@
 // https://github.com/Nonparoxysmic/ProgrammingAdvent
 
 using System;
+using System.Drawing;
 
 namespace ProgrammingAdvent2016
 {
@@ -13,6 +14,7 @@ namespace ProgrammingAdvent2016
         string partTwoSolution;
         long partOneMilliseconds;
         long totalMilliseconds;
+        Bitmap imageSolution;
 
         public PuzzleSolution()
         {
@@ -40,6 +42,11 @@ namespace ProgrammingAdvent2016
             return totalMilliseconds;
         }
 
+        public Bitmap ImageSolution()
+        {
+            return imageSolution;
+        }
+
         public void WriteSolution(int part, string solution, long milliseconds)
         {
             if (part == 1)
@@ -52,6 +59,11 @@ namespace ProgrammingAdvent2016
                 partTwoSolution = solution;
                 totalMilliseconds = milliseconds;
             }
+        }
+
+        public void WriteImageSolution(Bitmap bitmap)
+        {
+            imageSolution = bitmap;
         }
     }
 }
