@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace ProgrammingAdvent2016
 {
@@ -139,6 +140,31 @@ namespace ProgrammingAdvent2016
                 }
             }
             return count;
+        }
+
+        public Bitmap ToBitmap()
+        {
+            Bitmap output = new Bitmap(width * 2 + 4, height * 2 + 4);
+            using (Graphics g = Graphics.FromImage(output))
+            {
+                g.FillRectangle(new SolidBrush(Color.Lime), 0, 0, width * 2 + 4, height * 2 + 4);
+            }
+            for (int col = 0; col < width; col++)
+            {
+                for (int row = 0; row < height; row++)
+                {
+                    if (pixels[col, row])
+                    {
+                        int baseCol = col * 2 + 2;
+                        int baseRow = row * 2 + 2;
+                        output.SetPixel(baseCol, baseRow, Color.Black);
+                        output.SetPixel(baseCol + 1, baseRow, Color.Black);
+                        output.SetPixel(baseCol, baseRow + 1, Color.Black);
+                        output.SetPixel(baseCol + 1, baseRow + 1, Color.Black);
+                    }
+                }
+            }
+            return output;
         }
     }
 }
