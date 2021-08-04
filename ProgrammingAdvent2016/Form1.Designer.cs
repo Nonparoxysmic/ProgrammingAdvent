@@ -95,8 +95,8 @@ namespace ProgrammingAdvent2016
             this.labelPart1Day8 = new System.Windows.Forms.Label();
             this.labelPart2Day8 = new System.Windows.Forms.Label();
             this.textBoxPart1Day8 = new System.Windows.Forms.TextBox();
-            this.textBoxPart2Day8 = new System.Windows.Forms.TextBox();
             this.buttonSolveAll = new System.Windows.Forms.Button();
+            this.pictureBoxDay8Part2 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanelDays.SuspendLayout();
@@ -108,6 +108,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay6.SuspendLayout();
             this.tableLayoutPanelDay7.SuspendLayout();
             this.tableLayoutPanelDay8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDay8Part2)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -876,7 +877,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay8.Controls.Add(this.labelPart1Day8, 2, 0);
             this.tableLayoutPanelDay8.Controls.Add(this.labelPart2Day8, 2, 1);
             this.tableLayoutPanelDay8.Controls.Add(this.textBoxPart1Day8, 3, 0);
-            this.tableLayoutPanelDay8.Controls.Add(this.textBoxPart2Day8, 3, 1);
+            this.tableLayoutPanelDay8.Controls.Add(this.pictureBoxDay8Part2, 3, 1);
             this.tableLayoutPanelDay8.Location = new System.Drawing.Point(4, 431);
             this.tableLayoutPanelDay8.Name = "tableLayoutPanelDay8";
             this.tableLayoutPanelDay8.RowCount = 2;
@@ -948,16 +949,6 @@ namespace ProgrammingAdvent2016
             this.textBoxPart1Day8.TabIndex = 4;
             this.textBoxPart1Day8.TabStop = false;
             // 
-            // textBoxPart2Day8
-            // 
-            this.textBoxPart2Day8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxPart2Day8.Location = new System.Drawing.Point(251, 30);
-            this.textBoxPart2Day8.Name = "textBoxPart2Day8";
-            this.textBoxPart2Day8.ReadOnly = true;
-            this.textBoxPart2Day8.Size = new System.Drawing.Size(232, 20);
-            this.textBoxPart2Day8.TabIndex = 5;
-            this.textBoxPart2Day8.TabStop = false;
-            // 
             // buttonSolveAll
             // 
             this.buttonSolveAll.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -969,6 +960,15 @@ namespace ProgrammingAdvent2016
             this.buttonSolveAll.Text = "Solve All";
             this.buttonSolveAll.UseVisualStyleBackColor = true;
             this.buttonSolveAll.Click += new System.EventHandler(this.ButtonSolveAll_Click);
+            // 
+            // pictureBoxDay8Part2
+            // 
+            this.pictureBoxDay8Part2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.pictureBoxDay8Part2.Location = new System.Drawing.Point(251, 32);
+            this.pictureBoxDay8Part2.Name = "pictureBoxDay8Part2";
+            this.pictureBoxDay8Part2.Size = new System.Drawing.Size(104, 16);
+            this.pictureBoxDay8Part2.TabIndex = 8;
+            this.pictureBoxDay8Part2.TabStop = false;
             // 
             // Form1
             // 
@@ -998,6 +998,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay7.PerformLayout();
             this.tableLayoutPanelDay8.ResumeLayout(false);
             this.tableLayoutPanelDay8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDay8Part2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1071,7 +1072,7 @@ namespace ProgrammingAdvent2016
         private System.Windows.Forms.Label labelPart1Day8;
         private System.Windows.Forms.Label labelPart2Day8;
         private System.Windows.Forms.TextBox textBoxPart1Day8;
-        private System.Windows.Forms.TextBox textBoxPart2Day8;
+        private System.Windows.Forms.PictureBox pictureBoxDay8Part2;
     }
 }
 

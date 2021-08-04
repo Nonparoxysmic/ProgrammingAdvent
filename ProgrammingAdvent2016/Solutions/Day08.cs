@@ -62,7 +62,9 @@ namespace ProgrammingAdvent2016
                         break;
                 }
             }
+            solution.WriteImageSolution(screen.ToBitmap());
             solution.WriteSolution(1, screen.PixelsLit().ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, "Part Two solution is in the form of an image.", solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;

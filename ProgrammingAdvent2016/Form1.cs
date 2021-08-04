@@ -44,6 +44,13 @@ namespace ProgrammingAdvent2016
             InitializeComponent();
             Form1_Resize(null, null);
 
+            Bitmap blankScreenDay8 = new Bitmap(104, 16);
+            using (Graphics g = Graphics.FromImage(blankScreenDay8))
+            {
+                g.FillRectangle(new SolidBrush(Color.Lime), 0, 0, 104, 16);
+            }
+            pictureBoxDay8Part2.Image = blankScreenDay8;
+
             #region Array Initialization
             partOneTextBoxes = new TextBox[] { null,
                 textBoxPart1Day1,
@@ -62,7 +69,7 @@ namespace ProgrammingAdvent2016
                 textBoxPart2Day5,
                 textBoxPart2Day6,
                 textBoxPart2Day7,
-                textBoxPart2Day8 };
+                null };
             dayButtons = new Button[] { null,
                 buttonDay1,
                 buttonDay2,
@@ -118,7 +125,11 @@ namespace ProgrammingAdvent2016
                 PuzzleSolution solution = await Task.Run(() => dayClasses[day].FindSolution(input));
                 dayButtons[day].Text = "Solved";
                 partOneTextBoxes[day].Text = solution.PartOneSolution();
-                partTwoTextBoxes[day].Text = solution.PartTwoSolution();
+                if (day == 8)
+                {
+                    pictureBoxDay8Part2.Image = solution.ImageSolution();
+                }
+                else partTwoTextBoxes[day].Text = solution.PartTwoSolution();
                 double solutionTime = Math.Ceiling(Math.Max(solution.TotalMilliseconds(), 1) / 10.0) / 100.0;
                 if (solutionTime < 10)
                 {
