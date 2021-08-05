@@ -52,12 +52,12 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            solution.WriteSolution(1, roomNumberSum.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(1, roomNumberSum, stopwatch.ElapsedMilliseconds);
             if (multipleNorthPoleRooms)
             {
                 solution.WriteSolution(2, "ERROR: Multiple North Pole rooms found.", solution.PartOneMilliseconds());
             }
-            else solution.WriteSolution(2, northPoleRoomNumber.ToString(), solution.PartOneMilliseconds());
+            else solution.WriteSolution(2, northPoleRoomNumber, solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;

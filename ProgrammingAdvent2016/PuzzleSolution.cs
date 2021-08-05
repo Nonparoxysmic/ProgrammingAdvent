@@ -5,6 +5,7 @@
 
 using System;
 using System.Drawing;
+using System.Text;
 
 namespace ProgrammingAdvent2016
 {
@@ -45,6 +46,16 @@ namespace ProgrammingAdvent2016
         public Bitmap ImageSolution()
         {
             return imageSolution;
+        }
+
+        public void WriteSolution(int part, int solutionInt, long milliseconds)
+        {
+            WriteSolution(part, solutionInt.ToString(), milliseconds);
+        }
+
+        public void WriteSolution(int part, StringBuilder solutionStringBuilder, long milliseconds)
+        {
+            WriteSolution(part, solutionStringBuilder.ToString(), milliseconds);
         }
 
         public void WriteSolution(int part, string solution, long milliseconds)

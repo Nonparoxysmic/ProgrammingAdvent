@@ -79,8 +79,8 @@ namespace ProgrammingAdvent2016
                 partOneMessage.Append(mostCommonChar);
                 partTwoMessage.Append(leastCommonChar);
             }
-            solution.WriteSolution(1, partOneMessage.ToString(), stopwatch.ElapsedMilliseconds);
-            solution.WriteSolution(2, partTwoMessage.ToString(), solution.PartOneMilliseconds());
+            solution.WriteSolution(1, partOneMessage, stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, partTwoMessage, solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;

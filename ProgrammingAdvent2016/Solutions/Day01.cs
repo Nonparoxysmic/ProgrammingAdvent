@@ -53,7 +53,7 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            solution.WriteSolution(1, (Math.Abs(x) + Math.Abs(y)).ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(1, Math.Abs(x) + Math.Abs(y), stopwatch.ElapsedMilliseconds);
 
             List<long> intersections = new List<long> { 0 };
             direction = 0;
@@ -89,7 +89,7 @@ namespace ProgrammingAdvent2016
                         long intersection = (long)x << 32 | (uint)y;
                         if (intersections.Contains(intersection))
                         {
-                            solution.WriteSolution(2, (Math.Abs(x) + Math.Abs(y)).ToString(), stopwatch.ElapsedMilliseconds);
+                            solution.WriteSolution(2, Math.Abs(x) + Math.Abs(y), stopwatch.ElapsedMilliseconds);
                             return solution;
                         }
                         else

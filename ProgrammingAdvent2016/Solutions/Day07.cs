@@ -73,8 +73,8 @@ namespace ProgrammingAdvent2016
                     if (hasSSL) numberOfSSL++;
                 }
             }
-            solution.WriteSolution(1, numberOfTLS.ToString(), stopwatch.ElapsedMilliseconds);
-            solution.WriteSolution(2, numberOfSSL.ToString(), solution.PartOneMilliseconds());
+            solution.WriteSolution(1, numberOfTLS, stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, numberOfSSL, solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;

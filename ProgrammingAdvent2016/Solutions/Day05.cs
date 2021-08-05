@@ -64,7 +64,7 @@ namespace ProgrammingAdvent2016
                     hashFunctionInput[hashFunctionInput.GetUpperBound(0)]++;
                 }
             }
-            solution.WriteSolution(1, partOnePassword.ToString(), partOneTime);
+            solution.WriteSolution(1, partOnePassword, partOneTime);
             solution.WriteSolution(2, new string(partTwoPassword), stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();

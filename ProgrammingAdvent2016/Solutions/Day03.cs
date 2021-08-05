@@ -42,7 +42,7 @@ namespace ProgrammingAdvent2016
                 }
                 if (sum - max > max) possibleTriangles++;
             }
-            solution.WriteSolution(1, possibleTriangles.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(1, possibleTriangles, stopwatch.ElapsedMilliseconds);
 
             if (inputLines.Length < 3 || inputLines.Length % 3 != 0)
             {
@@ -71,7 +71,7 @@ namespace ProgrammingAdvent2016
                     if (sum - max > max) possibleTriangles++;
                 }
             }
-            solution.WriteSolution(2, possibleTriangles.ToString(), stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, possibleTriangles, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
