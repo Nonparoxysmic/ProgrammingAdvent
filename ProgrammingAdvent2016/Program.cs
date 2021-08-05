@@ -36,5 +36,10 @@ namespace ProgrammingAdvent2016
         {
             return input.TrimEnd(new[] { '\r', '\n' }).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
+
+        public static string RemoveWhitespace(this string input)
+        {
+            return string.Join("", input.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+        }
     }
 }
