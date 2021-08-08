@@ -5,7 +5,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Text;
 
 namespace ProgrammingAdvent2016
 {
@@ -29,7 +28,7 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            StringBuilder decompressed = new StringBuilder();
+            int decompressedLength = 0;
             for (int i = 0; i < input.Length; i++)
             {
                 if (input[i] == '(')
@@ -48,28 +47,22 @@ namespace ProgrammingAdvent2016
                     if (endPos == -1 || endPos - i < 4)
                     {
                         // Not a valid marker.
-                        decompressed.Clear();
-                        decompressed.Append("ERROR");
+                        decompressedLength = -1;
                         break;
                     }
                     string[] markerValues = input.Substring(i + 1, endPos - i - 1).Split('x');
                     if (markerValues.Length != 2 || !int.TryParse(markerValues[0], out int charNum) || !int.TryParse(markerValues[1], out int repeats))
                     {
                         // Not a valid marker.
-                        decompressed.Clear();
-                        decompressed.Append("ERROR");
+                        decompressedLength = -1;
                         break;
                     }
-                    string data = input.Substring(endPos + 1, charNum);
-                    for (int k = 0; k < repeats; k++)
-                    {
-                        decompressed.Append(data);
-                    }
+                    decompressedLength += charNum * repeats;
                     i = endPos + charNum;
                 }
-                else decompressed.Append(input[i]);
+                else decompressedLength++;
             }
-            solution.WriteSolution(1, decompressed.Length, stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(1, decompressedLength, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
