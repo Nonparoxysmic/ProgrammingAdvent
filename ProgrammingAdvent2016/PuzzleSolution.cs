@@ -58,6 +58,11 @@ namespace ProgrammingAdvent2016
             WriteSolution(part, solutionStringBuilder.ToString(), milliseconds);
         }
 
+        public void WriteSolution(int part, long solutionStringBuilder, long milliseconds)
+        {
+            WriteSolution(part, solutionStringBuilder.ToString(), milliseconds);
+        }
+
         public void WriteSolution(int part, string solution, long milliseconds)
         {
             if (part == 1)

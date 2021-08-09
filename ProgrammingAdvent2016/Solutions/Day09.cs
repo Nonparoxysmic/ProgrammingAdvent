@@ -28,7 +28,17 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            int decompressedLength = 0;
+            solution.WriteSolution(1, DecompressedLength(input, false), stopwatch.ElapsedMilliseconds);
+
+            solution.WriteSolution(2, DecompressedLength(input, true), stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
+            return solution;
+        }
+
+        public long DecompressedLength(string input, bool recursive)
+        {
+            long decompressedLength = 0;
             for (int i = 0; i < input.Length; i++)
             {
                 if (input[i] == '(')
@@ -57,15 +67,16 @@ namespace ProgrammingAdvent2016
                         decompressedLength = -1;
                         break;
                     }
-                    decompressedLength += charNum * repeats;
+                    if (recursive)
+                    {
+                        decompressedLength += DecompressedLength(input.Substring(endPos + 1, charNum), true) * repeats;
+                    }
+                    else decompressedLength += charNum * repeats;
                     i = endPos + charNum;
                 }
                 else decompressedLength++;
             }
-            solution.WriteSolution(1, decompressedLength, stopwatch.ElapsedMilliseconds);
-
-            stopwatch.Reset();
-            return solution;
+            return decompressedLength;
         }
     }
 }
