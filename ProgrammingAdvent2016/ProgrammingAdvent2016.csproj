@@ -94,31 +94,31 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="InputFiles\InputDay9.txt">
+    <Content Include="InputFiles\InputDay09.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay8.txt">
+    <Content Include="InputFiles\InputDay08.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay7.txt">
+    <Content Include="InputFiles\InputDay07.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay6.txt">
+    <Content Include="InputFiles\InputDay06.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay5.txt">
+    <Content Include="InputFiles\InputDay05.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay4.txt">
+    <Content Include="InputFiles\InputDay04.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay3.txt">
+    <Content Include="InputFiles\InputDay03.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay2.txt">
+    <Content Include="InputFiles\InputDay02.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="InputFiles\InputDay1.txt">
+    <Content Include="InputFiles\InputDay01.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="InputFiles\Readme.txt">

@@ -14,15 +14,15 @@ namespace ProgrammingAdvent2016
     {
         #region Array Declarations
         readonly string[] inputFilePaths = new string[] { "",
-            @"InputFiles\InputDay1.txt",
-            @"InputFiles\InputDay2.txt",
-            @"InputFiles\InputDay3.txt",
-            @"InputFiles\InputDay4.txt",
-            @"InputFiles\InputDay5.txt",
-            @"InputFiles\InputDay6.txt",
-            @"InputFiles\InputDay7.txt",
-            @"InputFiles\InputDay8.txt",
-            @"InputFiles\InputDay9.txt" };
+            @"InputFiles\InputDay01.txt",
+            @"InputFiles\InputDay02.txt",
+            @"InputFiles\InputDay03.txt",
+            @"InputFiles\InputDay04.txt",
+            @"InputFiles\InputDay05.txt",
+            @"InputFiles\InputDay06.txt",
+            @"InputFiles\InputDay07.txt",
+            @"InputFiles\InputDay08.txt",
+            @"InputFiles\InputDay09.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),

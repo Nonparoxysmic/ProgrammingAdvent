@@ -7,11 +7,12 @@ This program reads the following files from this folder.
 See the Advent of Code 2016 website for format information.
 https://adventofcode.com/2016
 
-InputDay1.txt
-InputDay2.txt
-InputDay3.txt
-InputDay4.txt
-InputDay5.txt
-InputDay6.txt
-InputDay7.txt
-InputDay8.txt
+InputDay01.txt
+InputDay02.txt
+InputDay03.txt
+InputDay04.txt
+InputDay05.txt
+InputDay06.txt
+InputDay07.txt
+InputDay08.txt
+InputDay09.txt
