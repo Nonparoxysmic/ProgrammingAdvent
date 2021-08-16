@@ -16,3 +16,4 @@ InputDay06.txt
 InputDay07.txt
 InputDay08.txt
 InputDay09.txt
+InputDay10.txt
