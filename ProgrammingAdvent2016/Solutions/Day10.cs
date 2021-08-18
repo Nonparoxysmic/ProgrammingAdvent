@@ -76,6 +76,15 @@ namespace ProgrammingAdvent2016
                     return solution;
                 }
             }
+            string partTwoSolution;
+            try
+            {
+                partTwoSolution = (outputs[0][0] * outputs[1][0] * outputs[2][0]).ToString();
+            }
+            catch
+            {
+                partTwoSolution = "ERROR: necessary outputs not found.";
+            }
             if (partOneSolution.Count > 0)
             {
                 solution.WriteSolution(1, partOneSolution[0], stopwatch.ElapsedMilliseconds);
@@ -84,6 +93,7 @@ namespace ProgrammingAdvent2016
             {
                 solution.WriteSolution(1, "ERROR: no solution found.", stopwatch.ElapsedMilliseconds);
             }
+            solution.WriteSolution(2, partTwoSolution, solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;
