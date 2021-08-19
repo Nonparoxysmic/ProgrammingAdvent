@@ -23,7 +23,8 @@ namespace ProgrammingAdvent2016
             @"InputFiles\InputDay07.txt",
             @"InputFiles\InputDay08.txt",
             @"InputFiles\InputDay09.txt",
-            @"InputFiles\InputDay10.txt" };
+            @"InputFiles\InputDay10.txt",
+            @"InputFiles\InputDay11.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),
@@ -34,7 +35,8 @@ namespace ProgrammingAdvent2016
             new Day07(),
             new Day08(),
             new Day09(),
-            new Day10() };
+            new Day10(),
+            new Day11() };
         readonly TextBox[] partOneTextBoxes;
         readonly TextBox[] partTwoTextBoxes;
         readonly Button[] dayButtons;
@@ -66,7 +68,8 @@ namespace ProgrammingAdvent2016
                 textBoxPart1Day7,
                 textBoxPart1Day8,
                 textBoxPart1Day9,
-                textBoxPart1Day10 };
+                textBoxPart1Day10,
+                textBoxPart1Day11 };
             partTwoTextBoxes = new TextBox[] { null,
                 textBoxPart2Day1,
                 textBoxPart2Day2,
@@ -77,7 +80,8 @@ namespace ProgrammingAdvent2016
                 textBoxPart2Day7,
                 null,
                 textBoxPart2Day9,
-                textBoxPart2Day10 };
+                textBoxPart2Day10,
+                textBoxPart2Day11 };
             dayButtons = new Button[] { null,
                 buttonDay1,
                 buttonDay2,
@@ -88,7 +92,8 @@ namespace ProgrammingAdvent2016
                 buttonDay7,
                 buttonDay8,
                 buttonDay9,
-                buttonDay10 };
+                buttonDay10,
+                buttonDay11 };
             timeLabels = new Label[] { null,
                 labelTimeDay1,
                 labelTimeDay2,
@@ -99,7 +104,8 @@ namespace ProgrammingAdvent2016
                 labelTimeDay7,
                 labelTimeDay8,
                 labelTimeDay9,
-                labelTimeDay10 };
+                labelTimeDay10,
+                labelTimeDay11 };
             #endregion
         }
 
@@ -209,6 +215,11 @@ namespace ProgrammingAdvent2016
         private void ButtonDay10_Click(object sender, EventArgs e)
         {
             DayButtonClicked_Async(10);
+        }
+
+        private void ButtonDay11_Click(object sender, EventArgs e)
+        {
+            DayButtonClicked_Async(11);
         }
     }
 }
