@@ -4,6 +4,7 @@
 // https://github.com/Nonparoxysmic/ProgrammingAdvent
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
@@ -34,9 +35,42 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            for (int i = 0; i < 4; i++)
+            List<string> elements = new List<string>();
+            for (int floor = 0; floor < 4; floor++)
             {
-                inputLines[i] = inputLines[i].Substring(25 + i % 2);
+                inputLines[floor] = inputLines[floor].Substring(25 + floor % 2).TrimEnd('.');
+                string[] terms = inputLines[floor].Split(',');
+                foreach (string term in terms)
+                {
+                    string[] words = term.Split();
+                    if (words.Length < 3) continue;
+                    string element = "";
+                    for (int i = 1; i < words.Length; i++)
+                    {
+                        if (words[i] == "generator")
+                        {
+                            element = words[i - 1];
+                            break;
+                        }
+                        else if (words[i] == "microchip")
+                        {
+                            if (words[i - 1].Length > 11)
+                            {
+                                element = words[i - 1].Substring(0, words[i - 1].Length - 11);
+                            }
+                            break;
+                        }
+                    }
+                    if (element != "")
+                    {
+                        if (!elements.Contains(element)) elements.Add(element);
+
+                        // TODO: Add item to initial state:
+                        //     Element number is "elements.IndexOf(element)"
+                        //     Type is either generator or microchip.
+                        //     Floor number is "floor"
+                    }
+                }
             }
 
             stopwatch.Reset();
