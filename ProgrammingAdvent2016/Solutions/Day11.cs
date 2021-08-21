@@ -35,6 +35,7 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
+            FacilityState facilityState = new FacilityState();
             List<string> elements = new List<string>();
             for (int floor = 0; floor < 4; floor++)
             {
@@ -45,11 +46,13 @@ namespace ProgrammingAdvent2016
                     string[] words = term.Split();
                     if (words.Length < 3) continue;
                     string element = "";
+                    ItemType type = ItemType.Microchip;
                     for (int i = 1; i < words.Length; i++)
                     {
                         if (words[i] == "generator")
                         {
                             element = words[i - 1];
+                            type = ItemType.Generator;
                             break;
                         }
                         else if (words[i] == "microchip")
@@ -64,11 +67,7 @@ namespace ProgrammingAdvent2016
                     if (element != "")
                     {
                         if (!elements.Contains(element)) elements.Add(element);
-
-                        // TODO: Add item to initial state:
-                        //     Element number is "elements.IndexOf(element)"
-                        //     Type is either generator or microchip.
-                        //     Floor number is "floor"
+                        facilityState.AddItem(floor, elements.IndexOf(element), type);
                     }
                 }
             }
@@ -76,5 +75,36 @@ namespace ProgrammingAdvent2016
             stopwatch.Reset();
             return solution;
         }
+    }
+
+    class FacilityState
+    {
+        readonly List<FacilityItem> facilityItems = new List<FacilityItem>();
+
+        public void AddItem(int floor, int element, ItemType type)
+        {
+            if (floor < 0 || floor > 3) return;
+            facilityItems.Add(new FacilityItem(floor, element, type));
+        }
+    }
+
+    class FacilityItem
+    {
+        public int floor;
+        public int element;
+        public ItemType type;
+
+        public FacilityItem(int floor, int element, ItemType type)
+        {
+            this.floor = floor;
+            this.element = element;
+            this.type = type;
+        }
+    }
+
+    enum ItemType
+    {
+        Microchip,
+        Generator
     }
 }
