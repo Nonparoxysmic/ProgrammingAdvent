@@ -71,6 +71,11 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
+            if (!facilityState.ValidateState(elements.Count))
+            {
+                solution.WriteSolution(1, "ERROR: Invalid initial state.", stopwatch.ElapsedMilliseconds);
+                return solution;
+            }
 
             stopwatch.Reset();
             return solution;
@@ -85,6 +90,34 @@ namespace ProgrammingAdvent2016
         {
             if (floor < 0 || floor > 3) return;
             facilityItems.Add(new FacilityItem(floor, element, type));
+        }
+
+        public bool ValidateState(int numberOfElements)
+        {
+            for (int element = 0; element < numberOfElements; element++)
+            {
+                bool microchipFound = false;
+                bool generatorFound = false;
+                foreach (FacilityItem item in facilityItems)
+                {
+                    if (item.element == element)
+                    {
+                        switch (item.type)
+                        {
+                            case ItemType.Microchip:
+                                if (microchipFound) return false;
+                                microchipFound = true;
+                                break;
+                            case ItemType.Generator:
+                                if (generatorFound) return false;
+                                generatorFound = true;
+                                break;
+                        }
+                    }
+                }
+                if (!microchipFound || !generatorFound) return false;
+            }
+            return true;
         }
     }
 
