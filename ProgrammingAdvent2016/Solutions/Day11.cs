@@ -40,7 +40,7 @@ namespace ProgrammingAdvent2016
             for (int floor = 0; floor < 4; floor++)
             {
                 inputLines[floor] = inputLines[floor].Substring(25 + floor % 2).TrimEnd('.');
-                string[] terms = inputLines[floor].Split(',');
+                string[] terms = inputLines[floor].Split(new string[] { ",", "and" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string term in terms)
                 {
                     string[] words = term.Split();
