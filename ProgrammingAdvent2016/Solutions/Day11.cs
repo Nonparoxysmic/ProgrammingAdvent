@@ -35,7 +35,7 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            FacilityState facilityState = new FacilityState();
+            InitialState initialState = new InitialState();
             List<string> elements = new List<string>();
             for (int floor = 0; floor < 4; floor++)
             {
@@ -67,11 +67,11 @@ namespace ProgrammingAdvent2016
                     if (element != "")
                     {
                         if (!elements.Contains(element)) elements.Add(element);
-                        facilityState.AddItem(floor, elements.IndexOf(element), type);
+                        initialState.AddItem(floor, elements.IndexOf(element), type);
                     }
                 }
             }
-            if (!facilityState.ValidateState(elements.Count))
+            if (!initialState.ValidateInitialState(elements.Count) || elements.Count > 15)
             {
                 solution.WriteSolution(1, "ERROR: Invalid initial state.", stopwatch.ElapsedMilliseconds);
                 return solution;
@@ -82,7 +82,7 @@ namespace ProgrammingAdvent2016
         }
     }
 
-    class FacilityState
+    class InitialState
     {
         readonly List<FacilityItem> facilityItems = new List<FacilityItem>();
 
@@ -92,7 +92,7 @@ namespace ProgrammingAdvent2016
             facilityItems.Add(new FacilityItem(floor, element, type));
         }
 
-        public bool ValidateState(int numberOfElements)
+        public bool ValidateInitialState(int numberOfElements)
         {
             for (int element = 0; element < numberOfElements; element++)
             {
