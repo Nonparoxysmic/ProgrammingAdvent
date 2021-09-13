@@ -28,7 +28,18 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            int[] registers = new int[4];
+            int partOneSolution = RunProgram(inputLines, new int[4]);
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+
+            int partTwoSolution = RunProgram(inputLines, new int[] { 0, 0, 1, 0 });
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
+            return solution;
+        }
+
+        int RunProgram(string[] inputLines, int[] registers)
+        {
             for (int i = 0; i < inputLines.Length; i++)
             {
                 if (inputLines[i].Length < 5) continue;
@@ -40,24 +51,31 @@ namespace ProgrammingAdvent2016
                         if (terms.Length < 3) continue;
                         if (int.TryParse(terms[1], out int value))
                         {
-                            if (!"abcd".Contains(terms[2][0].ToString())) continue;
-                            registers["abcd".IndexOf(terms[2][0])] = value;
+                            if (97 <= terms[2][0] && terms[2][0] <= 100)
+                            {
+                                registers[terms[2][0] - 97] = value;
+                            }
                         }
                         else
                         {
-                            if (!"abcd".Contains(terms[1][0].ToString())) continue;
-                            if (!"abcd".Contains(terms[2][0].ToString())) continue;
-                            registers["abcd".IndexOf(terms[2][0])] 
-                                = registers["abcd".IndexOf(terms[1][0])];
+                            if (97 <= terms[1][0] && terms[1][0] <= 100
+                                && 97 <= terms[2][0] && terms[2][0] <= 100)
+                            {
+                                registers[terms[2][0] - 97] = registers[terms[1][0] - 97];
+                            }
                         }
                         break;
                     case "inc":
-                        if (!"abcd".Contains(terms[1][0].ToString())) continue;
-                        registers["abcd".IndexOf(terms[1][0])]++;
+                        if (97 <= terms[1][0] && terms[1][0] <= 100)
+                        {
+                            registers[terms[1][0] - 97]++;
+                        }
                         break;
                     case "dec":
-                        if (!"abcd".Contains(terms[1][0].ToString())) continue;
-                        registers["abcd".IndexOf(terms[1][0])]--;
+                        if (97 <= terms[1][0] && terms[1][0] <= 100)
+                        {
+                            registers[terms[1][0] - 97]--;
+                        }
                         break;
                     case "jnz":
                         if (terms.Length < 3) continue;
@@ -68,9 +86,9 @@ namespace ProgrammingAdvent2016
                                 i += jump - 1;
                             }
                         }
-                        else if ("abcd".Contains(terms[1][0].ToString()))
+                        else if (97 <= terms[1][0] && terms[1][0] <= 100)
                         {
-                            if (registers["abcd".IndexOf(terms[1][0])] 
+                            if (registers[terms[1][0] - 97]
                                 != 0 && int.TryParse(terms[2], out int jump))
                             {
                                 i += jump - 1;
@@ -79,10 +97,7 @@ namespace ProgrammingAdvent2016
                         break;
                 }
             }
-            solution.WriteSolution(1, registers[0], stopwatch.ElapsedMilliseconds);
-
-            stopwatch.Reset();
-            return solution;
+            return registers[0];
         }
     }
 }
