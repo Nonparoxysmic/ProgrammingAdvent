@@ -38,6 +38,9 @@ namespace ProgrammingAdvent2016
             int partOneSolution = GetPathLength(1, 1, 31, 39);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            int partTwoSolution = LocationsReachable(50);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
         }
@@ -157,6 +160,88 @@ namespace ProgrammingAdvent2016
                 if ((sum >> i & 1) == 1) output = !output;
             }
             return output;
+        }
+
+        int LocationsReachable(int steps)
+        {
+            if (steps < 1) return 1;
+
+            Dictionary<string, PathNode> allNodes = new Dictionary<string, PathNode>();
+            PathNode startingNode = new PathNode(1, 1)
+            {
+                stepsFromStart = 0,
+                distanceToEnd = steps,
+                score = steps
+            };
+            allNodes.Add(startingNode.coords, startingNode);
+            List<PathNode> openList = new List<PathNode>();
+            List<PathNode> closedList = new List<PathNode>();
+            openList.Add(startingNode);
+            
+            while (openList.Count > 0)
+            {
+                // Get a node on the open list
+                PathNode currentNode = openList[0];
+                // Move current node from open list to closed list.
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+                // If the current node is the maximum number of steps away, don't search from it.
+                if (currentNode.stepsFromStart >= steps)
+                {
+                    continue;
+                }
+                // Make a list of the neighbors of the current node.
+                List<PathNode> neighborList = new List<PathNode>();
+                if (currentNode.x > 0)
+                {
+                    string keyMinusX = PathNode.CoordsToString(currentNode.x - 1, currentNode.y);
+                    if (!allNodes.ContainsKey(keyMinusX))
+                    {
+                        allNodes.Add(keyMinusX, new PathNode(currentNode.x - 1, currentNode.y));
+                    }
+                    neighborList.Add(allNodes[keyMinusX]);
+                }
+                if (currentNode.y > 0)
+                {
+                    string keyMinusY = PathNode.CoordsToString(currentNode.x, currentNode.y - 1);
+                    if (!allNodes.ContainsKey(keyMinusY))
+                    {
+                        allNodes.Add(keyMinusY, new PathNode(currentNode.x, currentNode.y - 1));
+                    }
+                    neighborList.Add(allNodes[keyMinusY]);
+                }
+                string keyPlusX = PathNode.CoordsToString(currentNode.x + 1, currentNode.y);
+                if (!allNodes.ContainsKey(keyPlusX))
+                {
+                    allNodes.Add(keyPlusX, new PathNode(currentNode.x + 1, currentNode.y));
+                }
+                neighborList.Add(allNodes[keyPlusX]);
+                string keyPlusY = PathNode.CoordsToString(currentNode.x, currentNode.y + 1);
+                if (!allNodes.ContainsKey(keyPlusY))
+                {
+                    allNodes.Add(keyPlusY, new PathNode(currentNode.x, currentNode.y + 1));
+                }
+                neighborList.Add(allNodes[keyPlusY]);
+                // For each neighbor node...
+                foreach (PathNode neighbor in neighborList)
+                {
+                    // If the neighbor node is not a path, or if it has already been fully analyzed, skip it.
+                    if (!neighbor.isPath || closedList.Contains(neighbor)) continue;
+                    // If the neighbor node is not on the open list, or if the path through the current node
+                    // is shorter than the neighbor node's previously considered path...
+                    if (!openList.Contains(neighbor) || currentNode.stepsFromStart + 1 < neighbor.stepsFromStart)
+                    {
+                        // Recalculate the neighbor node's values.
+                        neighbor.stepsFromStart = currentNode.stepsFromStart + 1;
+                        neighbor.distanceToEnd = steps - neighbor.stepsFromStart;
+                        neighbor.score = steps;
+                        // Add the neighbor to the open list if it hasn't been added yet.
+                        if (!openList.Contains(neighbor)) openList.Add(neighbor);
+                    }
+                }
+            }
+
+            return closedList.Count;
         }
     }
 
