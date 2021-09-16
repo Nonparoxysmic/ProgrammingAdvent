@@ -54,7 +54,7 @@ namespace ProgrammingAdvent2016
                 }
 
                 // Recalculate the hash function input if the last byte reaches '9' (57):
-                    if (hashFunctionInput[hashFunctionInput.GetUpperBound(0)] > 56)
+                if (hashFunctionInput[hashFunctionInput.GetUpperBound(0)] > 56)
                 {
                     hashFunctionInput = Encoding.UTF8.GetBytes(input + i);
                 }
