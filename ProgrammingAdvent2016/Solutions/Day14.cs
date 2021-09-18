@@ -15,6 +15,8 @@ namespace ProgrammingAdvent2016
         readonly PuzzleSolution solution = new PuzzleSolution();
         readonly Stopwatch stopwatch = new Stopwatch();
 
+        readonly Dictionary<byte, BytePair> byteConversions = new Dictionary<byte, BytePair>();
+
         public override PuzzleSolution Solution()
         {
             return solution;
@@ -30,19 +32,33 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
+            InitializeByteConversions();
+
+            int partOneSolution = FinalIndexOfSearch(input, 0);
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+
+            int partTwoSolution = FinalIndexOfSearch(input, 2016);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
+            return solution;
+        }
+
+        int FinalIndexOfSearch(string input, int stretchingIterations)
+        {
             var hashDataQueue = new Queue<HashData>();
             int keysFound = 0;
-            int partOneSolution = -1;
+            int result = -1;
             for (int i = 0; i < 1000; i++)
             {
-                hashDataQueue.Enqueue(new HashData(AdventMD5.ComputeHash(Encoding.UTF8.GetBytes(input + i))));
+                hashDataQueue.Enqueue(ComputeHashData(input + i, stretchingIterations));
             }
             for (int i = 1000; i < int.MaxValue; i++)
             {
-                hashDataQueue.Enqueue(new HashData(AdventMD5.ComputeHash(Encoding.UTF8.GetBytes(input + i))));
+                hashDataQueue.Enqueue(ComputeHashData(input + i, stretchingIterations));
 
                 var currentHashData = hashDataQueue.Dequeue();
-                
+
                 foreach (var hd in hashDataQueue)
                 {
                     foreach (char c in hd.repeatsOfFive)
@@ -57,15 +73,42 @@ namespace ProgrammingAdvent2016
                 DoneSearchingQueue:
                 if (keysFound >= 64)
                 {
-                    partOneSolution = i - 1000;
+                    result = i - 1000;
                     break;
                 }
             }
+            return result;
+        }
 
-            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+        HashData ComputeHashData(string inputData, int stretchingIterations)
+        {
+            if (stretchingIterations < 1)
+            {
+                return new HashData(AdventMD5.ComputeHash(Encoding.UTF8.GetBytes(inputData)));
+            }
 
-            stopwatch.Reset();
-            return solution;
+            byte[] hash = AdventMD5.ComputeHash(Encoding.UTF8.GetBytes(inputData));
+            for (int count = 0; count < stretchingIterations; count++)
+            {
+                byte[] hashChars = new byte[hash.Length * 2];
+                for (int i = 0; i < hash.Length; i++)
+                {
+                    var bytePair = byteConversions[hash[i]];
+                    hashChars[i * 2] = bytePair.a;
+                    hashChars[i * 2 + 1] = bytePair.b;
+                }
+                hash = AdventMD5.ComputeHash(hashChars);
+            }
+            return new HashData(hash);
+        }
+
+        void InitializeByteConversions()
+        {
+            for (int i = 0; i < 256; i++)
+            {
+                string hex = ((byte)i).ToString("x2");
+                byteConversions.Add((byte)i, new BytePair((byte)hex[0], (byte)hex[1]));
+            }
         }
     }
 
@@ -117,6 +160,18 @@ namespace ProgrammingAdvent2016
             input &= 0xf;
             if (input < 10) return (char)(input + 48);
             return (char)(input + 87);
+        }
+    }
+
+    class BytePair
+    {
+        public byte a;
+        public byte b;
+
+        public BytePair(byte one, byte two)
+        {
+            a = one;
+            b = two;
         }
     }
 }
