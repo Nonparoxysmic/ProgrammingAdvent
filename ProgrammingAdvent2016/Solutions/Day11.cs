@@ -71,14 +71,48 @@ namespace ProgrammingAdvent2016
                     }
                 }
             }
-            if (!initialState.ValidateInitialState(elements.Count) || elements.Count > 15)
+            if (!initialState.ValidateInitialState(elements.Count) || elements.Count > 15 || elements.Count < 2)
             {
                 solution.WriteSolution(1, "ERROR: Invalid initial state.", stopwatch.ElapsedMilliseconds);
                 return solution;
             }
 
+            int partOneSolution = NumberOfSteps(initialState);
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
+        }
+
+        int NumberOfSteps(InitialState initialState)
+        {
+            int output = 0;
+
+            // Create initial search node.
+
+            // Initialize node lists.
+
+            // While there are nodes on the open list:
+
+            //     Get a node from the open list. (Lowest score?)
+
+            //     If the node is the goal state, set output and break.
+
+            //     Move current node from open list to closed list.
+
+            //     Generate the valid states that can be reached in one move.
+
+            //     For each possible move:
+
+            //         If the move is already on the closed list, skip it.
+
+            //         If it's not on the open list, or has been reached in fewer steps:
+
+            //             Recaluclate its values.
+
+            //             Add to open list if not already.
+
+            return output;
         }
     }
 
