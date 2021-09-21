@@ -81,6 +81,16 @@ namespace ProgrammingAdvent2016
             int partOneSolution = NumberOfSteps(initialState);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            elements.Add("elerium");
+            elements.Add("dilithium");
+            initialState.AddItem(0, elements.IndexOf("elerium"), ItemType.Microchip);
+            initialState.AddItem(0, elements.IndexOf("elerium"), ItemType.Generator);
+            initialState.AddItem(0, elements.IndexOf("dilithium"), ItemType.Microchip);
+            initialState.AddItem(0, elements.IndexOf("dilithium"), ItemType.Generator);
+
+            int partTwoSolution = NumberOfSteps(initialState);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
         }
