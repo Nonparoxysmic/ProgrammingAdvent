@@ -31,6 +31,9 @@ namespace ProgrammingAdvent2016
             string partOneSolution = FindShortestPath(input);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            int partTwoSolution = FindLongestPath(input);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
         }
@@ -76,6 +79,44 @@ namespace ProgrammingAdvent2016
             }
             // The goal node was not found, so there is no path.
             return "ERROR";
+        }
+
+        int FindLongestPath(string input)
+        {
+            VaultPathNode.passcodeLength = input.Length;
+
+            var startingNode = new VaultPathNode(3, 3, input);
+            var openStack = new Stack<VaultPathNode>();
+            openStack.Push(startingNode);
+            string longestPath = "";
+
+            while (openStack.Count > 0)
+            {
+                // Get the node on top of the stack.
+                VaultPathNode currentNode = openStack.Pop();
+                // If the current node is the goal node, save the longest path.
+                if (currentNode.x == 0 && currentNode.y == 0)
+                {
+                    if (currentNode.path.Length > longestPath.Length)
+                    {
+                        longestPath = currentNode.path;
+                    }
+                    continue;
+                }
+                // Add possible next states from this node to the stack.
+                foreach (char dir in currentNode.directionsOpen)
+                {
+                    int deltaX = 0;
+                    int deltaY = 0;
+                    if (dir == 'U' && currentNode.y < 3) { deltaY = 1; }
+                    if (dir == 'D' && currentNode.y > 0) { deltaY = -1; }
+                    if (dir == 'L' && currentNode.x < 3) { deltaX = 1; }
+                    if (dir == 'R' && currentNode.x > 0) { deltaX = -1; }
+                    if (deltaX == 0 && deltaY == 0) { continue; }
+                    openStack.Push(new VaultPathNode(currentNode.x + deltaX, currentNode.y + deltaY, currentNode.path + dir));
+                }
+            }
+            return longestPath.Substring(input.Length).Length;
         }
     }
 
