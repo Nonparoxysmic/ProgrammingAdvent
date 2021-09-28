@@ -29,6 +29,9 @@ namespace ProgrammingAdvent2016
             int partOneSolution = NumberOfSafeTiles(input, 40);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            int partTwoSolution = NumberOfSafeTiles(input, 400000);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
         }
