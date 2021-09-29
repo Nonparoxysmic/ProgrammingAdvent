@@ -3,8 +3,6 @@
 // Puzzle solution by Nonparoxysmic
 // https://github.com/Nonparoxysmic/ProgrammingAdvent
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ProgrammingAdvent2016
@@ -26,37 +24,55 @@ namespace ProgrammingAdvent2016
                 solution.WriteSolution(1, "ERROR: No input.", 0);
                 return solution;
             }
-            if (!int.TryParse(input.Trim(), out int elfCount))
+            if (!uint.TryParse(input.Trim(), out uint elfCount))
             {
                 solution.WriteSolution(1, "ERROR: Invalid input.", 0);
                 return solution;
             }
             stopwatch.Start();
 
-            int partOneSolution = PartOne(elfCount);
+            uint partOneSolution = PartOneQuick(elfCount);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
         }
 
-        int PartOne(int elfCount)
+        //int PartOne(int elfCount)
+        //{
+        //    if (elfCount < 2) return elfCount;
+        //    var elves = new Queue<int>();
+        //    for (int i = 1; i <= elfCount; i++)
+        //    {
+        //        elves.Enqueue(i);
+        //    }
+        //    while (elves.Count > 1)
+        //    {
+        //        elves.Enqueue(elves.Dequeue());
+        //        elves.Dequeue();
+        //    }
+        //    return elves.Dequeue();
+        //}
+
+        uint PartOneQuick(uint elfCount)
         {
             if (elfCount < 2) return elfCount;
-
-            var elves = new Queue<int>();
-            for (int i = 1; i <= elfCount; i++)
+            if (elfCount >= 0x80000000)
             {
-                elves.Enqueue(i);
+                elfCount <<= 1;
+                return ++elfCount;
             }
 
-            while (elves.Count > 1)
+            uint msb = elfCount;
+            for (int i = 1; i <= 16; i *= 2)
             {
-                elves.Enqueue(elves.Dequeue());
-                elves.Dequeue();
+                msb |= msb >> i;
             }
+            msb = ++msb >> 1;
 
-            return elves.Dequeue();
+            elfCount &= ~msb;
+            elfCount <<= 1;
+            return ++elfCount;
         }
     }
 }
