@@ -58,6 +58,7 @@ namespace ProgrammingAdvent2016
             }
 
             string partOneSolution = "";
+            uint partTwoSolution = 0;
             for (uint i = 0; i < uint.MaxValue; )
             {
                 bool isBlocked = false;
@@ -69,7 +70,11 @@ namespace ProgrammingAdvent2016
                         if (kvp.Value == uint.MaxValue)
                         {
                             i = uint.MaxValue;
-                            partOneSolution = "No unblocked IPs.";
+                            if (partOneSolution == "")
+                            {
+                                partOneSolution = "No unblocked IPs.";
+                                solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+                            }
                         }
                         else
                         {
@@ -80,11 +85,16 @@ namespace ProgrammingAdvent2016
                 }
                 if (!isBlocked)
                 {
-                    partOneSolution = i.ToString();
-                    break;
+                    if (partOneSolution == "")
+                    {
+                        partOneSolution = i.ToString();
+                        solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+                    }
+                    partTwoSolution++;
+                    i++;
                 }
             }
-            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
