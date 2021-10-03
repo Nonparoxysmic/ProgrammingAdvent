@@ -27,3 +27,4 @@ InputDay17.txt
 InputDay18.txt
 InputDay19.txt
 InputDay20.txt
+InputDay21.txt
