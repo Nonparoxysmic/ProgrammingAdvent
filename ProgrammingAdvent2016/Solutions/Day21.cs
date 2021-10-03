@@ -14,6 +14,14 @@ namespace ProgrammingAdvent2016
         readonly PuzzleSolution solution = new PuzzleSolution();
         readonly Stopwatch stopwatch = new Stopwatch();
 
+        readonly Regex swapPosition = new Regex(@"^swap position [0-7] with position [0-7]");
+        readonly Regex swapLetter = new Regex(@"^swap letter [a-h] with letter [a-h]");
+        readonly Regex rotateLeft = new Regex(@"^rotate left [0-7] step");
+        readonly Regex rotateRight = new Regex(@"^rotate right [0-7] step");
+        readonly Regex rotate = new Regex(@"^rotate based on position of letter [a-h]");
+        readonly Regex reverse = new Regex(@"^reverse positions [0-7] through [0-7]");
+        readonly Regex move = new Regex(@"^move position [0-7] to position [0-7]");
+
         public override PuzzleSolution Solution()
         {
             return solution;
@@ -29,14 +37,16 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            var swapPosition = new Regex(@"^swap position [0-7] with position [0-7]");
-            var swapLetter   = new Regex(@"^swap letter [a-h] with letter [a-h]");
-            var rotateLeft   = new Regex(@"^rotate left [0-7] step");
-            var rotateRight  = new Regex(@"^rotate right [0-7] step");
-            var rotate       = new Regex(@"^rotate based on position of letter [a-h]");
-            var reverse      = new Regex(@"^reverse positions [0-7] through [0-7]");
-            var move         = new Regex(@"^move position [0-7] to position [0-7]");
+            string partOneSolution = PartOne(inputLines);
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+
+            stopwatch.Reset();
+            return solution;
+        }
+
+        string PartOne(string[] inputLines)
+        {
             var letters = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
             foreach (string line in inputLines)
             {
@@ -98,13 +108,14 @@ namespace ProgrammingAdvent2016
                     Move(ref letters, line[14], line[28]);
                     continue;
                 }
-                solution.WriteSolution(1, "ERROR: Invalid line in input: \"" + line + "\"", stopwatch.ElapsedMilliseconds);
-                return solution;
+                return "ERROR: Invalid line in input: \"" + line + "\"";
             }
-            solution.WriteSolution(1, new string(letters), stopwatch.ElapsedMilliseconds);
+            return new string(letters);
+        }
 
-            stopwatch.Reset();
-            return solution;
+        string PartTwo(string[] inputLines)
+        {
+            throw new NotImplementedException();
         }
 
         int DigitToInt(char digit)
