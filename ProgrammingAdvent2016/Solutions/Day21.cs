@@ -40,6 +40,8 @@ namespace ProgrammingAdvent2016
             string partOneSolution = PartOne(inputLines);
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            string partTwoSolution = PartTwo(inputLines);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
@@ -115,7 +117,70 @@ namespace ProgrammingAdvent2016
 
         string PartTwo(string[] inputLines)
         {
-            throw new NotImplementedException();
+            var letters = new char[] { 'f', 'b', 'g', 'd', 'c', 'e', 'a', 'h' };
+            for (int n = inputLines.Length - 1; n >= 0; n--)
+            {
+                string line = inputLines[n];
+                if (swapPosition.IsMatch(line))
+                {
+                    SwapPositions(ref letters, line[14], line[30]);
+                    continue;
+                }
+                else if (swapLetter.IsMatch(line))
+                {
+                    int x = 0;
+                    int y = 0;
+                    for (int i = 0; i < letters.Length; i++)
+                    {
+                        if (letters[i] == line[12])
+                        {
+                            x = i;
+                        }
+                        if (letters[i] == line[26])
+                        {
+                            y = i;
+                        }
+                    }
+                    SwapPositions(ref letters, x, y);
+                    continue;
+                }
+                else if (rotateLeft.IsMatch(line))
+                {
+                    Rotate(ref letters, line[12]);
+                    continue;
+                }
+                else if (rotateRight.IsMatch(line))
+                {
+                    Rotate(ref letters, line[13], 'L');
+                    continue;
+                }
+                else if (rotate.IsMatch(line))
+                {
+                    int newIndex = 0;
+                    for (int i = 0; i < letters.Length; i++)
+                    {
+                        if (letters[i] == line[35])
+                        {
+                            newIndex = i;
+                            break;
+                        }
+                    }
+                    Rotate(ref letters, PartTwoMagicNumber(newIndex), 'L');
+                    continue;
+                }
+                else if (reverse.IsMatch(line))
+                {
+                    Reverse(ref letters, line[18], line[28]);
+                    continue;
+                }
+                else if (move.IsMatch(line))
+                {
+                    Move(ref letters, line[28], line[14]);
+                    continue;
+                }
+                return "ERROR: Invalid line in input: \"" + line + "\"";
+            }
+            return new string(letters);
         }
 
         int DigitToInt(char digit)
@@ -194,6 +259,22 @@ namespace ProgrammingAdvent2016
             else
             {
                 Reverse(ref letters, before, after - 1);
+            }
+        }
+
+        int PartTwoMagicNumber(int newIndex)
+        {
+            switch (newIndex)
+            {
+                case 1: return 1;
+                case 3: return 2;
+                case 5: return 3;
+                case 7: return 4;
+                case 2: return 6;
+                case 4: return 7;
+                case 6: return 8;
+                case 0: return 9;
+                default: return 0;
             }
         }
     }
