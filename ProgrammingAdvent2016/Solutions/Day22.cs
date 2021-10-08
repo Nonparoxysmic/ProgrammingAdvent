@@ -96,20 +96,31 @@ namespace ProgrammingAdvent2016
                 highestY = Math.Max(highestY, node.y);
             }
             float threshold = 1.8f * totalData / nodes.Count;
+            var map = new char[highestX + 1, highestY + 1];
             foreach (DataNode node in nodes.Values)
             {
                 if (node.used == 0)
                 {
-                    // node is empty
+                    map[node.x, node.y] = '_';
                 }
                 else if (node.used > threshold)
                 {
-                    // data is immobile
+                    map[node.x, node.y] = '#';
                 }
                 else
                 {
-                    // data is mobile
+                    map[node.x, node.y] = '.';
                 }
+            }
+            map[highestX, 0] = 'G';
+
+            for (int y = 0; y <= highestY; y++)
+            {
+                for (int x = 0; x <= highestX; x++)
+                {
+                    Console.Write(map[x, y]);
+                }
+                Console.WriteLine();
             }
 
             stopwatch.Reset();
