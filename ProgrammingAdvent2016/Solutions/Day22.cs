@@ -97,11 +97,15 @@ namespace ProgrammingAdvent2016
             }
             float threshold = 1.8f * totalData / nodes.Count;
             var map = new char[highestX + 1, highestY + 1];
+            int emptyNodeX = 0;
+            int emptyNodeY = 0;
             foreach (DataNode node in nodes.Values)
             {
                 if (node.used == 0)
                 {
                     map[node.x, node.y] = '_';
+                    emptyNodeX = node.x;
+                    emptyNodeY = node.y;
                 }
                 else if (node.used > threshold)
                 {
@@ -114,14 +118,36 @@ namespace ProgrammingAdvent2016
             }
             map[highestX, 0] = 'G';
 
-            for (int y = 0; y <= highestY; y++)
+            #region A Lot of Assumptions
+            int partTwoSolution = emptyNodeY;
+            while (emptyNodeY > 0 && map[emptyNodeX, emptyNodeY - 1] == '.')
             {
-                for (int x = 0; x <= highestX; x++)
-                {
-                    Console.Write(map[x, y]);
-                }
-                Console.WriteLine();
+                emptyNodeY--;
             }
+            if (emptyNodeY > 0)
+            {
+                for (int d = 1; d <= highestX + 1; d++)
+                {
+                    int x1 = Math.Max(0, emptyNodeX - d);
+                    int x2 = Math.Min(highestX, emptyNodeX + d);
+                    if (map[x1, emptyNodeY - 1] == '.')
+                    {
+                        partTwoSolution += d;
+                        emptyNodeX = x1;
+                        break;
+                    }
+                    if (map[x2, emptyNodeY - 1] == '.')
+                    {
+                        partTwoSolution += d;
+                        emptyNodeX = x2;
+                        break;
+                    }
+                }
+            }
+            partTwoSolution += highestX - emptyNodeX + 5 * (highestX - 1);
+            #endregion
+
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
