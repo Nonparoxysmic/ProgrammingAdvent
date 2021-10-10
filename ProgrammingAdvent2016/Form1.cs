@@ -35,7 +35,8 @@ namespace ProgrammingAdvent2016
             @"InputFiles\InputDay19.txt",
             @"InputFiles\InputDay20.txt",
             @"InputFiles\InputDay21.txt",
-            @"InputFiles\InputDay22.txt" };
+            @"InputFiles\InputDay22.txt",
+            @"InputFiles\InputDay23.txt" };
         readonly Day[] dayClasses = new Day[] { null,
             new Day01(),
             new Day02(),
@@ -58,7 +59,8 @@ namespace ProgrammingAdvent2016
             new Day19(),
             new Day20(),
             new Day21(),
-            new Day22() };
+            new Day22(),
+            new Day23() };
         readonly TextBox[] partOneTextBoxes;
         readonly TextBox[] partTwoTextBoxes;
         readonly Button[] dayButtons;
@@ -102,7 +104,8 @@ namespace ProgrammingAdvent2016
                 textBoxPart1Day19,
                 textBoxPart1Day20,
                 textBoxPart1Day21,
-                textBoxPart1Day22 };
+                textBoxPart1Day22,
+                textBoxPart1Day23 };
             partTwoTextBoxes = new TextBox[] { null,
                 textBoxPart2Day1,
                 textBoxPart2Day2,
@@ -125,7 +128,8 @@ namespace ProgrammingAdvent2016
                 textBoxPart2Day19,
                 textBoxPart2Day20,
                 textBoxPart2Day21,
-                textBoxPart2Day22 };
+                textBoxPart2Day22,
+                textBoxPart2Day23 };
             dayButtons = new Button[] { null,
                 buttonDay1,
                 buttonDay2,
@@ -148,7 +152,8 @@ namespace ProgrammingAdvent2016
                 buttonDay19,
                 buttonDay20,
                 buttonDay21,
-                buttonDay22 };
+                buttonDay22,
+                buttonDay23 };
             timeLabels = new Label[] { null,
                 labelTimeDay1,
                 labelTimeDay2,
@@ -171,7 +176,8 @@ namespace ProgrammingAdvent2016
                 labelTimeDay19,
                 labelTimeDay20,
                 labelTimeDay21,
-                labelTimeDay22 };
+                labelTimeDay22,
+                labelTimeDay23 };
             #endregion
         }
 
@@ -210,6 +216,7 @@ namespace ProgrammingAdvent2016
             if (buttonDay20.Enabled) ButtonDay20_Click(null, null);
             if (buttonDay21.Enabled) ButtonDay21_Click(null, null);
             if (buttonDay22.Enabled) ButtonDay22_Click(null, null);
+            if (buttonDay23.Enabled) ButtonDay23_Click(null, null);
         }
 
         private async void DayButtonClicked_Async(int day)
@@ -353,6 +360,11 @@ namespace ProgrammingAdvent2016
         private void ButtonDay22_Click(object sender, EventArgs e)
         {
             DayButtonClicked_Async(22);
+        }
+
+        private void ButtonDay23_Click(object sender, EventArgs e)
+        {
+            DayButtonClicked_Async(23);
         }
     }
 }
