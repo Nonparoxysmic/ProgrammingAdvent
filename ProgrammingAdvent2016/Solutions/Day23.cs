@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace ProgrammingAdvent2016
 {
@@ -29,7 +30,7 @@ namespace ProgrammingAdvent2016
             }
             stopwatch.Start();
 
-            var instructions = new List<Instruction>();
+            var programLines = new List<Instruction>();
             foreach (string line in inputLines)
             {
                 if (line.Length == 0)
@@ -43,7 +44,7 @@ namespace ProgrammingAdvent2016
                     if ((int.TryParse(terms[1], out int _) || "abcd".Contains(terms[1]))
                         && "abcd".Contains(terms[2]))
                     {
-                        instructions.Add(new Instruction(terms));
+                        programLines.Add(new Instruction(terms));
                         continue;
                     }
                 }
@@ -51,7 +52,7 @@ namespace ProgrammingAdvent2016
                 {
                     if ("abcd".Contains(terms[1]))
                     {
-                        instructions.Add(new Instruction(terms));
+                        programLines.Add(new Instruction(terms));
                         continue;
                     }
                 }
@@ -59,7 +60,7 @@ namespace ProgrammingAdvent2016
                 {
                     if ("abcd".Contains(terms[1]))
                     {
-                        instructions.Add(new Instruction(terms));
+                        programLines.Add(new Instruction(terms));
                         continue;
                     }
                 }
@@ -68,7 +69,7 @@ namespace ProgrammingAdvent2016
                     if ((int.TryParse(terms[1], out int _) || "abcd".Contains(terms[1]))
                         && (int.TryParse(terms[2], out int _) || "abcd".Contains(terms[2])))
                     {
-                        instructions.Add(new Instruction(terms));
+                        programLines.Add(new Instruction(terms));
                         continue;
                     }
                 }
@@ -76,7 +77,7 @@ namespace ProgrammingAdvent2016
                 {
                     if (int.TryParse(terms[1], out int _) || "abcd".Contains(terms[1]))
                     {
-                        instructions.Add(new Instruction(terms));
+                        programLines.Add(new Instruction(terms));
                         continue;
                     }
                 }
@@ -84,10 +85,98 @@ namespace ProgrammingAdvent2016
                 return solution;
             }
 
-            
+            long partOneSolution = RunProgram(programLines.ToArray(), new long[] { 7, 0, 0, 0 });
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
+        }
+
+        static long RunProgram(Instruction[] instructions, long[] registers)
+        {
+            var registerArgument = new Regex(@"^[abcd]$");
+            for (int i = 0; i < instructions.Length; i++)
+            {
+                switch (instructions[i].type)
+                {
+                    case InstructionType.cpy:
+                        if (!registerArgument.IsMatch(instructions[i].arguments[1]))
+                        {
+                            break;
+                        }
+                        int cpyTargetRegister = "abcd".IndexOf(instructions[i].arguments[1][0]);
+                        if (int.TryParse(instructions[i].arguments[0], out int cpyValue))
+                        {
+                            registers[cpyTargetRegister] = cpyValue;
+                        }
+                        else
+                        {
+                            registers[cpyTargetRegister] = registers["abcd".IndexOf(instructions[i].arguments[0][0])];
+                        }
+                        break;
+                    case InstructionType.inc:
+                        if (!registerArgument.IsMatch(instructions[i].arguments[0]))
+                        {
+                            break;
+                        }
+                        int incTargetRegister = "abcd".IndexOf(instructions[i].arguments[0][0]);
+                        registers[incTargetRegister]++;
+                        break;
+                    case InstructionType.dec:
+                        if (!registerArgument.IsMatch(instructions[i].arguments[0]))
+                        {
+                            break;
+                        }
+                        int decTargetRegister = "abcd".IndexOf(instructions[i].arguments[0][0]);
+                        registers[decTargetRegister]--;
+                        break;
+                    case InstructionType.jnz:
+                        long x, y;
+                        if (!long.TryParse(instructions[i].arguments[0], out x))
+                        {
+                            x = registers["abcd".IndexOf(instructions[i].arguments[0][0])];
+                        }
+                        if (x == 0)
+                        {
+                            break;
+                        }
+                        if (!long.TryParse(instructions[i].arguments[1], out y))
+                        {
+                            y = registers["abcd".IndexOf(instructions[i].arguments[1][0])];
+                        }
+                        i += (int)y - 1;
+                        break;
+                    case InstructionType.tgl:
+                        long steps;
+                        if (!long.TryParse(instructions[i].arguments[0], out steps))
+                        {
+                            steps = registers["abcd".IndexOf(instructions[i].arguments[0][0])];
+                        }
+                        if ((i + steps < 0) || (i + steps >= instructions.Length))
+                        {
+                            break;
+                        }
+                        switch (instructions[i + steps].type)
+                        {
+                            case InstructionType.inc:
+                                instructions[i + steps].type = InstructionType.dec;
+                                break;
+                            case InstructionType.dec:
+                            case InstructionType.tgl:
+                                instructions[i + steps].type = InstructionType.inc;
+                                break;
+                            case InstructionType.jnz:
+                                instructions[i + steps].type = InstructionType.cpy;
+                                break;
+                            case InstructionType.cpy:
+                                instructions[i + steps].type = InstructionType.jnz;
+                                break;
+                        }
+                        break;
+                }
+                if (i < 0) { i = 0; }
+            }
+            return registers[0];
         }
     }
 
