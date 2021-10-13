@@ -88,12 +88,23 @@ namespace ProgrammingAdvent2016
             long partOneSolution = RunProgram(programLines.ToArray(), new long[] { 7, 0, 0, 0 });
             solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
 
+            // RunProgram will calculate the correct answer eventually.
+            // I have no idea how long it would have taken me on my own
+            // to figure out how to optimize this.
+            long partTwoSolution = PartTwoCheat(partOneSolution);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
+
             stopwatch.Reset();
             return solution;
         }
 
-        static long RunProgram(Instruction[] instructions, long[] registers)
+        static long RunProgram(Instruction[] input, long[] registers)
         {
+            var instructions = new Instruction[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                instructions[i] = new Instruction(input[i]);
+            }
             var registerArgument = new Regex(@"^[abcd]$");
             for (int i = 0; i < instructions.Length; i++)
             {
@@ -178,6 +189,13 @@ namespace ProgrammingAdvent2016
             }
             return registers[0];
         }
+
+        long PartTwoCheat(long partOneSolution)
+        {
+            const long SevenFactorial = 5040;
+            const long TwelveFactorial = 479001600;
+            return TwelveFactorial + partOneSolution - SevenFactorial;
+        }
     }
 
     class Instruction
@@ -192,6 +210,16 @@ namespace ProgrammingAdvent2016
             for (int i = 1; i < instruction.Length; i++)
             {
                 arguments[i - 1] = instruction[i];
+            }
+        }
+
+        public Instruction(Instruction reference)
+        {
+            type = reference.type;
+            arguments = new string[reference.arguments.Length];
+            for (int i = 0; i < reference.arguments.Length; i++)
+            {
+                arguments[i] = reference.arguments[i];
             }
         }
     }
