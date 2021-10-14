@@ -208,7 +208,6 @@ namespace ProgrammingAdvent2016
             this.labelPart2Day22 = new System.Windows.Forms.Label();
             this.textBoxPart1Day22 = new System.Windows.Forms.TextBox();
             this.textBoxPart2Day22 = new System.Windows.Forms.TextBox();
-            this.buttonSolveAll = new System.Windows.Forms.Button();
             this.tableLayoutPanelDay23 = new System.Windows.Forms.TableLayoutPanel();
             this.labelTimeDay23 = new System.Windows.Forms.Label();
             this.labelDay23 = new System.Windows.Forms.Label();
@@ -217,6 +216,15 @@ namespace ProgrammingAdvent2016
             this.labelPart2Day23 = new System.Windows.Forms.Label();
             this.textBoxPart1Day23 = new System.Windows.Forms.TextBox();
             this.textBoxPart2Day23 = new System.Windows.Forms.TextBox();
+            this.buttonSolveAll = new System.Windows.Forms.Button();
+            this.tableLayoutPanelDay24 = new System.Windows.Forms.TableLayoutPanel();
+            this.labelTimeDay24 = new System.Windows.Forms.Label();
+            this.labelDay24 = new System.Windows.Forms.Label();
+            this.buttonDay24 = new System.Windows.Forms.Button();
+            this.labelPart1Day24 = new System.Windows.Forms.Label();
+            this.labelPart2Day24 = new System.Windows.Forms.Label();
+            this.textBoxPart1Day24 = new System.Windows.Forms.TextBox();
+            this.textBoxPart2Day24 = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanelDays.SuspendLayout();
@@ -244,6 +252,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay21.SuspendLayout();
             this.tableLayoutPanelDay22.SuspendLayout();
             this.tableLayoutPanelDay23.SuspendLayout();
+            this.tableLayoutPanelDay24.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -301,6 +310,7 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDays.Controls.Add(this.tableLayoutPanelDay21, 0, 20);
             this.tableLayoutPanelDays.Controls.Add(this.tableLayoutPanelDay22, 0, 21);
             this.tableLayoutPanelDays.Controls.Add(this.tableLayoutPanelDay23, 0, 22);
+            this.tableLayoutPanelDays.Controls.Add(this.tableLayoutPanelDay24, 0, 23);
             this.tableLayoutPanelDays.Location = new System.Drawing.Point(48, 3);
             this.tableLayoutPanelDays.Name = "tableLayoutPanelDays";
             this.tableLayoutPanelDays.RowCount = 25;
@@ -2476,18 +2486,6 @@ namespace ProgrammingAdvent2016
             this.textBoxPart2Day22.TabIndex = 5;
             this.textBoxPart2Day22.TabStop = false;
             // 
-            // buttonSolveAll
-            // 
-            this.buttonSolveAll.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.buttonSolveAll.Location = new System.Drawing.Point(304, 3);
-            this.buttonSolveAll.Name = "buttonSolveAll";
-            this.buttonSolveAll.Size = new System.Drawing.Size(75, 23);
-            this.buttonSolveAll.TabIndex = 1;
-            this.buttonSolveAll.TabStop = false;
-            this.buttonSolveAll.Text = "Solve All";
-            this.buttonSolveAll.UseVisualStyleBackColor = true;
-            this.buttonSolveAll.Click += new System.EventHandler(this.ButtonSolveAll_Click);
-            // 
             // tableLayoutPanelDay23
             // 
             this.tableLayoutPanelDay23.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -2586,6 +2584,116 @@ namespace ProgrammingAdvent2016
             this.textBoxPart2Day23.TabIndex = 5;
             this.textBoxPart2Day23.TabStop = false;
             // 
+            // buttonSolveAll
+            // 
+            this.buttonSolveAll.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.buttonSolveAll.Location = new System.Drawing.Point(304, 3);
+            this.buttonSolveAll.Name = "buttonSolveAll";
+            this.buttonSolveAll.Size = new System.Drawing.Size(75, 23);
+            this.buttonSolveAll.TabIndex = 1;
+            this.buttonSolveAll.TabStop = false;
+            this.buttonSolveAll.Text = "Solve All";
+            this.buttonSolveAll.UseVisualStyleBackColor = true;
+            this.buttonSolveAll.Click += new System.EventHandler(this.ButtonSolveAll_Click);
+            // 
+            // tableLayoutPanelDay24
+            // 
+            this.tableLayoutPanelDay24.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tableLayoutPanelDay24.ColumnCount = 4;
+            this.tableLayoutPanelDay24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 77F));
+            this.tableLayoutPanelDay24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 118F));
+            this.tableLayoutPanelDay24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 53F));
+            this.tableLayoutPanelDay24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 258F));
+            this.tableLayoutPanelDay24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelDay24.Controls.Add(this.labelTimeDay24, 0, 1);
+            this.tableLayoutPanelDay24.Controls.Add(this.labelDay24, 0, 0);
+            this.tableLayoutPanelDay24.Controls.Add(this.buttonDay24, 1, 0);
+            this.tableLayoutPanelDay24.Controls.Add(this.labelPart1Day24, 2, 0);
+            this.tableLayoutPanelDay24.Controls.Add(this.labelPart2Day24, 2, 1);
+            this.tableLayoutPanelDay24.Controls.Add(this.textBoxPart1Day24, 3, 0);
+            this.tableLayoutPanelDay24.Controls.Add(this.textBoxPart2Day24, 3, 1);
+            this.tableLayoutPanelDay24.Location = new System.Drawing.Point(4, 1407);
+            this.tableLayoutPanelDay24.Name = "tableLayoutPanelDay24";
+            this.tableLayoutPanelDay24.RowCount = 2;
+            this.tableLayoutPanelDay24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tableLayoutPanelDay24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tableLayoutPanelDay24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelDay24.Size = new System.Drawing.Size(506, 54);
+            this.tableLayoutPanelDay24.TabIndex = 25;
+            // 
+            // labelTimeDay24
+            // 
+            this.labelTimeDay24.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelTimeDay24.AutoSize = true;
+            this.labelTimeDay24.Location = new System.Drawing.Point(109, 33);
+            this.labelTimeDay24.Name = "labelTimeDay24";
+            this.labelTimeDay24.Size = new System.Drawing.Size(53, 13);
+            this.labelTimeDay24.TabIndex = 7;
+            this.labelTimeDay24.Text = "Time: n/a";
+            // 
+            // labelDay24
+            // 
+            this.labelDay24.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelDay24.AutoSize = true;
+            this.labelDay24.Location = new System.Drawing.Point(18, 20);
+            this.labelDay24.Name = "labelDay24";
+            this.tableLayoutPanelDay24.SetRowSpan(this.labelDay24, 2);
+            this.labelDay24.Size = new System.Drawing.Size(41, 13);
+            this.labelDay24.TabIndex = 0;
+            this.labelDay24.Text = "Day 24";
+            // 
+            // buttonDay24
+            // 
+            this.buttonDay24.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.buttonDay24.Location = new System.Drawing.Point(98, 3);
+            this.buttonDay24.Name = "buttonDay24";
+            this.buttonDay24.Size = new System.Drawing.Size(75, 20);
+            this.buttonDay24.TabIndex = 1;
+            this.buttonDay24.TabStop = false;
+            this.buttonDay24.Text = "Solve";
+            this.buttonDay24.UseVisualStyleBackColor = true;
+            this.buttonDay24.Click += new System.EventHandler(this.ButtonDay24_Click);
+            // 
+            // labelPart1Day24
+            // 
+            this.labelPart1Day24.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.labelPart1Day24.AutoSize = true;
+            this.labelPart1Day24.Location = new System.Drawing.Point(207, 6);
+            this.labelPart1Day24.Name = "labelPart1Day24";
+            this.labelPart1Day24.Size = new System.Drawing.Size(38, 13);
+            this.labelPart1Day24.TabIndex = 2;
+            this.labelPart1Day24.Text = "Part 1:";
+            // 
+            // labelPart2Day24
+            // 
+            this.labelPart2Day24.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.labelPart2Day24.AutoSize = true;
+            this.labelPart2Day24.Location = new System.Drawing.Point(207, 33);
+            this.labelPart2Day24.Name = "labelPart2Day24";
+            this.labelPart2Day24.Size = new System.Drawing.Size(38, 13);
+            this.labelPart2Day24.TabIndex = 3;
+            this.labelPart2Day24.Text = "Part 2:";
+            // 
+            // textBoxPart1Day24
+            // 
+            this.textBoxPart1Day24.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxPart1Day24.Location = new System.Drawing.Point(251, 3);
+            this.textBoxPart1Day24.Name = "textBoxPart1Day24";
+            this.textBoxPart1Day24.ReadOnly = true;
+            this.textBoxPart1Day24.Size = new System.Drawing.Size(232, 20);
+            this.textBoxPart1Day24.TabIndex = 4;
+            this.textBoxPart1Day24.TabStop = false;
+            // 
+            // textBoxPart2Day24
+            // 
+            this.textBoxPart2Day24.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxPart2Day24.Location = new System.Drawing.Point(251, 30);
+            this.textBoxPart2Day24.Name = "textBoxPart2Day24";
+            this.textBoxPart2Day24.ReadOnly = true;
+            this.textBoxPart2Day24.Size = new System.Drawing.Size(232, 20);
+            this.textBoxPart2Day24.TabIndex = 5;
+            this.textBoxPart2Day24.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2645,6 +2753,8 @@ namespace ProgrammingAdvent2016
             this.tableLayoutPanelDay22.PerformLayout();
             this.tableLayoutPanelDay23.ResumeLayout(false);
             this.tableLayoutPanelDay23.PerformLayout();
+            this.tableLayoutPanelDay24.ResumeLayout(false);
+            this.tableLayoutPanelDay24.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2839,6 +2949,14 @@ namespace ProgrammingAdvent2016
         private System.Windows.Forms.Label labelPart2Day23;
         private System.Windows.Forms.TextBox textBoxPart1Day23;
         private System.Windows.Forms.TextBox textBoxPart2Day23;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelDay24;
+        private System.Windows.Forms.Label labelTimeDay24;
+        private System.Windows.Forms.Label labelDay24;
+        private System.Windows.Forms.Button buttonDay24;
+        private System.Windows.Forms.Label labelPart1Day24;
+        private System.Windows.Forms.Label labelPart2Day24;
+        private System.Windows.Forms.TextBox textBoxPart1Day24;
+        private System.Windows.Forms.TextBox textBoxPart2Day24;
     }
 }
 

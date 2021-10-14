@@ -30,3 +30,4 @@ InputDay20.txt
 InputDay21.txt
 InputDay22.txt
 InputDay23.txt
+InputDay24.txt
