@@ -100,95 +100,128 @@ namespace ProgrammingAdvent2016
                 }
             }
 
-            SaveMapToDesktop(map, "day-24-input-map");
-
-            FillDeadEnds(map);
-
-            SaveMapToDesktop(map, "day-24-map-fewer-dead-ends");
+            int[,] distances = new int[locations.Count, locations.Count];
+            for (int i = 0; i < locations.Count - 1; i++)
+            {
+                for (int j = i + 1; j < locations.Count; j++)
+                {
+                    var steps = NumberOfSteps(locations[i].x, locations[i].y, locations[j].x, locations[j].y);
+                    distances[i, j] = steps;
+                }
+            }
 
             stopwatch.Reset();
             return solution;
         }
 
-        void SaveMapToDesktop(Bitmap bitmap, string filename)
+        bool IsWall(int x, int y)
         {
-            int scaleFactor = 5;
-            var output = new Bitmap(bitmap.Width * scaleFactor, bitmap.Height * scaleFactor);
-            var g = Graphics.FromImage(output);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-            g.DrawImage(bitmap, 0, 0, output.Width, output.Height);
-            g.Dispose();
-            output.Save(Environment.GetEnvironmentVariable("HOMEDRIVE")
-                + Environment.GetEnvironmentVariable("HOMEPATH")
-                + @"\Desktop\" + filename + ".png");
-        }
-
-        void FillDeadEnds(Bitmap bitmap)
-        {
-            while (true)
+            if (map.GetPixel(x, y).R == 0
+                && map.GetPixel(x, y).G == 0
+                && map.GetPixel(x, y).B == 0)
             {
-                if (FindDeadEnd(bitmap, out int x, out int y))
-                {
-                    FillDeadEnd(bitmap, x, y);
-                }
-                else
-                {
-                    break;
-                }
+                return true;
             }
+            return false;
         }
 
-        bool FindDeadEnd(Bitmap bitmap, out int deadEndX, out int deadEndY)
+        int NumberOfSteps(int startX, int startY, int goalX, int goalY)
         {
-            for (int y = 1; y < bitmap.Height - 1; y++)
+            // Initialize starting node.
+            var allNodes = new Dictionary<string, MazeNode>();
+            var startingNode = new MazeNode(startX, startY)
             {
-                for (int x = 1; x < bitmap.Width - 1; x++)
+                stepsFromStart = 0,
+                distanceToEnd = Math.Abs(startX - goalX) + Math.Abs(startY - goalY)
+            };
+            startingNode.score = startingNode.stepsFromStart + startingNode.distanceToEnd;
+            allNodes.Add(startingNode.coords, startingNode);
+            // Initialize node lists.
+            var openList = new List<string>();
+            var closedList = new List<string>();
+            openList.Add(startingNode.coords);
+            // While there are nodes to be analyzed...
+            while (openList.Count > 0)
+            {
+                // Get a node on the open list with the lowest score
+                MazeNode currentNode = null;
+                int lowestScore = int.MaxValue;
+                foreach (var nodeKey in openList)
                 {
-                    if (IsDeadEnd(bitmap, x, y))
+                    var node = allNodes[nodeKey];
+                    if (node.score < lowestScore)
                     {
-                        deadEndX = x;
-                        deadEndY = y;
-                        return true;
+                        lowestScore = node.score;
+                        currentNode = node;
+                    }
+                }
+                // If the current node is the goal node, return the path length.
+                if (currentNode.x == goalX && currentNode.y == goalY)
+                {
+                    return currentNode.stepsFromStart;
+                }
+                // Move current node from open list to closed list.
+                openList.Remove(currentNode.coords);
+                closedList.Add(currentNode.coords);
+                // Make a list of the neighbors of the current node.
+                var neighborList = new List<MazeNode>();
+                if (!IsWall(currentNode.x - 1, currentNode.y))
+                {
+                    string keyMinusX = PathNode.CoordsToString(currentNode.x - 1, currentNode.y);
+                    if (!allNodes.ContainsKey(keyMinusX))
+                    {
+                        allNodes.Add(keyMinusX, new MazeNode(currentNode.x - 1, currentNode.y));
+                    }
+                    neighborList.Add(allNodes[keyMinusX]);
+                }
+                if (!IsWall(currentNode.x, currentNode.y - 1))
+                {
+                    string keyMinusY = PathNode.CoordsToString(currentNode.x, currentNode.y - 1);
+                    if (!allNodes.ContainsKey(keyMinusY))
+                    {
+                        allNodes.Add(keyMinusY, new MazeNode(currentNode.x, currentNode.y - 1));
+                    }
+                    neighborList.Add(allNodes[keyMinusY]);
+                }
+                if (!IsWall(currentNode.x + 1, currentNode.y))
+                {
+                    string keyPlusX = PathNode.CoordsToString(currentNode.x + 1, currentNode.y);
+                    if (!allNodes.ContainsKey(keyPlusX))
+                    {
+                        allNodes.Add(keyPlusX, new MazeNode(currentNode.x + 1, currentNode.y));
+                    }
+                    neighborList.Add(allNodes[keyPlusX]);
+                }
+                if (!IsWall(currentNode.x, currentNode.y + 1))
+                {
+                    string keyPlusY = PathNode.CoordsToString(currentNode.x, currentNode.y + 1);
+                    if (!allNodes.ContainsKey(keyPlusY))
+                    {
+                        allNodes.Add(keyPlusY, new MazeNode(currentNode.x, currentNode.y + 1));
+                    }
+                    neighborList.Add(allNodes[keyPlusY]);
+                }
+                // For each neighbor node...
+                foreach (var neighbor in neighborList)
+                {
+                    // If the neighbor node has already been fully analyzed, skip it.
+                    if (closedList.Contains(neighbor.coords)) continue;
+                    // If the neighbor node is not on the open list, or if the path through the current node
+                    // is shorter than the neighbor node's previously considered path...
+                    if (!openList.Contains(neighbor.coords)
+                        || currentNode.stepsFromStart + 1 < neighbor.stepsFromStart)
+                    {
+                        // Recalculate the neighbor node's values.
+                        neighbor.stepsFromStart = currentNode.stepsFromStart + 1;
+                        neighbor.distanceToEnd = Math.Abs(neighbor.x - goalX) + Math.Abs(neighbor.y - goalY);
+                        neighbor.score = neighbor.stepsFromStart + neighbor.distanceToEnd;
+                        // Add the neighbor to the open list if it hasn't been added yet.
+                        if (!openList.Contains(neighbor.coords)) openList.Add(neighbor.coords);
                     }
                 }
             }
-            deadEndX = -1;
-            deadEndY = -1;
-            return false;
-        }
-
-        void FillDeadEnd(Bitmap bitmap, int x, int y)
-        {
-            bitmap.SetPixel(x, y, Color.Black);
-            if (IsDeadEnd(bitmap, x + 1, y))
-            {
-                FillDeadEnd(bitmap, x + 1, y);
-            }
-            else if (IsDeadEnd(bitmap, x - 1, y))
-            {
-                FillDeadEnd(bitmap, x - 1, y);
-            }
-            else if (IsDeadEnd(bitmap, x, y + 1))
-            {
-                FillDeadEnd(bitmap, x, y + 1);
-            }
-            else if (IsDeadEnd(bitmap, x, y - 1))
-            {
-                FillDeadEnd(bitmap, x, y - 1);
-            }
-        }
-
-        bool IsDeadEnd(Bitmap bitmap, int x, int y)
-        {
-            if (bitmap.GetPixel(x, y).ToArgb() != Color.White.ToArgb()) { return false; }
-            int walls = 0;
-            if (bitmap.GetPixel(x + 1, y).ToArgb() == Color.Black.ToArgb()) { walls++; }
-            if (bitmap.GetPixel(x - 1, y).ToArgb() == Color.Black.ToArgb()) { walls++; }
-            if (bitmap.GetPixel(x, y + 1).ToArgb() == Color.Black.ToArgb()) { walls++; }
-            if (bitmap.GetPixel(x, y - 1).ToArgb() == Color.Black.ToArgb()) { walls++; }
-            if (walls >= 3) { return true; }
-            return false;
+            // The goal node was not found, so there is no path.
+            return int.MaxValue;
         }
     }
 
@@ -201,6 +234,31 @@ namespace ProgrammingAdvent2016
         {
             this.x = x;
             this.y = y;
+        }
+    }
+
+    class MazeNode
+    {
+        public int x;
+        public int y;
+        public string coords;
+        public int stepsFromStart;
+        public int distanceToEnd;
+        public int score;
+
+        public MazeNode(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            coords = CoordsToString(x, y);
+            stepsFromStart = int.MaxValue;
+            distanceToEnd = int.MaxValue;
+            score = int.MaxValue;
+        }
+
+        public static string CoordsToString(int x, int y)
+        {
+            return x.ToString() + "," + y.ToString();
         }
     }
 }
