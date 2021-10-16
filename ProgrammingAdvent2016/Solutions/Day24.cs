@@ -17,6 +17,7 @@ namespace ProgrammingAdvent2016
 
         Bitmap map;
         Dictionary<int, Coordinates> locations;
+        int[,] distances;
 
         public override PuzzleSolution Solution()
         {
@@ -100,7 +101,7 @@ namespace ProgrammingAdvent2016
                 }
             }
 
-            int[,] distances = new int[locations.Count, locations.Count];
+            distances = new int[locations.Count, locations.Count];
             for (int i = 0; i < locations.Count - 1; i++)
             {
                 for (int j = i + 1; j < locations.Count; j++)
@@ -109,6 +110,12 @@ namespace ProgrammingAdvent2016
                     distances[i, j] = steps;
                 }
             }
+
+            int partOneSolution = ShortestRouteSteps(false);
+            solution.WriteSolution(1, partOneSolution, stopwatch.ElapsedMilliseconds);
+
+            int partTwoSolution = ShortestRouteSteps(true);
+            solution.WriteSolution(2, partTwoSolution, stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             return solution;
@@ -222,6 +229,95 @@ namespace ProgrammingAdvent2016
             }
             // The goal node was not found, so there is no path.
             return int.MaxValue;
+        }
+
+        int ShortestRouteSteps(bool returnToStart)
+        {
+            var locationsToVisit = new int[locations.Count - 1];
+            for (int i = 0; i < locations.Count - 1; i++)
+            {
+                locationsToVisit[i] = i + 1;
+            }
+            int shortestDistance = int.MaxValue;
+            int[] permutation = new int[locationsToVisit.Length];
+            for (int i = 0; i < permutation.Length; i++) { permutation[i] = i; }
+            while (true)
+            {
+                int permutationDistance = distances[0, locationsToVisit[permutation[0]]];
+                for (int i = 0; i < permutation.Length - 1; i++)
+                {
+                    int start = Math.Min(locationsToVisit[permutation[i]], locationsToVisit[permutation[i + 1]]);
+                    int stop = Math.Max(locationsToVisit[permutation[i]], locationsToVisit[permutation[i + 1]]);
+                    permutationDistance += distances[start, stop];
+                }
+                if (returnToStart)
+                {
+                    permutationDistance += distances[0, locationsToVisit[permutation[permutation.Length - 1]]];
+                }
+                shortestDistance = Math.Min(shortestDistance, permutationDistance);
+                if (!TryNextPermutation(permutation, out permutation))
+                {
+                    break;
+                }
+            }
+            return shortestDistance;
+        }
+
+        // Permutation code from one of my previous projects.
+        public static bool TryNextPermutation(int[] input, out int[] output)
+        {
+            if (input.Length < 2)
+            {
+                output = input;
+                return false;
+            }
+            // 1. Find the largest index k such that a[k] < a[k + 1].
+            int kilo = -1;
+            for (int i = input.Length - 2; i >= 0; i--)
+            {
+                if (input[i] < input[i + 1])
+                {
+                    kilo = i;
+                    break;
+                }
+            }
+            // 1. If no such index exists, the permutation is the last permutation.
+            if (kilo < 0)
+            {
+                output = input;
+                return false;
+            }
+            // 2. Find the largest index l greater than k such that a[k] < a[l].
+            int lima = -1;
+            for (int i = input.Length - 1; i > kilo; i--)
+            {
+                if (input[kilo] < input[i])
+                {
+                    lima = i;
+                    break;
+                }
+            }
+            // 3. Swap the value of a[k] with that of a[l].
+            SwapValues(kilo, lima, input);
+            // 4. Reverse the sequence from a[k + 1] up to and including the final element a[n].
+            int start = kilo + 1;
+            int end = input.Length - 1;
+            while (end > start)
+            {
+                SwapValues(start, end, input);
+                start++;
+                end--;
+            }
+
+            output = input;
+            return true;
+        }
+
+        static void SwapValues(int a, int b, int[] array)
+        {
+            int temp = array[a];
+            array[a] = array[b];
+            array[b] = temp;
         }
     }
 
