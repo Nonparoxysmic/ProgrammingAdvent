@@ -4,6 +4,7 @@
 // https://github.com/Nonparoxysmic/ProgrammingAdvent
 
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ProgrammingAdvent2016
@@ -13,7 +14,7 @@ namespace ProgrammingAdvent2016
         readonly PuzzleSolution solution = new PuzzleSolution();
         readonly Stopwatch stopwatch = new Stopwatch();
 
-        readonly string[] expectedInputFormat = new string[]
+        readonly string[] expectedInput = new string[]
         { 
             "cpy a d",
             "cpy 7 c",
@@ -64,7 +65,7 @@ namespace ProgrammingAdvent2016
 
             for (int i = 0; i < inputLines.Length; i++)
             {
-                if ((i != 2 && inputLines[i] != expectedInputFormat[i])
+                if ((i != 2 && inputLines[i] != expectedInput[i])
                     || (i == 2 && !Regex.IsMatch(inputLines[2], @"^cpy \d+ b$")))
                 {
                     solution.WriteSolution(1, "ERROR: Unexpected input \"" + inputLines[i] + "\".", 0);
@@ -73,9 +74,59 @@ namespace ProgrammingAdvent2016
             }
             int inputValue = int.Parse(Regex.Match(inputLines[2], @"\d+(?= )").Value);
 
+            int answer = FindAnswer(inputValue);
+            solution.WriteSolution(1, answer, stopwatch.ElapsedMilliseconds);
+            solution.WriteSolution(2, "Transmit the Signal", solution.PartOneMilliseconds());
 
             stopwatch.Reset();
             return solution;
+        }
+
+        int FindAnswer(int inputValue)
+        {
+            for (int i = 1; i < int.MaxValue; i++)
+            {
+                string result = GetPattern(i, inputValue);
+                if (result.Length % 2 == 1) { continue; }
+                for (int j = 0; j < result.Length - 1; j += 2)
+                {
+                    if (!(result[j] == '0' && result[j + 1] == '1'))
+                    {
+                        break;
+                    }
+                    if (j == result.Length - 2)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+
+        string GetPattern(int initialA, int inputValue)
+        {
+            var sb = new StringBuilder();
+            int a = initialA + inputValue * 7, b, c;
+            do
+            {
+                b = a;
+                a = 0;
+                while (true)
+                {
+                    c = 2;
+                    do
+                    {
+                        if (b == 0) { goto BreakLoops; }
+                        b--;
+                        c--;
+                    } while (c != 0);
+                    a++;
+                }
+                BreakLoops:
+                b = 2 - c;
+                sb.Append(b);
+            } while (a != 0);
+            return sb.ToString();
         }
     }
 }
