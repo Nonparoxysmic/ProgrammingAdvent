@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgrammingAdvent2017"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="ProgrammingAdvent2017 by Nonparoxysmic" Width="800" Height="600">
     <Grid>
-
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="  Button 1  " Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button Content="  Button 2  " Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+        </StackPanel>
     </Grid>
 </Window>
