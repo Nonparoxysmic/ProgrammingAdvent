@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:ProgrammingAdvent2017"
         mc:Ignorable="d"
         Title="ProgrammingAdvent2017 by Nonparoxysmic" Width="800" Height="600">
-    <Grid>
+    <Grid x:Name="MainMenu">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="  Button 1  " Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-            <Button Content="  Button 2  " Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Click="ExitProgramButton_Click"/>
         </StackPanel>
     </Grid>
 </Window>

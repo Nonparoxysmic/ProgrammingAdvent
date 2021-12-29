@@ -24,5 +24,10 @@ namespace ProgrammingAdvent2017
         {
             InitializeComponent();
         }
+
+        private void ExitProgramButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }
