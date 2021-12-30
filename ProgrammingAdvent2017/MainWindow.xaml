@@ -6,11 +6,37 @@
         xmlns:local="clr-namespace:ProgrammingAdvent2017"
         mc:Ignorable="d"
         Title="ProgrammingAdvent2017 by Nonparoxysmic" Width="800" Height="600">
-    <Grid x:Name="MainMenu">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-            <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Click="ExitProgramButton_Click"/>
-        </StackPanel>
+    <Window.CommandBindings>
+        <CommandBinding Command="Close" CanExecute="CloseCommand_CanExecute" Executed="CloseCommand_Executed"/>
+    </Window.CommandBindings>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="_File">
+                <MenuItem Header="MenuItem"/>
+                <Separator/>
+                <MenuItem Command="Close" Header="Exit" InputGestureText="Alt+F4"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Command="Cut"/>
+                <MenuItem Command="Copy"/>
+                <MenuItem Command="Paste"/>
+                <Separator/>
+                <MenuItem Header="MenuItem"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About"/>
+            </MenuItem>
+        </Menu>
+        <Grid x:Name="MainMenu" Grid.Row="1">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+                <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Click="ExitProgramButton_Click"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

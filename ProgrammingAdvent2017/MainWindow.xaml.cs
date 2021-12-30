@@ -27,7 +27,17 @@ namespace ProgrammingAdvent2017
 
         private void ExitProgramButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Close();
+        }
+
+        private void CloseCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
