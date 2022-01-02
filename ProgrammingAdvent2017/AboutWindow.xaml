@@ -5,7 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProgrammingAdvent2017"
         mc:Ignorable="d"
-        Title="AboutWindow" Height="450" Width="800">
+        Title="About ProgrammingAdvent2017"
+        MinWidth="400"
+        MinHeight="200"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         
     </Grid>

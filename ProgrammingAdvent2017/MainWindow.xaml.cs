@@ -39,5 +39,14 @@ namespace ProgrammingAdvent2017
         {
             Close();
         }
+
+        private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            AboutWindow aboutWindow = new AboutWindow
+            {
+                Owner = this
+            };
+            _ = aboutWindow.ShowDialog();
+        }
     }
 }
