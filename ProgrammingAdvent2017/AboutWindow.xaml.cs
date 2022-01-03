@@ -21,5 +21,10 @@ namespace ProgrammingAdvent2017
         {
             InitializeComponent();
         }
+
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
