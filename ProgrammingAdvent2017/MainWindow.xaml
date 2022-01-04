@@ -11,12 +11,8 @@
     <Window.CommandBindings>
         <CommandBinding Command="Close" CanExecute="CloseCommand_CanExecute" Executed="CloseCommand_Executed"/>
     </Window.CommandBindings>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Menu>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Width="Auto">
             <MenuItem Header="_File">
                 <MenuItem Header="MenuItem"/>
                 <Separator/>
@@ -33,12 +29,10 @@
                 <MenuItem Header="_About ProgrammingAdvent2017" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <Grid x:Name="MainMenu" Grid.Row="1">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-                <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-                <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Click="ExitProgramButton_Click"/>
-            </StackPanel>
-        </Grid>
-    </Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button Content="TBD" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
+            <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Click="ExitProgramButton_Click"/>
+        </StackPanel>
+    </DockPanel>
 </Window>
