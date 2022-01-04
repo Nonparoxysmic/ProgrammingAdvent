@@ -17,7 +17,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBox Margin="20,20,20,0" Background="Transparent" BorderThickness="0" IsReadOnly="true" TextWrapping="Wrap" Text="Made by Nonparoxysmic&#x0a;https://github.com/Nonparoxysmic/ProgrammingAdvent&#x0a;&#x0a;For participation in Advent of Code 2017&#x0a;https://adventofcode.com/2017"/>
-        <Button x:Name="OKButton" Grid.Row="1" Content="OK" Width="50" Height="30" Margin="20,20,20,20" DockPanel.Dock="Bottom" Click="OKButton_Click"/>
+        <TextBox Margin="20,20,20,20" Background="Transparent" BorderThickness="0" IsReadOnly="true" TextWrapping="Wrap" Text="Made by Nonparoxysmic&#x0a;https://github.com/Nonparoxysmic/ProgrammingAdvent&#x0a;&#x0a;For participation in Advent of Code 2017&#x0a;https://adventofcode.com/2017"/>
+        <Button x:Name="OKButton" Grid.Row="1" Content="OK" Width="50" Height="30" Margin="20,20,20,20" DockPanel.Dock="Bottom" Click="OKButton_Click" IsDefault="True"/>
     </Grid>
 </Window>
