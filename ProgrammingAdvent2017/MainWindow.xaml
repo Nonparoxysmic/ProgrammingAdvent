@@ -16,12 +16,12 @@
             <MenuItem Header="_File">
                 <MenuItem Header="MenuItem"/>
                 <Separator/>
-                <MenuItem Command="Close" Header="Exit" InputGestureText="Alt+F4"/>
+                <MenuItem Command="Close" Header="E_xit" InputGestureText="Alt+F4"/>
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Command="Cut"/>
-                <MenuItem Command="Copy"/>
-                <MenuItem Command="Paste"/>
+                <MenuItem Command="Cut" Header="Cu_t"/>
+                <MenuItem Command="Copy" Header="_Copy"/>
+                <MenuItem Command="Paste" Header="_Paste"/>
                 <Separator/>
                 <MenuItem Header="MenuItem"/>
             </MenuItem>
