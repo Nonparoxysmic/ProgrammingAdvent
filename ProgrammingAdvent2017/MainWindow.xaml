@@ -58,7 +58,7 @@
                 <TextBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="10"/>
                 <Label Grid.Row="5" Content="Elapsed Time:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
                 <Label Grid.Row="5" Grid.Column="1" Content="TBD" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
-                <Button Grid.Row="6" Grid.ColumnSpan="3" Margin="10" Padding="40,10,40,10" Content="Return to Main Menu" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button x:Name="ReturnToMenuSingle" Grid.Row="6" Grid.ColumnSpan="3" Margin="10" Padding="40,10,40,10" Content="Return to Main Menu" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ReturnToMenuFromSingle_Click"/>
             </Grid>
             <StackPanel x:Name="MainMenuStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
                 <Button x:Name="SingleSolveButton" Content="Single Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="SingleSolveButton_Click"/>

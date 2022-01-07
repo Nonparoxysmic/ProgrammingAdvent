@@ -59,5 +59,11 @@ namespace ProgrammingAdvent2017
         {
             _ = MessageBox.Show("WIP: Feature to be added.", "Multi Solve");
         }
+
+        private void ReturnToMenuFromSingle_Click(object sender, RoutedEventArgs e)
+        {
+            MainMenuStackPanel.Visibility = Visibility.Visible;
+            SingleSolveGrid.Visibility = Visibility.Hidden;
+        }
     }
 }
