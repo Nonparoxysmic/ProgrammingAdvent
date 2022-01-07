@@ -53,16 +53,16 @@
                 <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 <Button Grid.Row="2" Grid.Column="1" Margin="10" Padding="40,10,40,10" Content="Solve" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <Label Grid.Row="3" Content="Part 1 Solution:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
-                <TextBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="10"/>
+                <TextBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="10" IsReadOnly="True"/>
                 <Label Grid.Row="4" Content="Part 2 Solution:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
-                <TextBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="10"/>
+                <TextBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Margin="10" IsReadOnly="True"/>
                 <Label Grid.Row="5" Content="Elapsed Time:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
                 <Label Grid.Row="5" Grid.Column="1" Content="TBD" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10"/>
                 <Button x:Name="ReturnToMenuSingle" Grid.Row="6" Grid.ColumnSpan="3" Margin="10" Padding="40,10,40,10" Content="Return to Main Menu" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ReturnToMenuFromSingle_Click"/>
             </Grid>
             <StackPanel x:Name="MainMenuStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
-                <Button x:Name="SingleSolveButton" Content="Single Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="SingleSolveButton_Click"/>
-                <Button x:Name="MultiSolveButton" Content="Multi Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="MultiSolveButton_Click"/>
+                <Button x:Name="MenuSingleSolveButton" Content="Single Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="MenuSingleSolveButton_Click"/>
+                <Button x:Name="MenuMultiSolveButton" Content="Multi Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="MenuMultiSolveButton_Click"/>
                 <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" FontSize="24" Click="ExitProgramButton_Click"/>
             </StackPanel>
         </Grid>

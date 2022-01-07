@@ -49,13 +49,13 @@ namespace ProgrammingAdvent2017
             _ = aboutWindow.ShowDialog();
         }
 
-        private void SingleSolveButton_Click(object sender, RoutedEventArgs e)
+        private void MenuSingleSolveButton_Click(object sender, RoutedEventArgs e)
         {
             MainMenuStackPanel.Visibility = Visibility.Hidden;
             SingleSolveGrid.Visibility = Visibility.Visible;
         }
 
-        private void MultiSolveButton_Click(object sender, RoutedEventArgs e)
+        private void MenuMultiSolveButton_Click(object sender, RoutedEventArgs e)
         {
             _ = MessageBox.Show("WIP: Feature to be added.", "Multi Solve");
         }
