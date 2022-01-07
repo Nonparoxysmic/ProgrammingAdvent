@@ -61,9 +61,9 @@
                 <Button x:Name="ReturnToMenuSingle" Grid.Row="6" Grid.ColumnSpan="3" Margin="10" Padding="40,10,40,10" Content="Return to Main Menu" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ReturnToMenuFromSingle_Click"/>
             </Grid>
             <StackPanel x:Name="MainMenuStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
-                <Button x:Name="MenuSingleSolveButton" Content="Single Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="MenuSingleSolveButton_Click"/>
-                <Button x:Name="MenuMultiSolveButton" Content="Multi Solve" Width="200" Height="50" Margin="10" FontSize="24" Click="MenuMultiSolveButton_Click"/>
-                <Button x:Name="ExitProgramButton" Content="Exit Program" Width="200" Height="50" Margin="10" FontSize="24" Click="ExitProgramButton_Click"/>
+                <Button x:Name="MenuSingleSolveButton" Content="Single Solve" Padding="40,10,40,10" Margin="10" FontSize="24" Click="MenuSingleSolveButton_Click"/>
+                <Button x:Name="MenuMultiSolveButton" Content="Multi Solve" Padding="40,10,40,10" Margin="10" FontSize="24" Click="MenuMultiSolveButton_Click"/>
+                <Button x:Name="ExitProgramButton" Content="Exit Program" Padding="40,10,40,10" Margin="10" FontSize="24" Click="ExitProgramButton_Click"/>
             </StackPanel>
         </Grid>
     </DockPanel>
