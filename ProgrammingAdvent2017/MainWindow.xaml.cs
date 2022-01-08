@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ProgrammingAdvent2017.Program;
 
 namespace ProgrammingAdvent2017
 {
@@ -23,6 +24,7 @@ namespace ProgrammingAdvent2017
         public MainWindow()
         {
             InitializeComponent();
+            Reflection.InitializeDictionary();
         }
 
         private void ExitProgramButton_Click(object sender, RoutedEventArgs e)
