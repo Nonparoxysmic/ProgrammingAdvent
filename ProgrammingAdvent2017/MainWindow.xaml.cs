@@ -24,7 +24,6 @@ namespace ProgrammingAdvent2017
         public MainWindow()
         {
             InitializeComponent();
-            Reflection.InitializeDictionary();
         }
 
         private void ExitProgramButton_Click(object sender, RoutedEventArgs e)

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProgrammingAdvent2017"
+        xmlns:program="clr-namespace:ProgrammingAdvent2017.Program"
         mc:Ignorable="d"
         Title="ProgrammingAdvent2017 by Nonparoxysmic"
         Width="800"
@@ -33,6 +33,9 @@
         </Menu>
         <Grid>
             <Grid x:Name="SingleSolveGrid" Margin="20" Visibility="Hidden">
+                <Grid.DataContext>
+                    <program:SingleSolverViewModel/>
+                </Grid.DataContext>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
@@ -48,7 +51,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Content="Day:" Margin="10" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" Margin="10" VerticalAlignment="Center"/>
+                <ComboBox Grid.Column="1" Margin="10" VerticalAlignment="Center" ItemsSource="{Binding DayOptions}" SelectedItem="{Binding DaySelected, Mode=OneWayToSource}" SelectedIndex="0"/>
                 <Label Grid.Row="1" Content="Input:" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                 <Button Grid.Row="2" Grid.Column="1" Margin="10" Padding="40,10,40,10" Content="Solve" HorizontalAlignment="Left" VerticalAlignment="Center"/>

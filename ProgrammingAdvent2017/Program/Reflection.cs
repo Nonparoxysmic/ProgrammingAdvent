@@ -41,6 +41,7 @@ namespace ProgrammingAdvent2017.Program
 
         public static int[] GetDayNumbers()
         {
+            if (dayTypes == null) { InitializeDictionary(); }
             var numbers = new List<int>();
             foreach (var kvp in dayTypes)
             {
