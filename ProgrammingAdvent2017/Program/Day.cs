@@ -7,6 +7,6 @@ namespace ProgrammingAdvent2017.Program
 {
     abstract class Day
     {
-        public abstract PuzzleAnswers Solve();
+        public abstract PuzzleAnswers Solve(string input);
     }
 }

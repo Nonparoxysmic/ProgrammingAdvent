@@ -27,7 +27,7 @@ namespace ProgrammingAdvent2017.Program
             Type[] types = GetDayClassTypes();
             foreach (var t in types)
             {
-                int dayNumber = int.Parse(Regex.Match(t.Name, @"\d+").Value);
+                int dayNumber = int.Parse(Regex.Match(t.Name, @"\d+$").Value);
                 if (dayTypes.ContainsKey(dayNumber))
                 {
                     throw new ApplicationException();

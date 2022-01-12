@@ -9,7 +9,7 @@ namespace ProgrammingAdvent2017.Solutions
 {
     class Day01 : Day
     {
-        public override PuzzleAnswers Solve()
+        public override PuzzleAnswers Solve(string input)
         {
             return new PuzzleAnswers(); // TEMPORARY
         }

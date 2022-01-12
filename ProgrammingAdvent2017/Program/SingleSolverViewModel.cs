@@ -6,6 +6,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ProgrammingAdvent2017.Program
@@ -25,7 +27,6 @@ namespace ProgrammingAdvent2017.Program
         {
             _singleSolverModel = new SingleSolverModel();
             SolveButtonCommand = new SimpleRelayCommand(SolveButton_Click);
-            SolveButtonEnabled = true;
         }
 
         public string DaySelected
@@ -38,6 +39,12 @@ namespace ProgrammingAdvent2017.Program
         {
             get { return _singleSolverModel.InputText; }
             set { _singleSolverModel.InputText = value; OnPropertyChanged(nameof(InputText)); }
+        }
+
+        public bool SolveButtonEnabled
+        {
+            get { return _singleSolverModel.SolveButtonEnabled; }
+            set { _singleSolverModel.SolveButtonEnabled = value; OnPropertyChanged(nameof(SolveButtonEnabled)); }
         }
 
         public string PartOneOutput
@@ -73,13 +80,22 @@ namespace ProgrammingAdvent2017.Program
             return new ObservableCollection<string>(output);
         }
 
-        public bool SolveButtonEnabled { get; set; }
-
         public ICommand SolveButtonCommand { get; set; }
 
         private void SolveButton_Click()
         {
+            SolveButtonEnabled = false;
+            _ = Task.Run(() => CalculateAnswers());
+        }
 
+        private void CalculateAnswers()
+        {
+            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            PuzzleAnswers answers = Reflection.GetDayObject(dayNumber).Solve(InputText);
+            PartOneOutput = answers.PartOneAnswer;
+            PartTwoOutput = answers.PartTwoAnswer;
+            TimeOutput = ((answers.ElapsedMilliseconds / 10 + 1) / 100.0).ToString("F2") + " seconds";
+            SolveButtonEnabled = true;
         }
     }
 }
