@@ -47,6 +47,12 @@ namespace ProgrammingAdvent2017.Program
             set { _singleSolverModel.SolveButtonEnabled = value; OnPropertyChanged(nameof(SolveButtonEnabled)); }
         }
 
+        public string Status
+        {
+            get { return _singleSolverModel.Status; }
+            set { _singleSolverModel.Status = value; OnPropertyChanged(nameof(Status)); }
+        }
+
         public string PartOneOutput
         {
             get { return _singleSolverModel.PartOneOutput; }
@@ -72,7 +78,7 @@ namespace ProgrammingAdvent2017.Program
         private static ObservableCollection<string> InitializeDayOptions()
         {
             int[] dayNumbers = Reflection.GetDayNumbers();
-            var output = new List<string>();
+            List<string> output = new List<string>();
             foreach (int i in dayNumbers)
             {
                 output.Add("Day " + i);
@@ -85,6 +91,7 @@ namespace ProgrammingAdvent2017.Program
         private void SolveButton_Click()
         {
             SolveButtonEnabled = false;
+            Status = "Working...";
             _ = Task.Run(() => CalculateAnswers());
         }
 
@@ -92,6 +99,7 @@ namespace ProgrammingAdvent2017.Program
         {
             int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
             PuzzleAnswers answers = Day.GetDayObject(dayNumber).Solve(InputText);
+            Status = DaySelected + " Solution";
             PartOneOutput = answers.PartOneAnswer;
             PartTwoOutput = answers.PartTwoAnswer;
             TimeOutput = ((answers.ElapsedMilliseconds / 10 + 1) / 100.0).ToString("F2") + " seconds";
