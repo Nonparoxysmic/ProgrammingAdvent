@@ -91,7 +91,7 @@ namespace ProgrammingAdvent2017.Program
         private void CalculateAnswers()
         {
             int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
-            PuzzleAnswers answers = Reflection.GetDayObject(dayNumber).Solve(InputText);
+            PuzzleAnswers answers = Day.GetDayObject(dayNumber).Solve(InputText);
             PartOneOutput = answers.PartOneAnswer;
             PartTwoOutput = answers.PartTwoAnswer;
             TimeOutput = ((answers.ElapsedMilliseconds / 10 + 1) / 100.0).ToString("F2") + " seconds";

@@ -11,11 +11,11 @@ using System.Text.RegularExpressions;
 
 namespace ProgrammingAdvent2017.Program
 {
-    static class Reflection
+    internal static class Reflection
     {
-        static SortedDictionary<int, Type> dayTypes;
+        private static SortedDictionary<int, Type> dayTypes;
 
-        static Type[] GetDayClassTypes()
+        private static Type[] GetDayClassTypes()
         {
             Type t = typeof(Day);
             return Assembly.GetAssembly(t).GetTypes().Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(t)).ToArray();
@@ -25,7 +25,7 @@ namespace ProgrammingAdvent2017.Program
         {
             dayTypes = new SortedDictionary<int, Type>();
             Type[] types = GetDayClassTypes();
-            foreach (var t in types)
+            foreach (Type t in types)
             {
                 int dayNumber = int.Parse(Regex.Match(t.Name, @"\d+$").Value);
                 if (dayTypes.ContainsKey(dayNumber))
@@ -42,22 +42,20 @@ namespace ProgrammingAdvent2017.Program
         public static int[] GetDayNumbers()
         {
             if (dayTypes == null) { InitializeDictionary(); }
-            var numbers = new List<int>();
-            foreach (var kvp in dayTypes)
+            List<int> numbers = new List<int>();
+            foreach (KeyValuePair<int, Type> kvp in dayTypes)
             {
                 numbers.Add(kvp.Key);
             }
             return numbers.ToArray();
         }
 
-        public static Day GetDayObject(int dayNumber)
+        public static Day CreateDayObject(int dayNumber)
         {
-            if (dayTypes == null) { return null; }
-            else if (dayTypes.ContainsKey(dayNumber))
-            {
-                return (Day)Activator.CreateInstance(dayTypes[dayNumber]);
-            }
-            else return null;
+            if (dayTypes == null) { InitializeDictionary(); }
+            return dayTypes.ContainsKey(dayNumber)
+                ? (Day)Activator.CreateInstance(dayTypes[dayNumber])
+                : null;
         }
     }
 }
