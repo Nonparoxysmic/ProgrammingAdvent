@@ -20,8 +20,8 @@ namespace ProgrammingAdvent2017.Program
 
         public void WriteAnswers(string partOne, string partTwo, long milliseconds)
         {
-            PartOneAnswer = partOne;
-            PartTwoAnswer = partTwo;
+            if (partOne != null) { PartOneAnswer = partOne; }
+            if (partTwo != null) { PartTwoAnswer = partTwo; }
             ElapsedMilliseconds = milliseconds;
         }
     }
