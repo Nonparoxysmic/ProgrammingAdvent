@@ -27,6 +27,8 @@ namespace ProgrammingAdvent2017.Program
         {
             _singleSolverModel = new SingleSolverModel();
             SolveButtonCommand = new SimpleRelayCommand(SolveButton_Click);
+            LoadButtonCommand = new SimpleRelayCommand(LoadButton_Click);
+            SaveButtonCommand = new SimpleRelayCommand(SaveButton_Click);
         }
 
         public string DaySelected
@@ -45,6 +47,18 @@ namespace ProgrammingAdvent2017.Program
         {
             get { return _singleSolverModel.SolveButtonEnabled; }
             set { _singleSolverModel.SolveButtonEnabled = value; OnPropertyChanged(nameof(SolveButtonEnabled)); }
+        }
+
+        public bool LoadButtonEnabled
+        {
+            get { return _singleSolverModel.LoadButtonEnabled; }
+            set { _singleSolverModel.LoadButtonEnabled = value; OnPropertyChanged(nameof(LoadButtonEnabled)); }
+        }
+
+        public bool SaveButtonEnabled
+        {
+            get { return _singleSolverModel.SaveButtonEnabled; }
+            set { _singleSolverModel.SaveButtonEnabled = value; OnPropertyChanged(nameof(SaveButtonEnabled)); }
         }
 
         public string Status
@@ -104,6 +118,20 @@ namespace ProgrammingAdvent2017.Program
             PartTwoOutput = answers.PartTwoAnswer;
             TimeOutput = ((answers.ElapsedMilliseconds / 10 + 1) / 100.0).ToString("F2") + " seconds";
             SolveButtonEnabled = true;
+        }
+
+        public ICommand LoadButtonCommand { get; set; }
+
+        private void LoadButton_Click()
+        {
+            _ = System.Windows.MessageBox.Show("WIP", "Load Feature");
+        }
+
+        public ICommand SaveButtonCommand { get; set; }
+
+        private void SaveButton_Click()
+        {
+            _ = System.Windows.MessageBox.Show("WIP", "Save Feature");
         }
     }
 }

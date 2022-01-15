@@ -13,6 +13,10 @@ namespace ProgrammingAdvent2017.Program
 
         public bool SolveButtonEnabled { get; set; } = true;
 
+        public bool LoadButtonEnabled { get; set; } = true;
+
+        public bool SaveButtonEnabled { get; set; } = true;
+
         public string Status { get; set; }
 
         public string PartOneOutput { get; set; }
