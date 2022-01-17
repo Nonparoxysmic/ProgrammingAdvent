@@ -124,7 +124,16 @@ namespace ProgrammingAdvent2017.Program
 
         private void LoadButton_Click()
         {
-            _ = System.Windows.MessageBox.Show("WIP", "Load Feature");
+            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            if (IO.TryReadInputFile(dayNumber, out string result))
+            {
+                InputText = result;
+            }
+            else
+            {
+                InputText = "";
+                _ = System.Windows.MessageBox.Show(result, "Error");
+            }
         }
 
         public ICommand SaveButtonCommand { get; set; }
