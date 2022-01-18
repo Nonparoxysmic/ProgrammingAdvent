@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ProgrammingAdvent2017.Program
@@ -132,7 +133,7 @@ namespace ProgrammingAdvent2017.Program
             else
             {
                 InputText = "";
-                _ = System.Windows.MessageBox.Show(result, "Error");
+                _ = MessageBox.Show(result, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -140,7 +141,17 @@ namespace ProgrammingAdvent2017.Program
 
         private void SaveButton_Click()
         {
-            _ = System.Windows.MessageBox.Show("WIP", "Save Feature");
+            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            if (InputText != null && InputText.Trim().Length > 0)
+            {
+                string result = IO.WriteInputFile(dayNumber, InputText);
+                _ = MessageBox.Show(result, "Result");
+            }
+            else
+            {
+                string error = "Nothing to save. Input text box is empty.";
+                _ = MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

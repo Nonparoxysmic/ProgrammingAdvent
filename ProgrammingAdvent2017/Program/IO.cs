@@ -12,7 +12,7 @@ namespace ProgrammingAdvent2017.Program
             return "InputFiles\\InputDay" + dayNumber.ToString("D2") + ".txt";
         }
 
-        public static bool TryReadInputFile(int dayNumber, out string result)
+        internal static bool TryReadInputFile(int dayNumber, out string result)
         {
             string path = InputFilePath(dayNumber);
             try
@@ -30,6 +30,24 @@ namespace ProgrammingAdvent2017.Program
             {
                 result = e.GetType().FullName + ": " + e.Message;
                 return false;
+            }
+        }
+
+        internal static string WriteInputFile(int dayNumber, string inputText)
+        {
+            if (!Directory.Exists("InputFiles"))
+            {
+                _ = Directory.CreateDirectory("InputFiles");
+            }
+            string path = InputFilePath(dayNumber);
+            try
+            {
+                File.WriteAllText(path, inputText);
+                return $"Input text for Day {dayNumber} saved to:{NL}{NL}\"{path}\"";
+            }
+            catch (Exception e)
+            {
+                return e.GetType().FullName + ": " + e.Message;
             }
         }
     }
