@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace ProgrammingAdvent2017.Program
 {
@@ -12,7 +13,12 @@ namespace ProgrammingAdvent2017.Program
     {
         private static Dictionary<int, Day> dayObjects;
 
-        public static Day GetDayObject(int dayNumber)
+        internal static int ParseDayNumber(string name)
+        {
+            return int.Parse(Regex.Match(name, @"\d+$").Value);
+        }
+
+        internal static Day GetDayObject(int dayNumber)
         {
             if (dayObjects == null) { InitializeDictionary(); }
             return dayObjects.ContainsKey(dayNumber)
@@ -30,6 +36,6 @@ namespace ProgrammingAdvent2017.Program
             }
         }
 
-        public abstract PuzzleAnswers Solve(string input);
+        internal abstract PuzzleAnswers Solve(string input);
     }
 }

@@ -6,14 +6,13 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace ProgrammingAdvent2017.Program
 {
-    public class SingleSolverViewModel : INotifyPropertyChanged
+    internal class SingleSolverViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,59 +33,95 @@ namespace ProgrammingAdvent2017.Program
 
         public string DaySelected
         {
-            get { return _singleSolverModel.DaySelected; }
-            set { _singleSolverModel.DaySelected = value; OnPropertyChanged(nameof(DaySelected)); }
+            get => _singleSolverModel.DaySelected;
+            set
+            {
+                _singleSolverModel.DaySelected = value;
+                OnPropertyChanged(nameof(DaySelected));
+            }
         }
 
         public string InputText
         {
-            get { return _singleSolverModel.InputText; }
-            set { _singleSolverModel.InputText = value; OnPropertyChanged(nameof(InputText)); }
+            get => _singleSolverModel.InputText;
+            set
+            {
+                _singleSolverModel.InputText = value;
+                OnPropertyChanged(nameof(InputText));
+            }
         }
 
         public bool SolveButtonEnabled
         {
-            get { return _singleSolverModel.SolveButtonEnabled; }
-            set { _singleSolverModel.SolveButtonEnabled = value; OnPropertyChanged(nameof(SolveButtonEnabled)); }
+            get => _singleSolverModel.SolveButtonEnabled;
+            set
+            {
+                _singleSolverModel.SolveButtonEnabled = value;
+                OnPropertyChanged(nameof(SolveButtonEnabled));
+            }
         }
 
         public bool LoadButtonEnabled
         {
-            get { return _singleSolverModel.LoadButtonEnabled; }
-            set { _singleSolverModel.LoadButtonEnabled = value; OnPropertyChanged(nameof(LoadButtonEnabled)); }
+            get => _singleSolverModel.LoadButtonEnabled;
+            set
+            {
+                _singleSolverModel.LoadButtonEnabled = value;
+                OnPropertyChanged(nameof(LoadButtonEnabled));
+            }
         }
 
         public bool SaveButtonEnabled
         {
-            get { return _singleSolverModel.SaveButtonEnabled; }
-            set { _singleSolverModel.SaveButtonEnabled = value; OnPropertyChanged(nameof(SaveButtonEnabled)); }
+            get => _singleSolverModel.SaveButtonEnabled;
+            set
+            {
+                _singleSolverModel.SaveButtonEnabled = value;
+                OnPropertyChanged(nameof(SaveButtonEnabled));
+            }
         }
 
         public string Status
         {
-            get { return _singleSolverModel.Status; }
-            set { _singleSolverModel.Status = value; OnPropertyChanged(nameof(Status)); }
+            get => _singleSolverModel.Status;
+            set
+            {
+                _singleSolverModel.Status = value;
+                OnPropertyChanged(nameof(Status));
+            }
         }
 
         public string PartOneOutput
         {
-            get { return _singleSolverModel.PartOneOutput; }
-            set { _singleSolverModel.PartOneOutput = value; OnPropertyChanged(nameof(PartOneOutput)); }
+            get => _singleSolverModel.PartOneOutput;
+            set
+            {
+                _singleSolverModel.PartOneOutput = value;
+                OnPropertyChanged(nameof(PartOneOutput));
+            }
         }
 
         public string PartTwoOutput
         {
-            get { return _singleSolverModel.PartTwoOutput; }
-            set { _singleSolverModel.PartTwoOutput = value; OnPropertyChanged(nameof(PartTwoOutput)); }
+            get => _singleSolverModel.PartTwoOutput;
+            set
+            {
+                _singleSolverModel.PartTwoOutput = value;
+                OnPropertyChanged(nameof(PartTwoOutput));
+            }
         }
 
         public string TimeOutput
         {
-            get { return _singleSolverModel.TimeOutput; }
-            set { _singleSolverModel.TimeOutput = value; OnPropertyChanged(nameof(TimeOutput)); }
+            get => _singleSolverModel.TimeOutput;
+            set
+            {
+                _singleSolverModel.TimeOutput = value;
+                OnPropertyChanged(nameof(TimeOutput));
+            }
         }
 
-        public IList<string> DayOptions { get { return _dayOptions; } }
+        public IList<string> DayOptions => _dayOptions;
 
         private readonly ObservableCollection<string> _dayOptions = InitializeDayOptions();
 
@@ -112,12 +147,13 @@ namespace ProgrammingAdvent2017.Program
 
         private void CalculateAnswers()
         {
-            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            int dayNumber = Day.ParseDayNumber(DaySelected);
             PuzzleAnswers answers = Day.GetDayObject(dayNumber).Solve(InputText);
             Status = DaySelected + " Solution";
             PartOneOutput = answers.PartOneAnswer;
             PartTwoOutput = answers.PartTwoAnswer;
-            TimeOutput = ((answers.ElapsedMilliseconds / 10 + 1) / 100.0).ToString("F2") + " seconds";
+            double seconds = ((answers.ElapsedMilliseconds / 10) + 1) / 100.0;
+            TimeOutput = seconds.ToString("F2") + " seconds";
             SolveButtonEnabled = true;
         }
 
@@ -125,7 +161,7 @@ namespace ProgrammingAdvent2017.Program
 
         private void LoadButton_Click()
         {
-            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            int dayNumber = Day.ParseDayNumber(DaySelected);
             if (IO.TryReadInputFile(dayNumber, out string result))
             {
                 InputText = result;
@@ -133,7 +169,8 @@ namespace ProgrammingAdvent2017.Program
             else
             {
                 InputText = "";
-                _ = MessageBox.Show(result, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(result, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -141,16 +178,18 @@ namespace ProgrammingAdvent2017.Program
 
         private void SaveButton_Click()
         {
-            int dayNumber = int.Parse(Regex.Match(DaySelected, @"\d+$").Value);
+            int dayNumber = Day.ParseDayNumber(DaySelected);
             if (InputText != null && InputText.Trim().Length > 0)
             {
                 string result = IO.WriteInputFile(dayNumber, InputText);
-                _ = MessageBox.Show(result, "Result");
+                _ = MessageBox.Show(result, "Result",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 string error = "Nothing to save. Input text box is empty.";
-                _ = MessageBox.Show(error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(error, "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -5,24 +5,24 @@
 
 namespace ProgrammingAdvent2017.Program
 {
-    public class SingleSolverModel
+    internal class SingleSolverModel
     {
-        public string DaySelected { get; set; }
+        internal string DaySelected { get; set; }
 
-        public string InputText { get; set; }
+        internal string InputText { get; set; } = "";
 
-        public bool SolveButtonEnabled { get; set; } = true;
+        internal bool SolveButtonEnabled { get; set; } = true;
 
-        public bool LoadButtonEnabled { get; set; } = true;
+        internal bool LoadButtonEnabled { get; set; } = true;
 
-        public bool SaveButtonEnabled { get; set; } = true;
+        internal bool SaveButtonEnabled { get; set; } = true;
 
-        public string Status { get; set; }
+        internal string Status { get; set; }
 
-        public string PartOneOutput { get; set; }
+        internal string PartOneOutput { get; set; }
 
-        public string PartTwoOutput { get; set; }
+        internal string PartTwoOutput { get; set; }
 
-        public string TimeOutput { get; set; }
+        internal string TimeOutput { get; set; }
     }
 }

@@ -8,7 +8,7 @@
         Title="ProgrammingAdvent2017 by Nonparoxysmic"
         Width="800"
         Height="600"
-        MinWidth="500"
+        MinWidth="700"
         MinHeight="500">
     <Window.CommandBindings>
         <CommandBinding Command="Close" CanExecute="CloseCommand_CanExecute" Executed="CloseCommand_Executed"/>

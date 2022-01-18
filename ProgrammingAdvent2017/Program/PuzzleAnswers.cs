@@ -5,20 +5,20 @@
 
 namespace ProgrammingAdvent2017.Program
 {
-    class PuzzleAnswers
+    internal class PuzzleAnswers
     {
-        public string PartOneAnswer { get; set; }
-        public string PartTwoAnswer { get; set; }
-        public long ElapsedMilliseconds { get; set; }
+        internal string PartOneAnswer { get; set; }
+        internal string PartTwoAnswer { get; set; }
+        internal long ElapsedMilliseconds { get; set; }
 
-        public PuzzleAnswers()
+        internal PuzzleAnswers()
         {
             PartOneAnswer = "Part One solution not yet implemented.";
             PartTwoAnswer = "Part Two solution not yet implemented.";
             ElapsedMilliseconds = -1;
         }
 
-        public void WriteAnswers(string partOne, string partTwo, long milliseconds)
+        internal void WriteAnswers(string partOne, string partTwo, long milliseconds)
         {
             if (partOne != null) { PartOneAnswer = partOne; }
             if (partTwo != null) { PartTwoAnswer = partTwo; }

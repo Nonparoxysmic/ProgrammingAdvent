@@ -8,11 +8,11 @@ using System.Windows.Input;
 
 namespace ProgrammingAdvent2017.Program
 {
-    public class SimpleRelayCommand : ICommand
+    internal class SimpleRelayCommand : ICommand
     {
-        readonly Action _executeMethod;
+        private readonly Action _executeMethod;
 
-        public SimpleRelayCommand(Action executeMethod)
+        internal SimpleRelayCommand(Action executeMethod)
         {
             _executeMethod = executeMethod;
         }

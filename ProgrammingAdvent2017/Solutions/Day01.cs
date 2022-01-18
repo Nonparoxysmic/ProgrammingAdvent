@@ -10,7 +10,7 @@ namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day01 : Day
     {
-        public override PuzzleAnswers Solve(string input)
+        internal override PuzzleAnswers Solve(string input)
         {
             PuzzleAnswers output = new PuzzleAnswers();
             Stopwatch sw = new Stopwatch();
@@ -23,11 +23,13 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     if (c < 32 || c > 126)
                     {
-                        output.WriteAnswers("ERROR: Invalid character in input.", "N/A", sw.ElapsedMilliseconds);
+                        output.WriteAnswers("ERROR: Invalid character in input.", "N/A",
+                            sw.ElapsedMilliseconds);
                     }
                     else
                     {
-                        output.WriteAnswers("ERROR: Invalid character '" + c + "' in input.", "N/A", sw.ElapsedMilliseconds);
+                        output.WriteAnswers($"ERROR: Invalid character '{c}' in input.", "N/A",
+                            sw.ElapsedMilliseconds);
                     }
                     return output;
                 }
@@ -40,7 +42,7 @@ namespace ProgrammingAdvent2017.Solutions
                     sum += input[i] - 48;
                 }
             }
-            if (input[0] == input[^1])
+            if (input.Length > 1 && input[0] == input[^1])
             {
                 sum += input[0] - 48;
             }
