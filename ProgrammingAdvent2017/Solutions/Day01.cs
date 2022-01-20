@@ -34,21 +34,31 @@ namespace ProgrammingAdvent2017.Solutions
                     return output;
                 }
             }
-            int sum = 0;
+
+            int sumOne = 0;
+            int sumTwo = 0;
+            int halfLen = input.Length / 2;
             for (int i = 0; i < input.Length - 1; i++)
             {
                 if (input[i] == input[i + 1])
                 {
-                    sum += input[i] - 48;
+                    sumOne += input[i] - 48;
+                }
+                if (i < halfLen)
+                {
+                    if (input[i] == input[i + halfLen])
+                    {
+                        sumTwo += 2 * (input[i] - 48);
+                    }
                 }
             }
             if (input.Length > 1 && input[0] == input[^1])
             {
-                sum += input[0] - 48;
+                sumOne += input[0] - 48;
             }
 
             sw.Stop();
-            output.WriteAnswers(sum.ToString(), null, sw.ElapsedMilliseconds);
+            output.WriteAnswers(sumOne.ToString(), sumTwo.ToString(), sw.ElapsedMilliseconds);
             return output;
         }
     }
