@@ -55,5 +55,13 @@ namespace ProgrammingAdvent2017.Program
                 return e.GetType().FullName + ": " + e.Message;
             }
         }
+
+        /// <summary>
+        /// Splits a string into substrings that are based on line breaks.
+        /// </summary>
+        internal static string[] ToLines(this string input)
+        {
+            return input.TrimEnd(new[] { '\r', '\n' }).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        }
     }
 }
