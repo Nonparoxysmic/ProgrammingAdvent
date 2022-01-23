@@ -4,6 +4,7 @@
 // https://adventofcode.com/2017
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using ProgrammingAdvent2017.Program;
 
@@ -17,12 +18,14 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            int sum = 0;
+            int sumOne = 0;
+            int sumTwo = 0;
             string[] inputLines = input.ToLines();
             foreach (string line in inputLines)
             {
                 int max = int.MinValue;
                 int min = int.MaxValue;
+                List<int> numbers = new List<int>();
                 string[] values = line.Split();
                 foreach (string value in values)
                 {
@@ -30,6 +33,7 @@ namespace ProgrammingAdvent2017.Solutions
                     {
                         max = Math.Max(max, n);
                         min = Math.Min(min, n);
+                        numbers.Add(n);
                     }
                     else
                     {
@@ -38,13 +42,39 @@ namespace ProgrammingAdvent2017.Solutions
                         return output;
                     }
                 }
-                sum += max - min;
+                sumOne += max - min;
+                try
+                {
+                    sumTwo += GetLineResult(numbers.ToArray());
+                }
+                catch
+                {
+                    output.WriteAnswers($"ERROR: Invalid values in input.", "N/A",
+                            sw.ElapsedMilliseconds);
+                    return output;
+                }
             }
 
-
             sw.Stop();
-            output.WriteAnswers(sum.ToString(), null, sw.ElapsedMilliseconds);
+            output.WriteAnswers(sumOne.ToString(), sumTwo.ToString(), sw.ElapsedMilliseconds);
             return output;
+        }
+
+        internal int GetLineResult(int[] numbers)
+        {
+            for (int i = 0; i < numbers.Length - 1; i++)
+            {
+                for (int j = i + 1; j < numbers.Length; j++)
+                {
+                    int higher = Math.Max(numbers[i], numbers[j]);
+                    int lower = Math.Min(numbers[i], numbers[j]);
+                    if (higher % lower == 0)
+                    {
+                        return higher / lower;
+                    }
+                }
+            }
+            throw new ArgumentOutOfRangeException();
         }
     }
 }
