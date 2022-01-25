@@ -3,6 +3,8 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System.Diagnostics;
+
 namespace ProgrammingAdvent2017.Program
 {
     internal class PuzzleAnswers
@@ -18,11 +20,18 @@ namespace ProgrammingAdvent2017.Program
             ElapsedMilliseconds = -1;
         }
 
-        internal void WriteAnswers(string partOne, string partTwo, long milliseconds)
+        internal void WriteAnswers(object partOne, object partTwo, Stopwatch sw)
         {
-            if (partOne != null) { PartOneAnswer = partOne; }
-            if (partTwo != null) { PartTwoAnswer = partTwo; }
-            ElapsedMilliseconds = milliseconds;
+            if (partOne != null) { PartOneAnswer = partOne.ToString(); }
+            if (partTwo != null) { PartTwoAnswer = partTwo.ToString(); }
+            ElapsedMilliseconds = sw.ElapsedMilliseconds;
+        }
+
+        internal void WriteError(string message, Stopwatch sw)
+        {
+            PartOneAnswer = "ERROR: " + message;
+            PartTwoAnswer = "N/A";
+            ElapsedMilliseconds = sw.ElapsedMilliseconds;
         }
     }
 }

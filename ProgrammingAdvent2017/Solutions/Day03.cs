@@ -18,20 +18,18 @@ namespace ProgrammingAdvent2017.Solutions
 
             if (!int.TryParse(input.Trim(), out int inputValue))
             {
-                output.WriteAnswers("ERROR: Input is not an integer.", "N/A",
-                            sw.ElapsedMilliseconds);
+                output.WriteError("Input is not an integer.", sw);
                 return output;
             }
             if (inputValue < 1)
             {
-                output.WriteAnswers("ERROR: Input is less than one.", "N/A",
-                            sw.ElapsedMilliseconds);
+                output.WriteError("Input is less than one.", sw);
                 return output;
             }
 
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw.ElapsedMilliseconds);
+            output.WriteAnswers(null, null, sw);
             return output;
         }
     }

@@ -37,8 +37,7 @@ namespace ProgrammingAdvent2017.Solutions
                     }
                     else
                     {
-                        output.WriteAnswers($"ERROR: Invalid term \"{value}\" in input.", "N/A",
-                            sw.ElapsedMilliseconds);
+                        output.WriteError($"Invalid term \"{value}\" in input.", sw);
                         return output;
                     }
                 }
@@ -49,14 +48,13 @@ namespace ProgrammingAdvent2017.Solutions
                 }
                 catch
                 {
-                    output.WriteAnswers($"ERROR: Invalid values in input.", "N/A",
-                            sw.ElapsedMilliseconds);
+                    output.WriteError("Invalid values in input.", sw);
                     return output;
                 }
             }
 
             sw.Stop();
-            output.WriteAnswers(sumOne.ToString(), sumTwo.ToString(), sw.ElapsedMilliseconds);
+            output.WriteAnswers(sumOne, sumTwo, sw);
             return output;
         }
 

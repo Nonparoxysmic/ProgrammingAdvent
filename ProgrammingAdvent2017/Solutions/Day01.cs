@@ -23,13 +23,11 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     if (c < 32 || c > 126)
                     {
-                        output.WriteAnswers("ERROR: Invalid character in input.", "N/A",
-                            sw.ElapsedMilliseconds);
+                        output.WriteError("Invalid character in input.", sw);
                     }
                     else
                     {
-                        output.WriteAnswers($"ERROR: Invalid character '{c}' in input.", "N/A",
-                            sw.ElapsedMilliseconds);
+                        output.WriteError($"Invalid character '{c}' in input.", sw);
                     }
                     return output;
                 }
@@ -58,7 +56,7 @@ namespace ProgrammingAdvent2017.Solutions
             }
 
             sw.Stop();
-            output.WriteAnswers(sumOne.ToString(), sumTwo.ToString(), sw.ElapsedMilliseconds);
+            output.WriteAnswers(sumOne, sumTwo, sw);
             return output;
         }
     }
