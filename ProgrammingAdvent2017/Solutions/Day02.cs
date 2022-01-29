@@ -18,6 +18,11 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            if (input == "")
+            {
+                output.WriteError("No input.", sw);
+                return output;
+            }
             int sumOne = 0;
             int sumTwo = 0;
             string[] inputLines = input.ToLines();
@@ -42,6 +47,11 @@ namespace ProgrammingAdvent2017.Solutions
                     }
                 }
                 sumOne += max - min;
+                if (numbers.Count < 2)
+                {
+                    output.WriteError($"Invalid line \"{line}\" in input.", sw);
+                    return output;
+                }
                 try
                 {
                     sumTwo += GetLineResult(numbers.ToArray());

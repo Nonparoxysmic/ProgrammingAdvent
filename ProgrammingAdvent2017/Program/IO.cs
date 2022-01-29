@@ -61,7 +61,9 @@ namespace ProgrammingAdvent2017.Program
         /// </summary>
         internal static string[] ToLines(this string input)
         {
-            return input.TrimEnd(new[] { '\r', '\n' }).Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            return input
+                .TrimEnd(new[] { '\r', '\n' })
+                .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
     }
 }
