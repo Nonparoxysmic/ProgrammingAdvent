@@ -32,10 +32,11 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
-            int steps = StepsToExit((int[])inputValues.Clone());
+            int steps1 = StepsToExit((int[])inputValues.Clone());
+            int steps2 = ComplexStepsToExit(inputValues);
 
             sw.Stop();
-            output.WriteAnswers(steps, null, sw);
+            output.WriteAnswers(steps1, steps2, sw);
             return output;
         }
 
@@ -45,6 +46,22 @@ namespace ProgrammingAdvent2017.Solutions
             for (int i = 0; 0 <= i && i < offsets.Length; steps++)
             {
                 int currentOffset = offsets[i]++;
+                i += currentOffset;
+            }
+            return steps;
+        }
+
+        private int ComplexStepsToExit(int[] offsets)
+        {
+            int steps = 0;
+            for (int i = 0; 0 <= i && i < offsets.Length; steps++)
+            {
+                int currentOffset = offsets[i];
+                if (currentOffset >= 3)
+                {
+                    offsets[i]--;
+                }
+                else offsets[i]++;
                 i += currentOffset;
             }
             return steps;
