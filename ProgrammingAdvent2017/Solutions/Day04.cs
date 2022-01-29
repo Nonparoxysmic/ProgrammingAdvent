@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using ProgrammingAdvent2017.Program;
 
 namespace ProgrammingAdvent2017.Solutions
@@ -17,7 +18,8 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            int numberValid = 0;
+            int noRepeats = 0;
+            int noAnagrams = 0;
             string[] inputLines = input.ToLines();
             foreach (string line in inputLines)
             {
@@ -25,10 +27,12 @@ namespace ProgrammingAdvent2017.Solutions
                 if (words.Length == 0) { continue; }
                 if (words.Length == 1)
                 {
-                    numberValid++;
+                    noRepeats++;
+                    noAnagrams++;
                     continue;
                 }
                 bool wordsMatch = false;
+                bool hasAnagrams = false;
                 for (int i = 0; i < words.Length - 1; i++)
                 {
                     for (int j = i + 1; j < words.Length; j++)
@@ -37,14 +41,31 @@ namespace ProgrammingAdvent2017.Solutions
                         {
                             wordsMatch = true;
                         }
+                        if (AreAnagrams(words[i], words[j]))
+                        {
+                            hasAnagrams = true;
+                        }
                     }
                 }
-                if (!wordsMatch) { numberValid++; }
+                if (!wordsMatch) { noRepeats++; }
+                if (!hasAnagrams) { noAnagrams++; }
             }
             
             sw.Stop();
-            output.WriteAnswers(numberValid, null, sw);
+            output.WriteAnswers(noRepeats, noAnagrams, sw);
             return output;
+        }
+
+        internal static bool AreAnagrams(string stringOne, string stringTwo)
+        {
+            if (stringOne.Length != stringTwo.Length) { return false; }
+            if (stringOne == stringTwo) { return true; }
+            char[] charsOne = stringOne.ToCharArray();
+            char[] charsTwo = stringTwo.ToCharArray();
+            Array.Sort(charsOne);
+            Array.Sort(charsTwo);
+            if (charsOne.SequenceEqual(charsTwo)) { return true; }
+            return false;
         }
     }
 }
