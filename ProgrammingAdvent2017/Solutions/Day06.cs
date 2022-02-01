@@ -4,6 +4,7 @@
 // https://adventofcode.com/2017
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ProgrammingAdvent2017.Program;
@@ -44,27 +45,39 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
+            int steps = StepsToRepeat(inputValues);
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(steps, null, sw);
             return output;
         }
 
-        private static void RedistributeBlocks(int[] input)
+        private int StepsToRepeat(int[] input)
         {
-            int max = input.Max();
-            int start = 0;
-            for (int i = 0; i < input.Length; i++)
+            List<string> seenStates = new List<string>
             {
-                if (input[i] == max)
+                string.Join(',', input)
+            };
+            int count = 0;
+            while (true)
+            {
+                RedistributeBlocks(input);
+                count++;
+                string state = string.Join(',', input);
+                if (seenStates.Contains(state))
                 {
-                    start = i;
                     break;
                 }
+                seenStates.Add(state);
             }
-            int blocks = input[start];
-            input[start] = 0;
-            int pos = start;
+            return count;
+        }
+
+        private void RedistributeBlocks(int[] input)
+        {
+            int pos = Array.IndexOf(input, input.Max());
+            int blocks = input[pos];
+            input[pos] = 0;
             while (blocks > 0)
             {
                 pos++;
