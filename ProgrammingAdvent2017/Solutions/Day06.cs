@@ -45,14 +45,14 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
-            int steps = StepsToRepeat(inputValues);
+            int steps = StepsToRepeat(inputValues, out int loopLength);
 
             sw.Stop();
-            output.WriteAnswers(steps, null, sw);
+            output.WriteAnswers(steps, loopLength, sw);
             return output;
         }
 
-        private int StepsToRepeat(int[] input)
+        private int StepsToRepeat(int[] input, out int loopLength)
         {
             List<string> seenStates = new List<string>
             {
@@ -66,6 +66,7 @@ namespace ProgrammingAdvent2017.Solutions
                 string state = string.Join(',', input);
                 if (seenStates.Contains(state))
                 {
+                    loopLength = count - seenStates.IndexOf(state);
                     break;
                 }
                 seenStates.Add(state);
