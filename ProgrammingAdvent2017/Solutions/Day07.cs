@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2017.Program;
@@ -14,8 +13,8 @@ namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day07 : Day
     {
-        private DataTable dataTable;
         private string[] names;
+        private TowerProgram[] programs;
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -44,103 +43,63 @@ namespace ProgrammingAdvent2017.Solutions
             }
             names = nameList.ToArray();
 
-            CreateDataTable();
-            for (int i = 0; i < inputLines.Length; i++)
+            programs = new TowerProgram[names.Length];
+            for (int i = 0; i < names.Length; i++)
             {
-                try
-                {
-                    DataRow row = dataTable.NewRow();
-                    row["ID"] = i;
-                    row["Name"] = names[i];
-                    row["Weight"] = int.Parse(Regex.Match(inputLines[i], @"(?<=\()\d+(?=\))").Value);
-                    dataTable.Rows.Add(row);
-                }
-                catch
-                {
-                    output.WriteError($"Invalid data: \"{inputLines[i]}\"", sw);
-                    return output;
-                }
+                int weight = int.Parse(Regex.Match(inputLines[i], @"(?<=\()\d+(?=\))").Value);
+                programs[i] = new TowerProgram(i, names[i], weight);
             }
             for (int i = 0; i < inputLines.Length; i++)
             {
                 if (Regex.IsMatch(inputLines[i], @"(?<=( -> ))[a-z, ]+$"))
                 {
-                    string[] heldPrograms =
+                    string[] childNames =
                         Regex.Match(inputLines[i], @"(?<=( -> ))[a-z, ]+$").Value
                         .Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string p in heldPrograms)
+                    List<TowerProgram> children = new List<TowerProgram>();
+                    foreach (string childName in childNames)
                     {
-                        int j = Array.IndexOf(names, p);
-                        dataTable.Rows[j]["Parent"] = dataTable.Rows[i]["ID"];
+                        int childID = Array.IndexOf(names, childName);
+                        if (childID < 0)
+                        {
+                            output.WriteError($"\"{childName}\" is not a valid name.", sw);
+                            return output;
+                        }
+                        children.Add(programs[childID]);
+                        programs[childID].parent = programs[i];
                     }
+                    programs[i].children = children.ToArray();
                 }
             }
 
-            int count = 0;
-            string bottomProgram = "";
-            foreach (DataRow row in dataTable.Rows)
-            {
-                if (row["Parent"] == DBNull.Value)
-                {
-                    count++;
-                    bottomProgram = row["Name"].ToString();
-                }
-            }
-            if (count != 1)
-            {
-                output.WriteError("Invalid data.", sw);
-                return output;
-            }
+            string baseProgramName = names[programs[0].GetBaseProgramID()];
 
             sw.Stop();
-            output.WriteAnswers(bottomProgram, null, sw);
+            output.WriteAnswers(baseProgramName, null, sw);
             return output;
         }
+    }
 
-        private void CreateDataTable()
+    internal class TowerProgram
+    {
+        public readonly int idNumber;
+        public readonly int selfWeight;
+        public int totalWeight = -1;
+        public readonly string name;
+        public TowerProgram parent;
+        public TowerProgram[] children;
+
+        public TowerProgram(int id, string name, int weight)
         {
-            dataTable = new DataTable();
+            idNumber = id;
+            this.name = name;
+            selfWeight = weight;
+        }
 
-            DataColumn column = new DataColumn
-            {
-                DataType = typeof(int),
-                ColumnName = "ID",
-                ReadOnly = true,
-                Unique = true
-            };
-            dataTable.Columns.Add(column);
-
-            column = new DataColumn
-            {
-                DataType = typeof(string),
-                ColumnName = "Name",
-                ReadOnly = true,
-                Unique = true
-            };
-            dataTable.Columns.Add(column);
-
-            column = new DataColumn
-            {
-                DataType = typeof(int),
-                ColumnName = "Weight",
-                ReadOnly = true,
-                Unique = false
-            };
-            dataTable.Columns.Add(column);
-
-            column = new DataColumn
-            {
-                DataType = typeof(int),
-                ColumnName = "Parent",
-                ReadOnly = false,
-                Unique = false,
-                AllowDBNull = true
-            };
-            dataTable.Columns.Add(column);
-
-            DataColumn[] primaryKeyColumns = new DataColumn[1];
-            primaryKeyColumns[0] = dataTable.Columns["ID"];
-            dataTable.PrimaryKey = primaryKeyColumns;
+        public int GetBaseProgramID()
+        {
+            if (parent == null) { return idNumber; }
+            return parent.GetBaseProgramID();
         }
     }
 }
