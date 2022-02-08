@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2017.Program;
 
@@ -30,7 +31,7 @@ namespace ProgrammingAdvent2017.Solutions
             string[] inputLines = input.ToLines();
             foreach (string line in inputLines)
             {
-                if (!Regex.IsMatch(line, @"^[a-z]+ \(\d+\)( -> [a-z, ]+$)*$"))
+                if (!Regex.IsMatch(line, @"^[a-z]+ \(\d+\)( -> [a-z, ]+$)?$"))
                 {
                     output.WriteError($"Invalid line: \"{line}\"", sw);
                     return output;
@@ -72,10 +73,13 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
-            string baseProgramName = names[programs[0].GetBaseProgramID()];
+            int baseProgramID = programs[0].GetBaseProgramID();
+            string baseProgramName = names[baseProgramID];
+
+            int weightCorrection = programs[baseProgramID].FindWeightCorrection();
 
             sw.Stop();
-            output.WriteAnswers(baseProgramName, null, sw);
+            output.WriteAnswers(baseProgramName, weightCorrection, sw);
             return output;
         }
     }
@@ -96,10 +100,63 @@ namespace ProgrammingAdvent2017.Solutions
             selfWeight = weight;
         }
 
-        public int GetBaseProgramID()
+        internal int GetBaseProgramID()
         {
             if (parent == null) { return idNumber; }
             return parent.GetBaseProgramID();
+        }
+
+        internal int FindWeightCorrection()
+        {
+            if (children == null)
+            {
+                totalWeight = selfWeight;
+                return -1;
+            }
+
+            List<int> childWeights = new List<int>();
+            bool errorFound = false;
+            int differentChild = -1;
+            for (int i = 0; i < children.Length; i++)
+            {
+                int test = children[i].FindWeightCorrection();
+                if (test >= 0) { return test; }
+                
+                childWeights.Add(children[i].totalWeight);
+                if (children[i].totalWeight != children[0].totalWeight)
+                {
+                    errorFound = true;
+                    differentChild = i;
+                }
+            }
+            if (errorFound)
+            {
+                int correctWeight;
+                int incorrectWeight;
+                int incorrectChild;
+                if (childWeights[0] == childWeights[1])
+                {
+                    correctWeight = childWeights[0];
+                    incorrectWeight = childWeights[differentChild];
+                    incorrectChild = differentChild;
+                }
+                else if (childWeights[0] == childWeights[2])
+                {
+                    correctWeight = childWeights[0];
+                    incorrectWeight = childWeights[differentChild];
+                    incorrectChild = differentChild;
+                }
+                else
+                {
+                    correctWeight = childWeights[1];
+                    incorrectWeight = childWeights[0];
+                    incorrectChild = 0;
+                }
+                return children[incorrectChild].selfWeight - incorrectWeight + correctWeight;
+            }
+
+            totalWeight = selfWeight + childWeights.Sum();
+            return -1;
         }
     }
 }
