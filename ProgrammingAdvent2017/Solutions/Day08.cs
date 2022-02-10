@@ -45,11 +45,12 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
+            int largestValueDuringProcess = 0;
             foreach (string line in inputLines)
             {
                 try
                 {
-                    ProcessInstruction(line);
+                    ProcessInstruction(line, ref largestValueDuringProcess);
                 }
                 catch
                 {
@@ -57,18 +58,18 @@ namespace ProgrammingAdvent2017.Solutions
                     return output;
                 }
             }
-            int largestValue = int.MinValue;
+            int largestValueAfterProcess = int.MinValue;
             foreach (KeyValuePair<string, int> kvp in registerValues)
             {
-                largestValue = Math.Max(largestValue, kvp.Value);
+                largestValueAfterProcess = Math.Max(largestValueAfterProcess, kvp.Value);
             }
 
             sw.Stop();
-            output.WriteAnswers(largestValue, null, sw);
+            output.WriteAnswers(largestValueAfterProcess, largestValueDuringProcess, sw);
             return output;
         }
 
-        private void ProcessInstruction(string line)
+        private void ProcessInstruction(string line, ref int largestValue)
         {
             string[] parts = line.Split();
             int conditionValue = int.Parse(parts[6]);
@@ -101,9 +102,11 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     case "inc":
                         registerValues[parts[0]] += changeValue;
+                        largestValue = Math.Max(largestValue, registerValues[parts[0]]);
                         break;
                     case "dec":
                         registerValues[parts[0]] -= changeValue;
+                        largestValue = Math.Max(largestValue, registerValues[parts[0]]);
                         break;
                 }
             }
