@@ -31,11 +31,11 @@ namespace ProgrammingAdvent2017.Solutions
             }
 
             string charactersCanceled = CancelCharacters(input);
-            string garbageEmptied = EmptyGarbage(charactersCanceled);
+            string garbageEmptied = EmptyGarbage(charactersCanceled, out int garbageLength);
             int score = CalculateScore(garbageEmptied);
 
             sw.Stop();
-            output.WriteAnswers(score, null, sw);
+            output.WriteAnswers(score, garbageLength, sw);
             return output;
         }
 
@@ -50,8 +50,9 @@ namespace ProgrammingAdvent2017.Solutions
             return output.ToString();
         }
 
-        private string EmptyGarbage(string input)
+        private string EmptyGarbage(string input, out int garbageLength)
         {
+            int lengthDiscarded = 0;
             while (true)
             {
                 Match match = Regex.Match(input, @"(?<=<)[^>]+(?=>)");
@@ -59,9 +60,11 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     input = input.Substring(0, match.Index)
                         + input[(match.Index + match.Value.Length)..];
+                    lengthDiscarded += match.Value.Length;
                 }
                 else { break; }
             }
+            garbageLength = lengthDiscarded;
             return input;
         }
 
