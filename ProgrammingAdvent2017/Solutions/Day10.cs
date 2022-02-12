@@ -3,15 +3,15 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System;
 using System.Diagnostics;
+using System.Text;
 using ProgrammingAdvent2017.Program;
 
 namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day10 : Day
     {
-        private int[] elements;
-
         internal override PuzzleAnswers Solve(string input)
         {
             PuzzleAnswers output = new PuzzleAnswers();
@@ -36,33 +36,35 @@ namespace ProgrammingAdvent2017.Solutions
                 inputValues[i] = n;
             }
 
-            elements = new int[256];
-            for (int i = 0; i < 256; i++)
-            {
-                elements[i] = i;
-            }
-
             int partOneAnswer = ProcessInput(inputValues);
 
+            string partTwoAnswer = KnotHash(input);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
         private int ProcessInput(int[] inputValues)
         {
+            int[] elements = new int[256];
+            for (int i = 0; i < 256; i++)
+            {
+                elements[i] = i;
+            }
+
             int currentPos = 0;
             int skipSize = 0;
             foreach (int n in inputValues)
             {
-                ReverseElements(n, currentPos);
+                ReverseElements(elements, n, currentPos);
                 currentPos += n + skipSize;
                 skipSize++;
             }
             return elements[0] * elements[1];
         }
 
-        private void ReverseElements(int length, int currentPos)
+        private void ReverseElements(int[] elements, int length, int currentPos)
         {
             if (length < 2) { return; }
             int startPos = currentPos;
@@ -75,6 +77,50 @@ namespace ProgrammingAdvent2017.Solutions
                 startPos++;
                 endPos--;
             }
+        }
+
+        private string KnotHash(string input)
+        {
+            byte[] suffix = new byte[] { 17, 31, 73, 47, 23 };
+            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+            byte[] lengths = new byte[inputBytes.Length + 5];
+            for (int i = 0; i < inputBytes.Length; i++)
+            {
+                lengths[i] = inputBytes[i];
+            }
+            for (int i = inputBytes.Length; i < lengths.Length; i++)
+            {
+                lengths[i] = suffix[i - inputBytes.Length];
+            }
+            int[] elements = new int[256];
+            for (int i = 0; i < 256; i++)
+            {
+                elements[i] = i;
+            }
+
+            int currentPos = 0;
+            int skipSize = 0;
+            for (int i = 0; i < 64; i++)
+            {
+                foreach (int n in lengths)
+                {
+                    ReverseElements(elements, n, currentPos);
+                    currentPos += n + skipSize;
+                    skipSize++;
+                }
+            }
+
+            byte[] output = new byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                int xor = elements[i * 16];
+                for (int j = 1; j < 16; j++)
+                {
+                    xor ^= elements[(i * 16) + j];
+                }
+                output[i] = (byte)xor;
+            }
+            return BitConverter.ToString(output).Replace("-", "").ToLower();
         }
     }
 }
