@@ -11,6 +11,7 @@ namespace ProgrammingAdvent2017
         public MainWindow()
         {
             InitializeComponent();
+            Program.MultiSolver.Initialize(MultiSolveResultPanel);
         }
 
         private void ExitProgramButton_Click(object sender, RoutedEventArgs e)
@@ -45,13 +46,21 @@ namespace ProgrammingAdvent2017
 
         private void MenuMultiSolveButton_Click(object sender, RoutedEventArgs e)
         {
-            _ = MessageBox.Show("WIP: Feature to be added.", "Multi Solve");
+            MainMenuStackPanel.Visibility = Visibility.Hidden;
+            MultiSolveGrid.Visibility = Visibility.Visible;
         }
 
-        private void ReturnToMenuFromSingle_Click(object sender, RoutedEventArgs e)
+        private void ReturnToMenuFromSolver_Click(object sender, RoutedEventArgs e)
         {
             MainMenuStackPanel.Visibility = Visibility.Visible;
             SingleSolveGrid.Visibility = Visibility.Hidden;
+            MultiSolveGrid.Visibility = Visibility.Hidden;
+        }
+
+        private async void SolveAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            SolveAllButton.IsEnabled = false;
+            await Program.MultiSolver.SolveAll();
         }
     }
 }

@@ -172,7 +172,38 @@
                     Padding="40,10,40,10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Click="ReturnToMenuFromSingle_Click"/>
+                    Click="ReturnToMenuFromSolver_Click"/>
+            </Grid>
+            <Grid x:Name="MultiSolveGrid" Margin="20" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="58"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="58"/>
+                </Grid.RowDefinitions>
+                <Button
+                    x:Name="SolveAllButton"
+                    Content="Solve All"
+                    Margin="10"
+                    Padding="40,10,40,10"
+                    HorizontalAlignment="Center"
+                    Click="SolveAllButton_Click"/>
+                <ScrollViewer
+                    VerticalScrollBarVisibility="Visible"
+                    HorizontalScrollBarVisibility="Disabled"
+                    Grid.Row="1">
+                    <StackPanel
+                        x:Name="MultiSolveResultPanel"
+                        HorizontalAlignment="Center"/>
+                </ScrollViewer>
+                <Button
+                    x:Name="ReturnToMenuMulti"
+                    Content="Return to Main Menu"
+                    Grid.Row="2"
+                    Margin="10"
+                    Padding="40,10,40,10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Click="ReturnToMenuFromSolver_Click"/>
             </Grid>
             <StackPanel
                 x:Name="MainMenuStackPanel"
