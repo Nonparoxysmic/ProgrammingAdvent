@@ -13,7 +13,7 @@ namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day11 : Day
     {
-        private readonly Dictionary<string, HexCoord> directionOffsets
+        internal readonly Dictionary<string, HexCoord> directionOffsets
             = new Dictionary<string, HexCoord>()
             {
                 { "n",  new HexCoord( 0, -1) },
@@ -39,6 +39,7 @@ namespace ProgrammingAdvent2017.Solutions
             string[] steps = input.Split(',');
 
             HexCoord targetHex = new HexCoord(0, 0);
+            int furthestDistance = 0;
             foreach (string step in steps)
             {
                 if (!Regex.IsMatch(step, @"^(n|ne|se|s|sw|nw)$"))
@@ -47,12 +48,13 @@ namespace ProgrammingAdvent2017.Solutions
                     return output;
                 }
                 targetHex += directionOffsets[step];
+                furthestDistance = Math.Max(furthestDistance, targetHex.StepsToOrigin());
             }
 
             int targetDistance = targetHex.StepsToOrigin();
 
             sw.Stop();
-            output.WriteAnswers(targetDistance, null, sw);
+            output.WriteAnswers(targetDistance, furthestDistance, sw);
             return output;
         }
     }
