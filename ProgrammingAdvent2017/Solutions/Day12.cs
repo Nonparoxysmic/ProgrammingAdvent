@@ -38,10 +38,21 @@ namespace ProgrammingAdvent2017.Solutions
                 programs[i] = new VillageProgram(i, inputLines[i]);
             }
 
-            int connectedToZero = CountConnectedPrograms(0, new HashSet<int>());
+            HashSet<int> searched = new HashSet<int>() { 0 };
+            int connectedToZero = CountConnectedPrograms(0, searched);
+
+            int groups = 1;
+            for (int i = 0; i < programs.Length; i++)
+            {
+                if (searched.Add(i))
+                {
+                    groups++;
+                    CountConnectedPrograms(i, searched);
+                }
+            }
 
             sw.Stop();
-            output.WriteAnswers(connectedToZero, null, sw);
+            output.WriteAnswers(connectedToZero, groups, sw);
             return output;
         }
 
