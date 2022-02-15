@@ -128,12 +128,26 @@ namespace ProgrammingAdvent2017.Program
         internal static async Task SolveAll()
         {
             int[] days = Reflection.GetDayNumbers();
-            _ = Day.GetDayObject(days[0]);  // Initializes the Day objects
+
+            // Reset the displayed output.
+            foreach (int dayNumber in days)
+            {
+                partOneTextBoxes[dayNumber].Text = "";
+                partTwoTextBoxes[dayNumber].Text = "";
+                timeOutputLabels[dayNumber].Content = "-.-- seconds";
+            }
+
+            // Make sure the Day objects are initialized before parallel computation.
+            _ = Day.GetDayObject(days[0]);
+
+            // Start calculating all of the answers.
             List<Task<(PuzzleAnswers, int)>> tasks = new List<Task<(PuzzleAnswers, int)>>();
             foreach (int day in days)
             {
                 tasks.Add(Task.Run(() => CalculateAnswers(day)));
             }
+
+            // As tasks are completed, output results.
             while (tasks.Any())
             {
                 Task<(PuzzleAnswers, int)> finishedTask = await Task.WhenAny(tasks);

@@ -60,7 +60,10 @@ namespace ProgrammingAdvent2017
         private async void SolveAllButton_Click(object sender, RoutedEventArgs e)
         {
             SolveAllButton.IsEnabled = false;
+            SolveAllButton.Content = "Solving...";
             await Program.MultiSolver.SolveAll();
+            SolveAllButton.Content = "Solve All";
+            SolveAllButton.IsEnabled = true;
         }
     }
 }
