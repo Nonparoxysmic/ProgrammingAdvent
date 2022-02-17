@@ -13,7 +13,7 @@ namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day08 : Day
     {
-        private readonly Dictionary<string, int> registerValues = new Dictionary<string, int>();
+        private Dictionary<string, int> registerValues;
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -36,6 +36,7 @@ namespace ProgrammingAdvent2017.Solutions
                     return output;
                 }
             }
+            registerValues = new Dictionary<string, int>();
             foreach (string line in inputLines)
             {
                 string name = Regex.Match(line, @"^[a-z]+(?= )").Value;
