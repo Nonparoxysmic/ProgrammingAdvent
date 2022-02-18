@@ -64,22 +64,28 @@ namespace ProgrammingAdvent2017.Solutions
             return elements[0] * elements[1];
         }
 
-        private void ReverseElements(int[] elements, int length, int currentPos)
+        internal static void ReverseElements(int[] elements, int length, int currentPos = 0)
         {
             if (length < 2) { return; }
             int startPos = currentPos;
             int endPos = currentPos + length - 1;
             while (startPos < endPos)
             {
-                int temp = elements[startPos % 256];
-                elements[startPos % 256] = elements[endPos % 256];
-                elements[endPos % 256] = temp;
+                int temp = elements[startPos % elements.Length];
+                elements[startPos % elements.Length] = elements[endPos % elements.Length];
+                elements[endPos % elements.Length] = temp;
                 startPos++;
                 endPos--;
             }
         }
 
-        private string KnotHash(string input)
+        internal static string KnotHash(string input)
+        {
+            byte[] output = KnotHashBytes(input);
+            return BitConverter.ToString(output).Replace("-", "").ToLower();
+        }
+
+        internal static byte[] KnotHashBytes(string input)
         {
             byte[] suffix = new byte[] { 17, 31, 73, 47, 23 };
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
@@ -120,7 +126,7 @@ namespace ProgrammingAdvent2017.Solutions
                 }
                 output[i] = (byte)xor;
             }
-            return BitConverter.ToString(output).Replace("-", "").ToLower();
+            return output;
         }
     }
 }
