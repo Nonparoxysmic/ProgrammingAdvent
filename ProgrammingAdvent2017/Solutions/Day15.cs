@@ -31,20 +31,40 @@ namespace ProgrammingAdvent2017.Solutions
                 return output;
             }
 
-            Day15Generator genA = new Day15Generator(16807, int.Parse(inputLines[0][24..]));
-            Day15Generator genB = new Day15Generator(48271, int.Parse(inputLines[1][24..]));
+            Day15Generator genA = new Day15Generator
+                (
+                    Day15Generator.GeneratorType.GeneratorA,
+                    int.Parse(inputLines[0][24..])
+                );
+            Day15Generator genB = new Day15Generator
+                (
+                    Day15Generator.GeneratorType.GeneratorB,
+                    int.Parse(inputLines[1][24..])
+                );
 
-            int matches = 0;
+            int matchesPartOne = 0;
             for (int i = 0; i < 40_000_000; i++)
             {
                 if (Judge(genA.Generate(), genB.Generate()))
                 {
-                    matches++;
+                    matchesPartOne++;
+                }
+            }
+
+            genA.Reset();
+            genB.Reset();
+
+            int matchesPartTwo = 0;
+            for (int i = 0; i < 5_000_000; i++)
+            {
+                if (Judge(genA.PickyGenerate(), genB.PickyGenerate()))
+                {
+                    matchesPartTwo++;
                 }
             }
 
             sw.Stop();
-            output.WriteAnswers(matches, null, sw);
+            output.WriteAnswers(matchesPartOne, matchesPartTwo, sw);
             return output;
         }
 
@@ -60,12 +80,30 @@ namespace ProgrammingAdvent2017.Solutions
 
     internal class Day15Generator
     {
+        readonly int pickyNumber;
+        readonly int startingValue;
         readonly ulong factor;
         ulong previous;
 
-        internal Day15Generator(int factor, int startingValue)
+        internal Day15Generator(GeneratorType type, int startingValue)
         {
-            this.factor = (ulong)factor;
+            this.startingValue = startingValue;
+            previous = (ulong)startingValue;
+            switch (type)
+            {
+                case GeneratorType.GeneratorA:
+                    factor = 16807;
+                    pickyNumber = 3;
+                    break;
+                case GeneratorType.GeneratorB:
+                    factor = 48271;
+                    pickyNumber = 7;
+                    break;
+            }
+        }
+
+        internal void Reset()
+        {
             previous = (ulong)startingValue;
         }
 
@@ -73,6 +111,22 @@ namespace ProgrammingAdvent2017.Solutions
         {
             previous = (factor * previous) % int.MaxValue;
             return (int)previous;
+        }
+
+        internal int PickyGenerate()
+        {
+            int output;
+            do
+            {
+                output = Generate();
+            } while ((output & pickyNumber) > 0);
+            return output;
+        }
+
+        internal enum GeneratorType
+        {
+            GeneratorA,
+            GeneratorB
         }
     }
 }
