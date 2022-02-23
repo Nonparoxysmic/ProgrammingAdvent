@@ -3,6 +3,7 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2017.Program;
@@ -31,36 +32,55 @@ namespace ProgrammingAdvent2017.Solutions
                 return output;
             }
 
-            Day15Generator genA = new Day15Generator
-                (
-                    Day15Generator.GeneratorType.GeneratorA,
-                    int.Parse(inputLines[0][24..])
-                );
-            Day15Generator genB = new Day15Generator
-                (
-                    Day15Generator.GeneratorType.GeneratorB,
-                    int.Parse(inputLines[1][24..])
-                );
+            Day15Generator genA = new Day15Generator(16807, int.Parse(inputLines[0][24..]));
+            Day15Generator genB = new Day15Generator(48271, int.Parse(inputLines[1][24..]));
 
             int matchesPartOne = 0;
+            int matchesPartTwo = 0;
+            int consideredPartTwo = 0;
+            Queue<int> queueA = new Queue<int>();
+            Queue<int> queueB = new Queue<int>();
             for (int i = 0; i < 40_000_000; i++)
             {
-                if (Judge(genA.Generate(), genB.Generate()))
+                int numA = genA.Generate();
+                int numB = genB.Generate();
+                if (Judge(numA, numB))
                 {
                     matchesPartOne++;
                 }
+                if ((numA & 3) == 0)
+                {
+                    queueA.Enqueue(numA);
+                }
+                if ((numB & 7) == 0)
+                {
+                    queueB.Enqueue(numB);
+                }
+                if (queueA.Count > 1 && queueB.Count > 1)
+                {
+                    if (consideredPartTwo >= 5_000_000) { continue; }
+                    if (Judge(queueA.Dequeue(), queueB.Dequeue()))
+                    {
+                        matchesPartTwo++;
+                    }
+                    consideredPartTwo++;
+                }
             }
-
-            genA.Reset();
-            genB.Reset();
-
-            int matchesPartTwo = 0;
-            for (int i = 0; i < 5_000_000; i++)
+            while (consideredPartTwo < 5_000_000)
             {
-                if (Judge(genA.PickyGenerate(), genB.PickyGenerate()))
+                if (queueA.Count == 0)
+                {
+                    queueA.Enqueue(genA.PickyGenerate(3));
+                }
+                if (queueB.Count == 0)
+                {
+                    queueB.Enqueue(genB.PickyGenerate(7));
+                }
+                if (Judge(queueA.Dequeue(), queueB.Dequeue()))
                 {
                     matchesPartTwo++;
                 }
+                consideredPartTwo++;
             }
 
             sw.Stop();
@@ -80,30 +100,12 @@ namespace ProgrammingAdvent2017.Solutions
 
     internal class Day15Generator
     {
-        readonly int pickyNumber;
-        readonly int startingValue;
         readonly ulong factor;
         ulong previous;
 
-        internal Day15Generator(GeneratorType type, int startingValue)
+        internal Day15Generator(int factor, int startingValue)
         {
-            this.startingValue = startingValue;
-            previous = (ulong)startingValue;
-            switch (type)
-            {
-                case GeneratorType.GeneratorA:
-                    factor = 16807;
-                    pickyNumber = 3;
-                    break;
-                case GeneratorType.GeneratorB:
-                    factor = 48271;
-                    pickyNumber = 7;
-                    break;
-            }
-        }
-
-        internal void Reset()
-        {
+            this.factor = (ulong)factor;
             previous = (ulong)startingValue;
         }
 
@@ -113,20 +115,14 @@ namespace ProgrammingAdvent2017.Solutions
             return (int)previous;
         }
 
-        internal int PickyGenerate()
+        internal int PickyGenerate(int number)
         {
             int output;
             do
             {
                 output = Generate();
-            } while ((output & pickyNumber) > 0);
+            } while ((output & number) > 0);
             return output;
-        }
-
-        internal enum GeneratorType
-        {
-            GeneratorA,
-            GeneratorB
         }
     }
 }
