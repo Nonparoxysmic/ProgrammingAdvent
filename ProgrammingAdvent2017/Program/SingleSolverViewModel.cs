@@ -152,8 +152,7 @@ namespace ProgrammingAdvent2017.Program
             Status = DaySelected + " Solution";
             PartOneOutput = answers.PartOneAnswer;
             PartTwoOutput = answers.PartTwoAnswer;
-            double seconds = ((answers.ElapsedMilliseconds / 10) + 1) / 100.0;
-            TimeOutput = seconds.ToString("F2") + " seconds";
+            TimeOutput = PuzzleAnswers.MillisecondsToDisplayTime(answers.ElapsedMilliseconds);
             SolveButtonEnabled = true;
         }
 

@@ -3,6 +3,7 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -125,7 +126,7 @@ namespace ProgrammingAdvent2017.Program
             }
         }
 
-        internal static async Task SolveAll()
+        internal static async Task<long> SolveAll()
         {
             int[] days = Reflection.GetDayNumbers();
 
@@ -148,6 +149,7 @@ namespace ProgrammingAdvent2017.Program
             }
 
             // As tasks are completed, output results.
+            long longestTime = 0;
             while (tasks.Any())
             {
                 Task<(PuzzleAnswers, int)> finishedTask = await Task.WhenAny(tasks);
@@ -155,10 +157,13 @@ namespace ProgrammingAdvent2017.Program
                 partOneTextBoxes[dayNumber].Text = finishedTask.Result.Item1.PartOneAnswer;
                 partTwoTextBoxes[dayNumber].Text = finishedTask.Result.Item1.PartTwoAnswer;
                 long elapsedMilliseconds = finishedTask.Result.Item1.ElapsedMilliseconds;
-                double seconds = ((elapsedMilliseconds / 10) + 1) / 100.0;
-                timeOutputLabels[dayNumber].Content = seconds.ToString("F2") + " seconds";
+                longestTime = Math.Max(longestTime, elapsedMilliseconds);
+                timeOutputLabels[dayNumber].Content = PuzzleAnswers
+                    .MillisecondsToDisplayTime(elapsedMilliseconds);
                 _ = tasks.Remove(finishedTask);
             }
+
+            return longestTime;
         }
 
         private static (PuzzleAnswers, int) CalculateAnswers(int dayNumber)

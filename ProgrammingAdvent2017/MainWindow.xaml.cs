@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using ProgrammingAdvent2017.Program;
 
 namespace ProgrammingAdvent2017
 {
@@ -61,7 +62,9 @@ namespace ProgrammingAdvent2017
         {
             SolveAllButton.IsEnabled = false;
             SolveAllButton.Content = "Solving...";
-            await Program.MultiSolver.SolveAll();
+            OverallTimeLabel.Content = "";
+            long milliseconds = await MultiSolver.SolveAll();
+            OverallTimeLabel.Content = PuzzleAnswers.MillisecondsToDisplayTime(milliseconds);
             SolveAllButton.Content = "Solve All";
             SolveAllButton.IsEnabled = true;
         }

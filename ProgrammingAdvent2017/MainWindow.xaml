@@ -174,19 +174,24 @@
                     VerticalAlignment="Center"
                     Click="ReturnToMenuFromSolver_Click"/>
             </Grid>
-            <Grid x:Name="MultiSolveGrid" Margin="20" Visibility="Hidden">
+            <Grid x:Name="MultiSolveGrid" Margin="20,0,20,0" Visibility="Hidden">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="58"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition/>
-                    <RowDefinition Height="58"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button
                     x:Name="SolveAllButton"
                     Content="Solve All"
-                    Margin="10"
+                    Margin="20"
                     Padding="40,10,40,10"
                     HorizontalAlignment="Center"
                     Click="SolveAllButton_Click"/>
+                <Label
+                    x:Name="OverallTimeLabel"
+                    Margin="20"
+                    Padding="40,10,40,10"
+                    HorizontalAlignment="Right"/>
                 <ScrollViewer
                     VerticalScrollBarVisibility="Visible"
                     HorizontalScrollBarVisibility="Disabled"
@@ -199,7 +204,7 @@
                     x:Name="ReturnToMenuMulti"
                     Content="Return to Main Menu"
                     Grid.Row="2"
-                    Margin="10"
+                    Margin="20"
                     Padding="40,10,40,10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

@@ -33,5 +33,11 @@ namespace ProgrammingAdvent2017.Program
             PartTwoAnswer = "N/A";
             ElapsedMilliseconds = sw.ElapsedMilliseconds;
         }
+
+        internal static string MillisecondsToDisplayTime(long ms)
+        {
+            double seconds = ((ms / 10) + 1) / 100.0;
+            return seconds.ToString("F2") + " seconds";
+        }
     }
 }
