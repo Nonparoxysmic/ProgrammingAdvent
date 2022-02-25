@@ -22,8 +22,28 @@ namespace ProgrammingAdvent2017.Program
 
         internal void WriteAnswers(object partOne, object partTwo, Stopwatch sw)
         {
-            if (partOne != null) { PartOneAnswer = partOne.ToString(); }
-            if (partTwo != null) { PartTwoAnswer = partTwo.ToString(); }
+            if (partOne != null)
+            {
+                if (partOne is char[] charArray)
+                {
+                    PartOneAnswer = string.Join(null, charArray);
+                }
+                else
+                {
+                    PartOneAnswer = partOne.ToString();
+                }
+            }
+            if (partTwo != null)
+            {
+                if (partTwo is char[] charArray)
+                {
+                    PartTwoAnswer = string.Join(null, charArray);
+                }
+                else
+                {
+                    PartTwoAnswer = partTwo.ToString();
+                }
+            }
             ElapsedMilliseconds = sw.ElapsedMilliseconds;
         }
 
