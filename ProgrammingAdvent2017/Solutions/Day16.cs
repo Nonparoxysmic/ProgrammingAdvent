@@ -3,6 +3,7 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2017.Program;
@@ -24,11 +25,7 @@ namespace ProgrammingAdvent2017.Solutions
                 return output;
             }
 
-            char[] programs = new char[16];
-            for (int i = 0; i < programs.Length; i++)
-            {
-                programs[i] = (char)('a' + i);
-            }
+            int numberOfPrograms = 16;
 
             string[] inputMoves = input.Split(',');
             DanceMove[] danceMoves = new DanceMove[inputMoves.Length];
@@ -44,7 +41,7 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     case 's':
                         int steps = int.Parse(move[1..]);
-                        if (steps < 0 || steps > programs.Length - 1)
+                        if (steps < 0 || steps > numberOfPrograms - 1)
                         {
                             output.WriteError($"Not a valid move: \"{move}\".", sw);
                             return output;
@@ -55,7 +52,7 @@ namespace ProgrammingAdvent2017.Solutions
                         int posA = int.Parse(Regex.Match(move, @"(?<=x)\d+(?=/)").Value);
                         int posB = int.Parse(Regex.Match(move, @"(?<=/)\d+$").Value);
                         if (posA < 0 || posB < 0
-                            || posA >= programs.Length || posB >= programs.Length)
+                            || posA >= numberOfPrograms || posB >= numberOfPrograms)
                         {
                             output.WriteError($"Not a valid move: \"{move}\".", sw);
                             return output;
@@ -68,14 +65,49 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
-            foreach (DanceMove move in danceMoves)
-            {
-                move.DoMove(ref programs);
-            }
+            string[] permutations = UseInsiderInformation(numberOfPrograms, danceMoves);
+            string partOneAnswer = permutations[1];
+            string partTwoAnswer = permutations[1_000_000_000 % permutations.Length];
 
             sw.Stop();
-            output.WriteAnswers(programs, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
+        }
+
+        private string[] UseInsiderInformation(int numberOfPrograms, DanceMove[] danceMoves)
+        {
+            // For valid puzzle inputs, repeated iterations of the dance routine
+            // will loop back to the start after a short amount of time.
+
+            char[] programs = new char[numberOfPrograms];
+            for (int i = 0; i < programs.Length; i++)
+            {
+                programs[i] = (char)('a' + i);
+            }
+
+            List<string> permutations = new List<string>
+            {
+                string.Join(null, programs)
+            };
+
+            while (true)
+            {
+                foreach (DanceMove move in danceMoves)
+                {
+                    move.DoMove(ref programs);
+                }
+                string permutation = string.Join(null, programs);
+                if (permutation == permutations[0])
+                {
+                    break;
+                }
+                else
+                {
+                    permutations.Add(permutation);
+                }
+            }
+
+            return permutations.ToArray();
         }
 
         internal static void SwitchArrayElements<T>(ref T[] array, int positionA, int positionB)
