@@ -41,9 +41,28 @@ namespace ProgrammingAdvent2017.Solutions
                 // Using the location of the inserted value as the new current position.
                 currentElement = newElement;
             }
+            int partOneAnswer = currentElement.NextElement.Value;
+
+            int partTwoAnswer = 0;
+            int position = 0;
+            for (int i = 1; i <= 50_000_000; i++)
+            {
+                // Step forward in the circular array, which has i elements.
+                position += steps;
+                position %= i;
+
+                // Keep track of the most recent value inserted after zero.
+                if (position == 0)
+                {
+                    partTwoAnswer = i;
+                }
+
+                // Step to the newly inserted value.
+                position++;
+            }
 
             sw.Stop();
-            output.WriteAnswers(currentElement.NextElement.Value, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
