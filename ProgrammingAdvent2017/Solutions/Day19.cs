@@ -67,6 +67,7 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
             StringBuilder partOneAnswer = new StringBuilder();
+            int partTwoAnswer = 1;
             bool followingPath = true;
             while (followingPath)
             {
@@ -97,16 +98,18 @@ namespace ProgrammingAdvent2017.Solutions
                     case '-':
                     case '+':
                         position = lookahead;
+                        partTwoAnswer++;
                         break;
                     default:
                         partOneAnswer.Append(lookaheadChar);
                         position = lookahead;
+                        partTwoAnswer++;
                         break;
                 }
             }
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
     }
