@@ -35,7 +35,13 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            if (!int.TryParse(input.Trim(), out int inputValue))
+            input = input.Trim();
+            if (input == "")
+            {
+                output.WriteError("No input.", sw);
+                return output;
+            }
+            if (!int.TryParse(input, out int inputValue))
             {
                 output.WriteError("Input is not an integer.", sw);
                 return output;

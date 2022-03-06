@@ -18,6 +18,11 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            if (input.Trim() == "")
+            {
+                output.WriteError("No input.", sw);
+                return output;
+            }
             int noRepeats = 0;
             int noAnagrams = 0;
             string[] inputLines = input.ToLines();

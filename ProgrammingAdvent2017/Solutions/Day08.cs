@@ -21,7 +21,7 @@ namespace ProgrammingAdvent2017.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            if (input == "")
+            if (input.Trim() == "")
             {
                 output.WriteError("No input.", sw);
                 return output;

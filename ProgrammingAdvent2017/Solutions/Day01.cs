@@ -17,6 +17,11 @@ namespace ProgrammingAdvent2017.Solutions
             sw.Start();
 
             input = input.Trim();
+            if (input == "")
+            {
+                output.WriteError("No input.", sw);
+                return output;
+            }
             foreach (char c in input)
             {
                 if (c < 48 || c > 57)
