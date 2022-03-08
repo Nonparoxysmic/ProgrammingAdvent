@@ -47,8 +47,10 @@ namespace ProgrammingAdvent2017.Solutions
 
             int partOneAnswer = PartOneAnswer(initialParticles);
 
+            int partTwoAnswer = PartTwoAnswer(initialParticles);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -134,6 +136,58 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
             return closestParticles[0].ID;
+        }
+
+        private int PartTwoAnswer(List<Particle> particles)
+        {
+            // This was enough for my puzzle input; I don't know if it will work
+            // for all valid puzzle inputs. Other inputs may have to be run for
+            // additional ticks, either for an arbitrary amount of time or until
+            // each particle is not getting closer to any other particle.
+            bool particlesAwayFromOrigin = false;
+            while (!particlesAwayFromOrigin)
+            {
+                // Tick each particle forward.
+                foreach (Particle p in particles)
+                {
+                    p.Tick();
+                }
+
+                // Remove particles that collide.
+                List<Particle> collidedParticles = new List<Particle>();
+                for (int i = 0; i < particles.Count - 1; i++)
+                {
+                    for (int j = i + 1; j < particles.Count; j++)
+                    {
+                        if (particles[i].Position == particles[j].Position)
+                        {
+                            if (!collidedParticles.Contains(particles[i]))
+                            {
+                                collidedParticles.Add(particles[i]);
+                            }
+                            if (!collidedParticles.Contains(particles[j]))
+                            {
+                                collidedParticles.Add(particles[j]);
+                            }
+                        }
+                    }
+                }
+                foreach (Particle p in collidedParticles)
+                {
+                    particles.Remove(p);
+                }
+
+                // Determine if all particles are done accelerating toward the origin.
+                particlesAwayFromOrigin = true;
+                foreach (Particle p in particles)
+                {
+                    if (!p.IsAwayFromOrigin())
+                    {
+                        particlesAwayFromOrigin = false;
+                    }
+                }
+            }
+            return particles.Count;
         }
 
         private class Particle
