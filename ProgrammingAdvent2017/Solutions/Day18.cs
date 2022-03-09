@@ -43,20 +43,51 @@ namespace ProgrammingAdvent2017.Solutions
             Day18Program partOneProgram = new Day18Program(inputLines);
             long partOneAnswer = partOneProgram.PartOneAnswer();
 
+            Day18Program programZero = new Day18Program(inputLines, 0);
+            Day18Program programOne = new Day18Program(inputLines, 1);
+            programZero.DuetProgram = programOne;
+            programOne.DuetProgram = programZero;
+            int partTwoAnswer = RunDuet(programZero, programOne);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
+        }
+
+        private int RunDuet(Day18Program programZero, Day18Program programOne)
+        {
+            while (!programZero.IsWaiting || !programOne.IsWaiting)
+            {
+                programZero.RunNextCommand();
+                programOne.RunNextCommand();
+                if (!programZero.IsRunning && !programOne.IsRunning) { break; }
+            }
+            return programOne.ValuesSent;
         }
 
         private class Day18Program
         {
+            internal Day18Program DuetProgram { get; set; }
+            internal bool IsRunning { get; set; }
+            internal bool IsWaiting { get; set; }
+            internal Queue<long> ValueQueue { get; }
+            internal int ValuesSent { get; set; }
+
             readonly Day18Instruction[] instructions;
             readonly Dictionary<char, long> registers = new Dictionary<char, long>();
             long currentInstruction = 0;
             long playedSound;
 
-            public Day18Program(string[] program)
+            public Day18Program(string[] program, int programID = -1)
             {
+                if (programID >= 0)
+                {
+                    registers.Add('p', programID);
+                    IsRunning = true;
+                    IsWaiting = false;
+                    ValueQueue = new Queue<long>();
+                    ValuesSent = 0;
+                }
                 List<Day18Instruction> instructionList = new List<Day18Instruction>();
                 foreach (string line in program)
                 {
@@ -65,10 +96,20 @@ namespace ProgrammingAdvent2017.Solutions
                     switch (line[0..3])
                     {
                         case "snd":
-                            newInstruction.Command = Sound;
+                            if (programID < 0)
+                            {
+                                newInstruction.Command = Sound;
+                                break;
+                            }
+                            newInstruction.Command = Send;
                             break;
                         case "rcv":
-                            newInstruction.Command = Recover;
+                            if (programID < 0)
+                            {
+                                newInstruction.Command = Recover;
+                                break;
+                            }
+                            newInstruction.Command = Receive;
                             break;
                         case "set":
                             newInstruction.Command = Set;
@@ -146,12 +187,51 @@ namespace ProgrammingAdvent2017.Solutions
                 return int.MinValue;
             }
 
+            internal void RunNextCommand()
+            {
+                if (currentInstruction < 0 || currentInstruction >= instructions.Length)
+                {
+                    IsRunning = false;
+                    return;
+                }
+                if (instructions[currentInstruction].Command == Receive
+                    && ValueQueue.Count == 0)
+                {
+                    IsWaiting = true;
+                    return;
+                }
+                IsWaiting = false;
+                instructions[currentInstruction].ExecuteCommand();
+                currentInstruction++;
+            }
+
             private void Sound(Day18Parameter parameter, Day18Parameter _)
             {
                 playedSound = GetValue(parameter);
             }
 
             private void Recover(Day18Parameter parameter, Day18Parameter _) { }
+
+            private void Send(Day18Parameter parameter, Day18Parameter _)
+            {
+                DuetProgram.ValueQueue.Enqueue(GetValue(parameter));
+                ValuesSent++;
+            }
+
+            private void Receive(Day18Parameter parameter, Day18Parameter _)
+            {
+                if (parameter.IsRegister)
+                {
+                    if (!registers.ContainsKey(parameter.Register))
+                    {
+                        registers.Add(parameter.Register, ValueQueue.Dequeue());
+                    }
+                    else
+                    {
+                        registers[parameter.Register] = ValueQueue.Dequeue();
+                    }
+                }
+            }
 
             private void Set(Day18Parameter parameter1, Day18Parameter parameter2)
             {
