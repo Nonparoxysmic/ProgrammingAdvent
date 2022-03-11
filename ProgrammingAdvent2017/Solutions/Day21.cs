@@ -62,9 +62,24 @@ namespace ProgrammingAdvent2017.Solutions
                 rules[kvp.Key] = kvp.Value;
             }
 
+            string startingPattern = ".#./..#/###";
+
+            if (!SearchPixelsOn(startingPattern, 5, out int partOneAnswer))
+            {
+                if (partOneAnswer == -404)
+                {
+                    output.WriteError("Missing rules in input.", sw);
+                    return output;
+                }
+                else
+                {
+                    output.WriteError("Unknown error.", sw);
+                    return output;
+                }
+            }
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
         }
 
@@ -146,6 +161,162 @@ namespace ProgrammingAdvent2017.Solutions
                 flipped.Append(original[0]);
             }
             return flipped.ToString();
+        }
+
+        private int CountPixelsOn(string pattern)
+        {
+            int sum = 0;
+            foreach (char c in pattern)
+            {
+                if (c == '#') { sum++; }
+            }
+            return sum;
+        }
+
+        private bool SearchPixelsOn(string sizeThreePattern, int depth, out int result)
+        {
+            if (depth < 0)
+            {
+                result = -400;
+                return false;
+            }
+            else if (depth == 0)
+            {
+                result = CountPixelsOn(sizeThreePattern);
+                return true;
+            }
+            else if (depth == 1)
+            {
+                if (TryOneIteration(sizeThreePattern, out string newPattern))
+                {
+                    result = CountPixelsOn(newPattern);
+                    return true;
+                }
+                else
+                {
+                    result = -404;
+                    return false;
+                }
+            }
+            else if (depth == 2)
+            {
+                if (TryTwoIterations(sizeThreePattern, out string newPattern))
+                {
+                    result = CountPixelsOn(newPattern);
+                    return true;
+                }
+                else
+                {
+                    result = -404;
+                    return false;
+                }
+            }
+            else
+            {
+                if (TryThreeIterations(sizeThreePattern, out string[] newPatterns))
+                {
+                    int sum = 0;
+                    foreach (string pattern in newPatterns)
+                    {
+                        if (!SearchPixelsOn(pattern, depth - 3, out int pixels))
+                        {
+                            result = pixels;
+                            return false;
+                        }
+                        sum += pixels;
+                    }
+                    result = sum;
+                    return true;
+                }
+                else
+                {
+                    result = -404;
+                    return false;
+                }
+            }
+        }
+
+        private bool TryOneIteration(string sizeThreePattern, out string newPattern)
+        {
+            try
+            {
+                newPattern = rules[sizeThreePattern];
+                return true;
+            }
+            catch
+            {
+                newPattern = null;
+                return false;
+            }
+        }
+
+        private bool TryTwoIterations(string sizeThreePattern, out string newPattern)
+        {
+            try
+            {
+                string oneIteration = rules[sizeThreePattern];
+                int[] offsets = new int[] { 0, 2, 10, 12 };
+                StringBuilder twoIterations = new StringBuilder();
+                foreach (int offset in offsets)
+                {
+                    StringBuilder sizeTwoPattern = new StringBuilder();
+                    sizeTwoPattern.Append(oneIteration[offset]);
+                    sizeTwoPattern.Append(oneIteration[offset + 1]);
+                    sizeTwoPattern.Append('/');
+                    sizeTwoPattern.Append(oneIteration[offset + 5]);
+                    sizeTwoPattern.Append(oneIteration[offset + 6]);
+                    twoIterations.Append(rules[sizeTwoPattern.ToString()]);
+                }
+                newPattern = twoIterations.ToString();
+                return true;
+            }
+            catch
+            {
+                newPattern = null;
+                return false;
+            }
+        }
+
+        private bool TryThreeIterations(string sizeThreePattern, out string[] newPatterns)
+        {
+            if (!TryTwoIterations(sizeThreePattern, out string sizeSixPattern))
+            {
+                newPatterns = null;
+                return false;
+            }
+            try
+            {
+                int[][] offsets = new int[][]
+                {
+                    new int[] { 0, 1, 4, 5 },
+                    new int[] { 2, 11, 6, 15 },
+                    new int[] { 12, 13, 16, 17 },
+                    new int[] { 8, 9, 22, 23 },
+                    new int[] { 10, 19, 24, 33 },
+                    new int[] { 20, 21, 34, 35 },
+                    new int[] { 26, 27, 30, 31 },
+                    new int[] { 28, 37, 32, 41 },
+                    new int[] { 38, 39, 42, 43 }
+                };
+                List<string> output = new List<string>();
+                for (int i = 0; i < 9; i++)
+                {
+                    StringBuilder sizeTwoPattern = new StringBuilder();
+                    sizeTwoPattern.Append(sizeSixPattern[offsets[i][0]]);
+                    sizeTwoPattern.Append(sizeSixPattern[offsets[i][1]]);
+                    sizeTwoPattern.Append('/');
+                    sizeTwoPattern.Append(sizeSixPattern[offsets[i][2]]);
+                    sizeTwoPattern.Append(sizeSixPattern[offsets[i][3]]);
+                    output.Add(rules[sizeTwoPattern.ToString()]);
+                }
+                newPatterns = output.ToArray();
+                return true;
+            }
+            catch
+            {
+                newPatterns = null;
+                return false;
+            }
         }
     }
 }
