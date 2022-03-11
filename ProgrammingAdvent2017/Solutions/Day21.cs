@@ -78,8 +78,22 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
+            if (!SearchPixelsOn(startingPattern, 18, out int partTwoAnswer))
+            {
+                if (partTwoAnswer == -404)
+                {
+                    output.WriteError("Missing rules in input.", sw);
+                    return output;
+                }
+                else
+                {
+                    output.WriteError("Unknown error.", sw);
+                    return output;
+                }
+            }
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
