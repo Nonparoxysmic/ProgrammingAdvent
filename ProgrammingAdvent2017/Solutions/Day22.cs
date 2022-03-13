@@ -3,6 +3,7 @@
 // for Advent of Code 2017
 // https://adventofcode.com/2017
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -14,10 +15,10 @@ namespace ProgrammingAdvent2017.Solutions
     {
         private readonly Vector2Int[] directions = new Vector2Int[]
         {
-            new Vector2Int( 0, -1),  // [0] north
-            new Vector2Int( 1,  0),  // [1] east
-            new Vector2Int( 0,  1),  // [2] south
-            new Vector2Int(-1,  0)   // [3] west
+            new Vector2Int( 0, -1),  // [0] up
+            new Vector2Int( 1,  0),  // [1] right
+            new Vector2Int( 0,  1),  // [2] down
+            new Vector2Int(-1,  0)   // [3] left
         };
 
         internal override PuzzleAnswers Solve(string input)
@@ -57,6 +58,16 @@ namespace ProgrammingAdvent2017.Solutions
                 }
             }
 
+            int partOneAnswer = PartOneAnswer(inputLines);
+            int partTwoAnswer = PartTwoAnswer(inputLines);
+
+            sw.Stop();
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
+            return output;
+        }
+
+        private int PartOneAnswer(string[] inputLines)
+        {
             List<Vector2Int> infectedNodes = new List<Vector2Int>();
             int colOffset = (inputLines[0].Length - 1) / 2;
             int rowOffset = (inputLines.Length - 1) / 2;
@@ -73,7 +84,7 @@ namespace ProgrammingAdvent2017.Solutions
 
             Vector2Int currentPosition = Vector2Int.Zero;
             int direction = 0;
-            int partOneAnswer = 0;
+            int sum = 0;
             for (int i = 0; i < 10_000; i++)
             {
                 if (infectedNodes.Contains(currentPosition))
@@ -85,14 +96,65 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     direction = (direction + 3) % 4;
                     infectedNodes.Add(currentPosition);
-                    partOneAnswer++;
+                    sum++;
                 }
                 currentPosition += directions[direction];
             }
+            return sum;
+        }
 
-            sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
-            return output;
+        private int PartTwoAnswer(string[] inputLines, int gridSize = 501)
+        {
+            try
+            {
+                if (gridSize % 2 == 0) { gridSize++; }
+                char[,] nodes = new char[gridSize, gridSize];
+                int colOffset = (gridSize - inputLines[0].Length) / 2;
+                int rowOffset = (gridSize - inputLines.Length) / 2;
+                for (int row = 0; row < inputLines.Length; row++)
+                {
+                    for (int col = 0; col < inputLines[0].Length; col++)
+                    {
+                        nodes[col + colOffset, row + rowOffset] = inputLines[row][col];
+                    }
+                }
+
+                Vector2Int currentPosition = new Vector2Int(gridSize / 2, gridSize / 2);
+                int direction = 0;
+                int sum = 0;
+                for (int i = 0; i < 10_000_000; i++)
+                {
+                    switch (nodes[currentPosition.X, currentPosition.Y])
+                    {
+                        case 'F':
+                            direction = (direction + 6) % 4;
+                            nodes[currentPosition.X, currentPosition.Y] = '.';
+                            break;
+                        case '#':
+                            direction = (direction + 5) % 4;
+                            nodes[currentPosition.X, currentPosition.Y] = 'F';
+                            break;
+                        case 'W':
+                            nodes[currentPosition.X, currentPosition.Y] = '#';
+                            sum++;
+                            break;
+                        default:
+                            direction = (direction + 3) % 4;
+                            nodes[currentPosition.X, currentPosition.Y] = 'W';
+                            break;
+                    }
+                    currentPosition += directions[direction];
+                }
+                return sum;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return PartTwoAnswer(inputLines, gridSize * 2);
+            }
+            catch
+            {
+                return -1;
+            }
         }
     }
 }
