@@ -7,6 +7,7 @@
     xmlns:program="clr-namespace:ProgrammingAdvent2017.Program"
     mc:Ignorable="d"
     Title="ProgrammingAdvent2017 by Nonparoxysmic"
+    WindowStartupLocation="CenterScreen"
     Width="800"
     Height="600"
     MinWidth="700"
