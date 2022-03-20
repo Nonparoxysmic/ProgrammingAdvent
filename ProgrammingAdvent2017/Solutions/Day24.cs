@@ -13,6 +13,9 @@ namespace ProgrammingAdvent2017.Solutions
 {
     internal class Day24 : Day
     {
+        private int LongestBridgeLength { get; set; }
+        private int LongestBridgeStrength { get; set; }
+
         internal override PuzzleAnswers Solve(string input)
         {
             PuzzleAnswers output = new PuzzleAnswers();
@@ -40,14 +43,17 @@ namespace ProgrammingAdvent2017.Solutions
             }
             Day24Component[] components = componentsList.ToArray();
 
-            int partOneAnswer = StrongestBridgeStrength(components, 0);
+            LongestBridgeLength = 0;
+            LongestBridgeStrength = 0;
+            int partOneAnswer = StrongestBridgeStrength(components);
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, LongestBridgeStrength, sw);
             return output;
         }
 
-        private int StrongestBridgeStrength(Day24Component[] components, int connectionValue)
+        private int StrongestBridgeStrength(Day24Component[] components,
+            int connectionValue = 0, int lengthSoFar = 0, int strengthSoFar = 0)
         {
             int strongest = 0;
             for (int i = 0; i < components.Length; i++)
@@ -57,9 +63,22 @@ namespace ProgrammingAdvent2017.Solutions
                 {
                     components[i] = null;
                     int freeEnd = c.FreeEndValue(connectionValue);
-                    strongest = Math.Max(strongest,
-                        StrongestBridgeStrength(components, freeEnd) + c.Strength);
+                    int thisStrength = StrongestBridgeStrength(components,
+                        freeEnd, lengthSoFar + 1, strengthSoFar + c.Strength);
+                    strongest = Math.Max(strongest, thisStrength + c.Strength);
                     components[i] = c;
+                }
+            }
+            if (strongest == 0)
+            {
+                if (lengthSoFar >= LongestBridgeLength)
+                {
+                    if (lengthSoFar > LongestBridgeLength)
+                    {
+                        LongestBridgeStrength = 0;
+                    }
+                    LongestBridgeLength = lengthSoFar;
+                    LongestBridgeStrength = Math.Max(LongestBridgeStrength, strengthSoFar);
                 }
             }
             return strongest;
