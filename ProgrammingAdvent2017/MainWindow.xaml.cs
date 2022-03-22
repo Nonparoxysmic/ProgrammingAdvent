@@ -12,7 +12,7 @@ namespace ProgrammingAdvent2017
         public MainWindow()
         {
             InitializeComponent();
-            Program.MultiSolver.Initialize(MultiSolveResultPanel);
+            MultiSolver.Initialize(MultiSolveResultPanel);
         }
 
         private void ExitProgramButton_Click(object sender, RoutedEventArgs e)
@@ -28,6 +28,14 @@ namespace ProgrammingAdvent2017
         private void CloseCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OpenInputFolder_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IO.OpenInputFolder(out string message))
+            {
+                _ = MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e)

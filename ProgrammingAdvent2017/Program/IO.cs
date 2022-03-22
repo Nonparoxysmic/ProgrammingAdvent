@@ -4,6 +4,7 @@
 // https://adventofcode.com/2017
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace ProgrammingAdvent2017.Program
@@ -14,7 +15,7 @@ namespace ProgrammingAdvent2017.Program
 
         private static string InputFilePath(int dayNumber)
         {
-            return "InputFiles\\InputDay" + dayNumber.ToString("D2") + ".txt";
+            return @"InputFiles\InputDay" + dayNumber.ToString("D2") + ".txt";
         }
 
         internal static bool TryReadInputFile(int dayNumber, out string result)
@@ -27,7 +28,7 @@ namespace ProgrammingAdvent2017.Program
             }
             catch (FileNotFoundException e)
             {
-                result = "\"" + path + "\" not found." + NL + NL
+                result = $"\"{path}\" not found." + NL + NL
                     + e.GetType().FullName + ": " + e.Message;
                 return false;
             }
@@ -53,6 +54,27 @@ namespace ProgrammingAdvent2017.Program
             catch (Exception e)
             {
                 return e.GetType().FullName + ": " + e.Message;
+            }
+        }
+
+        internal static bool OpenInputFolder(out string exceptionMessage)
+        {
+            if (!Directory.Exists("InputFiles"))
+            {
+                _ = Directory.CreateDirectory("InputFiles");
+            }
+            string folderPath = Directory.GetCurrentDirectory() + @"\InputFiles";
+            try
+            {
+                _ = Process.Start("explorer.exe", folderPath);
+                exceptionMessage = null;
+                return true;
+            }
+            catch (Exception e)
+            {
+                exceptionMessage = "Unable to open input file folder in File Explorer."
+                    + NL + NL + e.GetType().FullName + ": " + e.Message;
+                return false;
             }
         }
 

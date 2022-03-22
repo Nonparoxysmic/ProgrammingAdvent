@@ -21,7 +21,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="MenuItem"/>
+                <MenuItem Header="_Open Input Folder..." Click="OpenInputFolder_Click"/>
                 <Separator/>
                 <MenuItem Command="Close" Header="E_xit" InputGestureText="Alt+F4"/>
             </MenuItem>
@@ -29,8 +29,6 @@
                 <MenuItem Command="Cut" Header="Cu_t"/>
                 <MenuItem Command="Copy" Header="_Copy"/>
                 <MenuItem Command="Paste" Header="_Paste"/>
-                <Separator/>
-                <MenuItem Header="MenuItem"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_About ProgrammingAdvent2017" Click="AboutMenuItem_Click"/>
