@@ -1,0 +1,23 @@
+﻿<Window x:Class="ProgrammingAdvent2018.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProgrammingAdvent2018"
+        mc:Ignorable="d"
+        Title="About ProgrammingAdvent2018"
+        MinWidth="400"
+        MinHeight="200"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBox Margin="20,20,20,20" Background="Transparent" BorderThickness="0" IsReadOnly="true" TextWrapping="Wrap" Text="Made by Nonparoxysmic&#x0a;https://github.com/Nonparoxysmic/ProgrammingAdvent&#x0a;&#x0a;For participation in Advent of Code 2018&#x0a;https://adventofcode.com/2018"/>
+        <Button x:Name="OKButton" Grid.Row="1" Content="OK" Width="50" Height="30" Margin="20,20,20,20" DockPanel.Dock="Bottom" Click="OKButton_Click" IsDefault="True"/>
+    </Grid>
+</Window>
