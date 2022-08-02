@@ -28,8 +28,9 @@ namespace ProgrammingAdvent2018.Program
             }
             catch (FileNotFoundException e)
             {
-                result = $"\"{path}\" not found." + NL + NL
-                    + e.GetType().FullName + ": " + e.Message;
+                string filename = Path.GetFileName(path);
+                result = $"Puzzle input \"{filename}\" not found in InputFiles folder."
+                    + NL + NL + e.Message;
                 return false;
             }
             catch (Exception e)

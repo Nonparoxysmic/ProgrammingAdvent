@@ -168,7 +168,7 @@ namespace ProgrammingAdvent2018.Program
             else
             {
                 InputText = "";
-                _ = MessageBox.Show(result, "Error",
+                _ = MessageBox.Show(result, "Missing File",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
