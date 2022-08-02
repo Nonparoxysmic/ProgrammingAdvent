@@ -18,6 +18,15 @@ namespace ProgrammingAdvent2018.Program
             return int.Parse(Regex.Match(name, @"\d+$").Value);
         }
 
+        internal static bool TryParseDayNumber(string name, out int result)
+        {
+            if (int.TryParse(Regex.Match(name, @"\d+$").Value, out result))
+            {
+                return true;
+            }
+            return false;
+        }
+
         internal static Day GetDayObject(int dayNumber)
         {
             if (dayObjects == null) { InitializeDictionary(); }

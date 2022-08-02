@@ -27,7 +27,10 @@ namespace ProgrammingAdvent2018.Program
             Type[] types = GetDayClassTypes();
             foreach (Type t in types)
             {
-                int dayNumber = Day.ParseDayNumber(t.Name);
+                if (!Day.TryParseDayNumber(t.Name, out int dayNumber))
+                {
+                    continue;
+                }
                 if (dayTypes.ContainsKey(dayNumber))
                 {
                     throw new ApplicationException();
