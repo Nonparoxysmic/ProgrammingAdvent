@@ -21,10 +21,24 @@ namespace ProgrammingAdvent2018.Solutions
                 output.WriteError("No input.", sw);
                 return output;
             }
-            //string[] inputLines = input.ToLines();
+            string[] inputLines = input.ToLines();
+
+            int sum = 0;
+            foreach (string line in inputLines)
+            {
+                if (int.TryParse(line, out int result))
+                {
+                    sum += result;
+                }
+                else
+                {
+                    output.WriteError($"Cannot parse \"{line}\" as an integer.", sw);
+                    return output;
+                }
+            }
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(sum, null, sw);
             return output;
         }
     }
