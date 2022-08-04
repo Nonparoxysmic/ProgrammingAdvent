@@ -3,6 +3,7 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using ProgrammingAdvent2018.Program;
 
@@ -23,22 +24,32 @@ namespace ProgrammingAdvent2018.Solutions
             }
             string[] inputLines = input.ToLines();
 
+            int[] changes = new int[inputLines.Length];
             int sum = 0;
-            foreach (string line in inputLines)
+            for (int i = 0; i < inputLines.Length; i++)
             {
-                if (int.TryParse(line, out int result))
+                if (int.TryParse(inputLines[i], out int result))
                 {
+                    changes[i] = result;
                     sum += result;
                 }
                 else
                 {
-                    output.WriteError($"Cannot parse \"{line}\" as an integer.", sw);
+                    output.WriteError($"Cannot parse \"{inputLines[i]}\" as an integer.", sw);
                     return output;
                 }
             }
 
+            HashSet<int> frequenciesSeen = new HashSet<int> { 0 };
+            int frequency = 0;
+            for (int i = 0; i < int.MaxValue; i++)
+            {
+                frequency += changes[i % changes.Length];
+                if (!frequenciesSeen.Add(frequency)) { break; }
+            }
+
             sw.Stop();
-            output.WriteAnswers(sum, null, sw);
+            output.WriteAnswers(sum, frequency, sw);
             return output;
         }
     }
