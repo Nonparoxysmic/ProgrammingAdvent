@@ -5,6 +5,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Text;
 using ProgrammingAdvent2018.Program;
 
 namespace ProgrammingAdvent2018.Solutions
@@ -55,9 +56,53 @@ namespace ProgrammingAdvent2018.Solutions
             }
             int checksum = countWithTwo * countWithThree;
 
+            string commonLetters = FindCommonLetters(inputLines);
+
             sw.Stop();
-            output.WriteAnswers(checksum, null, sw);
+            output.WriteAnswers(checksum, commonLetters, sw);
             return output;
+        }
+
+        private string FindCommonLetters(string[] inputLines)
+        {
+            for (int i = 0; i < inputLines.Length - 1; i++)
+            {
+                for (int j = i + 1; j < inputLines.Length; j++)
+                {
+                    if (inputLines[i].Length != inputLines[j].Length) { continue; }
+                    if (OneCharacterDifferent(inputLines[i], inputLines[j], out string answer))
+                    {
+                        return answer;
+                    }
+                }
+            }
+            return "ERROR: No valid answer in input.";
+        }
+
+        private bool OneCharacterDifferent(string a, string b, out string commonLetters)
+        {
+            int differences = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] != b[i]) { differences++; }
+                if (differences > 1)
+                {
+                    commonLetters = "";
+                    return false;
+                }
+            }
+            if (differences == 0)
+            {
+                commonLetters = a;
+                return true;
+            }
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] == b[i]) { output.Append(a[i]); }
+            }
+            commonLetters = output.ToString();
+            return true;
         }
     }
 }
