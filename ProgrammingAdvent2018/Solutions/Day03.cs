@@ -70,9 +70,31 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
 
+            string nonoverlappingClaim = "No claims that don't overlap.";
+            foreach (FabricClaim claim in claims)
+            {
+                if (!ClaimHasOverlap(claim, fabric))
+                {
+                    nonoverlappingClaim = claim.ID.ToString();
+                    break;
+                }
+            }
+
             sw.Stop();
-            output.WriteAnswers(overlaps, null, sw);
+            output.WriteAnswers(overlaps, nonoverlappingClaim, sw);
             return output;
+        }
+
+        private bool ClaimHasOverlap(FabricClaim claim, int[,] fabric)
+        {
+            for (int x = claim.X; x < claim.X + claim.Width; x++)
+            {
+                for (int y = claim.Y; y < claim.Y + claim.Height; y++)
+                {
+                    if (fabric[x, y] > 1) { return true; }
+                }
+            }
+            return false;
         }
 
         private class FabricClaim
