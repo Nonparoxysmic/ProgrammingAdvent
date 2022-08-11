@@ -13,8 +13,8 @@ namespace ProgrammingAdvent2018.Solutions
 {
     internal class Day04 : Day
     {
-        private readonly Regex newGuardLine = new Regex(@"^\[(\d\d\d\d-\d\d-\d\d \d\d:\d\d)] Guard #(\d+) begins shift$");
-        private readonly Regex sleepToggleLine = new Regex(@"^\[\d\d\d\d-\d\d-\d\d \d\d:(\d\d)] (falls asleep|wakes up)$");
+        private readonly Regex newGuardLine = new Regex(@"^\[(1518-\d\d-\d\d \d\d:\d\d)] Guard #(\d+) begins shift$");
+        private readonly Regex sleepToggleLine = new Regex(@"^\[1518-\d\d-\d\d \d\d:(\d\d)] (falls asleep|wakes up)$");
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -75,10 +75,42 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
 
-            // TODO: Determine which minute mostSleepGuard spends asleep the most.
+            Dictionary<int, int> mostSleepGuardMinutes = new Dictionary<int, int>();
+            for (int i = 0; i < 60; i++)
+            {
+                mostSleepGuardMinutes.Add(i, 0);
+            }
+            bool isAwake = true;
+            foreach (GuardLog log in logs)
+            {
+                if (log.ID != mostSleepGuard) { continue; }
+                for (int i = 0; i < 60; i++)
+                {
+                    if (log.IsToggle(i))
+                    {
+                        isAwake = !isAwake;
+                    }
+                    if (!isAwake)
+                    {
+                        mostSleepGuardMinutes[i]++;
+                    }
+                }
+            }
+            mostSleep = -1;
+            int mostSleepMinute = -1;
+            foreach (var kvp in mostSleepGuardMinutes)
+            {
+                if (kvp.Value > mostSleep)
+                {
+                    mostSleep = kvp.Value;
+                    mostSleepMinute = kvp.Key;
+                }
+            }
+
+            int partOneAnswer = mostSleepGuard * mostSleepMinute;
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
         }
 
@@ -87,7 +119,7 @@ namespace ProgrammingAdvent2018.Solutions
             public int ID { get; }
             public DateTime ShiftStart { get; }
 
-            List<int> sleepToggles = new List<int>();
+            readonly List<int> sleepToggles = new List<int>();
 
             public GuardLog(string id, string shiftStart)
             {
@@ -115,6 +147,11 @@ namespace ProgrammingAdvent2018.Solutions
                     }
                 }
                 return sum;
+            }
+
+            public bool IsToggle(int number)
+            {
+                return sleepToggles.Contains(number);
             }
         }
     }
