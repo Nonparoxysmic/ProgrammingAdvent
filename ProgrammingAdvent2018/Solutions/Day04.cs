@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
@@ -13,7 +14,7 @@ namespace ProgrammingAdvent2018.Solutions
 {
     internal class Day04 : Day
     {
-        private readonly Regex newGuardLine = new Regex(@"^\[(1518-\d\d-\d\d \d\d:\d\d)] Guard #(\d+) begins shift$");
+        private readonly Regex newGuardLine = new Regex(@"^\[1518-\d\d-\d\d \d\d:\d\d] Guard #(\d+) begins shift$");
         private readonly Regex sleepToggleLine = new Regex(@"^\[1518-\d\d-\d\d \d\d:(\d\d)] (falls asleep|wakes up)$");
 
         internal override PuzzleAnswers Solve(string input)
@@ -30,15 +31,30 @@ namespace ProgrammingAdvent2018.Solutions
             string[] inputLines = input.ToLines();
             Array.Sort(inputLines);
 
-            List<GuardLog> logs = new List<GuardLog>();
+            DataTable guardSleep = new DataTable();
+            guardSleep.Columns.Add("ID", typeof(int));
+            guardSleep.PrimaryKey = new DataColumn[] { guardSleep.Columns["ID"] };
+            guardSleep.Columns.Add("Total", typeof(int));
+            for (int i = 0; i < 60; i++)
+            {
+                guardSleep.Columns.Add(i.ToString(), typeof(int));
+            }
+            foreach (DataColumn column in guardSleep.Columns)
+            {
+                column.DefaultValue = 0;
+            }
+
             GuardLog currentLog = null;
             foreach (string line in inputLines)
             {
                 Match newGuard = newGuardLine.Match(line);
                 if (newGuard.Success)
                 {
-                    if (currentLog != null) { logs.Add(currentLog); }
-                    currentLog = new GuardLog(newGuard.Groups[2].Value, newGuard.Groups[1].Value);
+                    if (currentLog != null)
+                    {
+                        AddGuardLog(guardSleep, currentLog);
+                    }
+                    currentLog = new GuardLog(newGuard.Groups[1].Value);
                     continue;
                 }
                 Match sleepToggle = sleepToggleLine.Match(line);
@@ -53,57 +69,33 @@ namespace ProgrammingAdvent2018.Solutions
                 output.WriteError($"Invalid line {line} in input.", sw);
                 return output;
             }
-            logs.Add(currentLog);
-
-            Dictionary<int, int> totalSleep = new Dictionary<int, int>();
-            foreach (GuardLog log in logs)
+            if (currentLog != null)
             {
-                if (totalSleep.ContainsKey(log.ID))
-                {
-                    totalSleep[log.ID] += log.TimeAsleep();
-                }
-                else { totalSleep.Add(log.ID, log.TimeAsleep()); }
+                AddGuardLog(guardSleep, currentLog);
             }
+
             int mostSleep = -1;
             int mostSleepGuard = -1;
-            foreach (var kvp in totalSleep)
+            foreach (DataRow row in guardSleep.Rows)
             {
-                if (kvp.Value > mostSleep)
+                int totalSleep = row.Field<int>("Total");
+                if (totalSleep > mostSleep)
                 {
-                    mostSleep = kvp.Value;
-                    mostSleepGuard = kvp.Key;
+                    mostSleep = totalSleep;
+                    mostSleepGuard = row.Field<int>("ID");
                 }
             }
 
-            Dictionary<int, int> mostSleepGuardMinutes = new Dictionary<int, int>();
-            for (int i = 0; i < 60; i++)
-            {
-                mostSleepGuardMinutes.Add(i, 0);
-            }
-            bool isAwake = true;
-            foreach (GuardLog log in logs)
-            {
-                if (log.ID != mostSleepGuard) { continue; }
-                for (int i = 0; i < 60; i++)
-                {
-                    if (log.IsToggle(i))
-                    {
-                        isAwake = !isAwake;
-                    }
-                    if (!isAwake)
-                    {
-                        mostSleepGuardMinutes[i]++;
-                    }
-                }
-            }
+            DataRow mostSleepGuardRow = guardSleep.Rows.Find(mostSleepGuard);
             mostSleep = -1;
             int mostSleepMinute = -1;
-            foreach (var kvp in mostSleepGuardMinutes)
+            for (int i = 0; i < 60; i++)
             {
-                if (kvp.Value > mostSleep)
+                int minuteSleep = mostSleepGuardRow.Field<int>(i.ToString());
+                if (minuteSleep > mostSleep)
                 {
-                    mostSleep = kvp.Value;
-                    mostSleepMinute = kvp.Key;
+                    mostSleep = minuteSleep;
+                    mostSleepMinute = i;
                 }
             }
 
@@ -114,17 +106,37 @@ namespace ProgrammingAdvent2018.Solutions
             return output;
         }
 
+        private void AddGuardLog(DataTable table, GuardLog guardLog)
+        {
+            if (!table.Rows.Contains(guardLog.ID))
+            {
+                table.Rows.Add(guardLog.ID);
+            }
+            DataRow row = table.Rows.Find(guardLog.ID);
+            row["Total"] = row.Field<int>("Total") + guardLog.TimeAsleep();
+            bool isAwake = true;
+            for (int i = 0; i < 60; i++)
+            {
+                if (guardLog.IsToggle(i))
+                {
+                    isAwake = !isAwake;
+                }
+                if (!isAwake)
+                {
+                    row[i.ToString()] = row.Field<int>(i.ToString()) + 1;
+                }
+            }
+        }
+
         class GuardLog
         {
             public int ID { get; }
-            public DateTime ShiftStart { get; }
 
             readonly List<int> sleepToggles = new List<int>();
 
-            public GuardLog(string id, string shiftStart)
+            public GuardLog(string id)
             {
                 ID = int.Parse(id);
-                ShiftStart = DateTime.Parse(shiftStart);
             }
 
             public void AddSleepToggle(string minute)
