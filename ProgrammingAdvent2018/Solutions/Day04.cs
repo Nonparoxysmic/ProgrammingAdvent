@@ -29,8 +29,11 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
             string[] inputLines = input.ToLines();
+
+            // Put input lines in chronological order.
             Array.Sort(inputLines);
 
+            // Create DataTable for input data.
             DataTable guardSleep = new DataTable();
             guardSleep.Columns.Add("ID", typeof(int));
             guardSleep.PrimaryKey = new DataColumn[] { guardSleep.Columns["ID"] };
@@ -44,6 +47,7 @@ namespace ProgrammingAdvent2018.Solutions
                 column.DefaultValue = 0;
             }
 
+            // Compile the input data and put it in the DataTable.
             GuardLog currentLog = null;
             foreach (string line in inputLines)
             {
@@ -74,35 +78,59 @@ namespace ProgrammingAdvent2018.Solutions
                 AddGuardLog(guardSleep, currentLog);
             }
 
-            int mostSleep = -1;
+            // Find the guard that has the most minutes asleep.
+            int mostTotalSleep = -1;
             int mostSleepGuard = -1;
             foreach (DataRow row in guardSleep.Rows)
             {
                 int totalSleep = row.Field<int>("Total");
-                if (totalSleep > mostSleep)
+                if (totalSleep > mostTotalSleep)
                 {
-                    mostSleep = totalSleep;
+                    mostTotalSleep = totalSleep;
                     mostSleepGuard = row.Field<int>("ID");
                 }
             }
 
+            // Find the minute that guard spends asleep the most.
             DataRow mostSleepGuardRow = guardSleep.Rows.Find(mostSleepGuard);
-            mostSleep = -1;
-            int mostSleepMinute = -1;
+            int mostMinuteSleep = -1;
+            int mostSleepGuardsMostSleepMinute = -1;
             for (int i = 0; i < 60; i++)
             {
                 int minuteSleep = mostSleepGuardRow.Field<int>(i.ToString());
-                if (minuteSleep > mostSleep)
+                if (minuteSleep > mostMinuteSleep)
                 {
-                    mostSleep = minuteSleep;
-                    mostSleepMinute = i;
+                    mostMinuteSleep = minuteSleep;
+                    mostSleepGuardsMostSleepMinute = i;
                 }
             }
 
-            int partOneAnswer = mostSleepGuard * mostSleepMinute;
+            // Calculate Part One answer.
+            int partOneAnswer = mostSleepGuard * mostSleepGuardsMostSleepMinute;
+
+            // Find which guard is most frequently asleep on the same minute.
+            int mostSleep = -1;
+            int mostSleepMinute = -1;
+            int mostSleepMinutesGuard = -1;
+            foreach (DataRow row in guardSleep.Rows)
+            {
+                for (int i = 0; i < 60; i++)
+                {
+                    int sleep = row.Field<int>(i.ToString());
+                    if (sleep > mostSleep)
+                    {
+                        mostSleep = sleep;
+                        mostSleepMinute = i;
+                        mostSleepMinutesGuard = row.Field<int>("ID");
+                    }
+                }
+            }
+
+            // Calculate Part Two answer.
+            int partTwoAnswer = mostSleepMinute * mostSleepMinutesGuard;
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
