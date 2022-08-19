@@ -102,8 +102,8 @@ namespace ProgrammingAdvent2018.Solutions
                 grid.Apply();
             }
 
-            HashSet<int> indices = grid.InternalIndices();
             Dictionary<int, int> areas = new Dictionary<int, int>();
+            HashSet<int> indices = grid.InternalIndices();
             foreach (int i in indices)
             {
                 areas.Add(i, 0);
@@ -125,8 +125,29 @@ namespace ProgrammingAdvent2018.Solutions
                 largestNoninfiniteArea = Math.Max(largestNoninfiniteArea, kvp.Value);
             }
 
+            GridArray distances = new GridArray(lowestX, lowestY, highestX, highestY);
+            for (int y = lowestY; y <= highestY; y++)
+            {
+                for (int x = lowestX; x <= highestX; x++)
+                {
+                    foreach (Vector2Int coord in coordinates)
+                    {
+                        int distance = (coord - new Vector2Int(x, y)).TaxicabMagnitude();
+                        distances.ApplyValue(x, y, distances[x, y] + distance);
+                    }
+                }
+            }
+            int locationsInRegion = 0;
+            for (int y = lowestY; y <= highestY; y++)
+            {
+                for (int x = lowestX; x <= highestX; x++)
+                {
+                    if (distances[x, y] < 10_000) { locationsInRegion++; }
+                }
+            }
+
             sw.Stop();
-            output.WriteAnswers(largestNoninfiniteArea, null, sw);
+            output.WriteAnswers(largestNoninfiniteArea, locationsInRegion, sw);
             return output;
         }
 
@@ -179,6 +200,17 @@ namespace ProgrammingAdvent2018.Solutions
                     return;
                 }
                 buffer[xIndex, yIndex] = value;
+            }
+
+            public void ApplyValue(int x, int y, int value)
+            {
+                int xIndex = x - shiftX;
+                int yIndex = y - shiftY;
+                if (xIndex < 0 || yIndex < 0 || xIndex >= lengthX || yIndex >= lengthY)
+                {
+                    return;
+                }
+                values[xIndex, yIndex] = value;
             }
 
             public void Apply()
