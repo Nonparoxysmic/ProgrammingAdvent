@@ -53,8 +53,10 @@ namespace ProgrammingAdvent2018.Solutions
 
             uint metadataSum = rootNode.MetadataSum();
 
+            uint rootNodeValue = rootNode.NodeValue();
+
             sw.Stop();
-            output.WriteAnswers(metadataSum, null, sw);
+            output.WriteAnswers(metadataSum, rootNodeValue, sw);
             return output;
         }
 
@@ -88,6 +90,25 @@ namespace ProgrammingAdvent2018.Solutions
                 for (uint i = 0; i < metadata.Length; i++)
                 {
                     sum += metadata[i];
+                }
+                return sum;
+            }
+
+            public uint NodeValue()
+            {
+                if (childNodes.Length == 0)
+                {
+                    return MetadataSum();
+                }
+
+                uint sum = 0;
+                for (uint i = 0; i < metadata.Length; i++)
+                {
+                    if (metadata[i] < 1 || metadata[i] > childNodes.Length)
+                    {
+                        continue;
+                    }
+                    sum += childNodes[metadata[i] - 1].NodeValue();
                 }
                 return sum;
             }
