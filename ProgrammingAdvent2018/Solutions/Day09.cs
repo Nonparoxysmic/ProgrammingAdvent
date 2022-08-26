@@ -33,22 +33,24 @@ namespace ProgrammingAdvent2018.Solutions
                 output.WriteError("Invalid input.", sw);
                 return output;
             }
-            int numberOfPlayers = int.Parse(validMatch.Groups[1].Value);
-            int lastMarbleValue = int.Parse(validMatch.Groups[2].Value);
+            uint numberOfPlayers = uint.Parse(validMatch.Groups[1].Value);
+            uint lastMarbleValue = uint.Parse(validMatch.Groups[2].Value);
 
-            int winningScore = WinningScore(numberOfPlayers, lastMarbleValue);
+            uint partOneAnswer = WinningScore(numberOfPlayers, lastMarbleValue);
+
+            uint partTwoAnswer = WinningScore(numberOfPlayers, lastMarbleValue * 100);
 
             sw.Stop();
-            output.WriteAnswers(winningScore, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
-        private int WinningScore(int numberOfPlayers, int lastMarbleValue)
+        private uint WinningScore(uint numberOfPlayers, uint lastMarbleValue)
         {
-            if (numberOfPlayers < 1) { return -1; }
+            if (numberOfPlayers < 1) { return 0; }
             if (lastMarbleValue < 23) { return 0; }
-            SortedDictionary<int, int> scores = new SortedDictionary<int, int>();
-            for (int i = 1; i <= numberOfPlayers; i++)
+            SortedDictionary<uint, uint> scores = new SortedDictionary<uint, uint>();
+            for (uint i = 1; i <= numberOfPlayers; i++)
             {
                 scores.Add(i, 0);
             }
@@ -56,7 +58,7 @@ namespace ProgrammingAdvent2018.Solutions
             zeroMarble.NextMarble = zeroMarble;
             zeroMarble.PreviousMarble = zeroMarble;
             Marble currentMarble = zeroMarble;
-            for (int i = 1; i <= lastMarbleValue; i++)
+            for (uint i = 1; i <= lastMarbleValue; i++)
             {
                 if (i % 23 == 0)
                 {
@@ -64,7 +66,7 @@ namespace ProgrammingAdvent2018.Solutions
                     {
                         currentMarble = currentMarble.PreviousMarble;
                     }
-                    int currentPlayer = (i - 1) % numberOfPlayers + 1;
+                    uint currentPlayer = (i - 1) % numberOfPlayers + 1;
                     scores[currentPlayer] += i + currentMarble.NextMarble.Value;
                     currentMarble.NextMarble = currentMarble.NextMarble.NextMarble;
                     currentMarble.NextMarble.PreviousMarble = currentMarble;
@@ -87,11 +89,11 @@ namespace ProgrammingAdvent2018.Solutions
 
         private class Marble
         {
-            public int Value { get; private set; }
+            public uint Value { get; private set; }
             public Marble NextMarble { get; set; }
             public Marble PreviousMarble { get; set; }
 
-            public Marble(int value)
+            public Marble(uint value)
             {
                 Value = value;
             }
