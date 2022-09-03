@@ -3,6 +3,7 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System;
 using System.Diagnostics;
 using ProgrammingAdvent2018.Program;
 
@@ -36,6 +37,7 @@ namespace ProgrammingAdvent2018.Solutions
                     gridPower[x - 1, y - 1] = CellPowerLevel(x, y, gridSerialNumber);
                 }
             }
+
             int[,] threeByThreePower = new int[298, 298];
             for (int y = 1; y <= 298; y++)
             {
@@ -51,8 +53,8 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
             int partOnePower = int.MinValue;
-            int partOneX = 0;
-            int partOneY = 0;
+            int partOneX = -1;
+            int partOneY = -1;
             for (int y = 1; y <= 298; y++)
             {
                 for (int x = 1; x <= 298; x++)
@@ -67,8 +69,45 @@ namespace ProgrammingAdvent2018.Solutions
             }
             string partOneAnswer = partOneX + "," + partOneY;
 
+            int partTwoPower = int.MinValue;
+            int partTwoX = -1;
+            int partTwoY = -1;
+            int partTwoSize = -1;
+            for (int y = 1; y <= 300; y++)
+            {
+                for (int x = 1; x <= 300; x++)
+                {
+                    int maxSquareSize = Math.Min(300 - x + 1, 300 - y + 1);
+                    int sum = 0;
+                    for (int squareSize = 1; squareSize <= maxSquareSize; squareSize++)
+                    {
+                        int stepX = x + squareSize - 1;
+                        int stepY = y;
+                        while (stepY <= y + squareSize - 1)
+                        {
+                            sum += gridPower[stepX - 1, stepY - 1];
+                            if (stepY < y + squareSize - 1) { stepY++; }
+                            else break;
+                        }
+                        while (stepX > x)
+                        {
+                            stepX--;
+                            sum += gridPower[stepX - 1, stepY - 1];
+                        }
+                        if (sum > partTwoPower)
+                        {
+                            partTwoPower = sum;
+                            partTwoX = x;
+                            partTwoY = y;
+                            partTwoSize = squareSize;
+                        }
+                    }
+                }
+            }
+            string partTwoAnswer = partTwoX + "," + partTwoY + "," + partTwoSize;
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
