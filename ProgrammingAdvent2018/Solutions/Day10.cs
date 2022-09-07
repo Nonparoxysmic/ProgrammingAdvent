@@ -3,6 +3,7 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
@@ -25,6 +26,11 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
             string[] inputLines = input.ToLines();
+            if (inputLines.Length < 2)
+            {
+                output.WriteError("Insufficient input.", sw);
+                return output;
+            }
             Point[] points = new Point[inputLines.Length];
             for (int i = 0; i < inputLines.Length; i++)
             {
@@ -41,10 +47,97 @@ namespace ProgrammingAdvent2018.Solutions
                 points[i] = new Point(posX, posY, velX, velY);
             }
 
+            int timeOfInterest = TimeOfInterest(points);
+            for (int i = 0; i < points.Length; i++)
+            {
+                points[i].Position += timeOfInterest * points[i].Velocity;
+            }
+
+            int boundingBoxSize = int.MaxValue;
+            for (int t = 0; t < 6000; t++)
+            {
+                int newBoundingBoxSize = BoundingBoxSize(points);
+                if (newBoundingBoxSize > boundingBoxSize)
+                {
+                    for (int i = 0; i < points.Length; i++)
+                    {
+                        points[i].Position -= points[i].Velocity;
+                    }
+                    break;
+                }
+                boundingBoxSize = newBoundingBoxSize;
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i].Position += points[i].Velocity;
+                }
+            }
+
 
             sw.Stop();
             output.WriteAnswers(null, null, sw);
             return output;
+        }
+
+        private int TimeOfInterest(Point[] points)
+        {
+            if (points.Length < 2) { return 0; }
+            Point pointA = null;
+            Point pointB = null;
+            int maxVelocityDifference = int.MinValue;
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                for (int j = 0; j < points.Length; j++)
+                {
+                    if (Math.Sign(points[i].Velocity.X) == 0
+                        || Math.Sign(points[j].Velocity.X) == 0
+                        || (Math.Sign(points[i].Velocity.X) == Math.Sign(points[j].Velocity.X)
+                        && Math.Sign(points[i].Velocity.Y) == Math.Sign(points[j].Velocity.Y)))
+                    {
+                        continue;
+                    }
+                    int difference = (points[i].Velocity - points[j].Velocity).TaxicabMagnitude();
+                    if (difference > maxVelocityDifference)
+                    {
+                        maxVelocityDifference = difference;
+                        pointA = points[i];
+                        pointB = points[j];
+                    }
+                }
+            }
+            return TimeOfCloseApproach(pointA, pointB);
+        }
+
+        private int TimeOfCloseApproach(Point pointA, Point pointB)
+        {
+            if (pointA == null || pointB == null) { return 0; }
+            float c = pointA.Position.X;
+            float d = pointA.Position.Y;
+            float e = pointA.Velocity.X;
+            float f = pointA.Velocity.Y;
+            float g = pointB.Position.X;
+            float h = pointB.Position.Y;
+            float i = pointB.Velocity.X;
+            float j = pointB.Velocity.Y;
+            float num1 = h - d + (c - g) * (j - f) / (i - e);
+            float num2 = (e - i) / (j - f) - (j - f) / (i - e);
+            int t = (int)(((num1 / num2) + c - g) / (i - e)) - 30;
+            return t >= 0 ? t : 0;
+        }
+
+        private int BoundingBoxSize(Point[] points)
+        {
+            int xMin = int.MaxValue;
+            int xMax = int.MinValue;
+            int yMin = int.MaxValue;
+            int yMax = int.MinValue;
+            foreach (Point point in points)
+            {
+                xMin = Math.Min(xMin, point.Position.X);
+                xMax = Math.Max(xMax, point.Position.X);
+                yMin = Math.Min(yMin, point.Position.Y);
+                yMax = Math.Max(yMax, point.Position.Y);
+            }
+            return xMax + yMax - xMin - yMin;
         }
 
         private class Point
