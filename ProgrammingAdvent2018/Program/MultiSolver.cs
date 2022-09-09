@@ -19,6 +19,7 @@ namespace ProgrammingAdvent2018.Program
         private static Dictionary<int, TextBox> partOneTextBoxes;
         private static Dictionary<int, TextBox> partTwoTextBoxes;
         private static Dictionary<int, Label> timeOutputLabels;
+        private static Dictionary<int, Image> images;
         private static readonly Stopwatch sw = new Stopwatch();
 
         internal static void Initialize(StackPanel multiSolverPanel)
@@ -26,6 +27,7 @@ namespace ProgrammingAdvent2018.Program
             partOneTextBoxes = new Dictionary<int, TextBox>();
             partTwoTextBoxes = new Dictionary<int, TextBox>();
             timeOutputLabels = new Dictionary<int, Label>();
+            images = new Dictionary<int, Image>();
 
             Thickness marginThickness = new Thickness(15, 5, 15, 5);
             Thickness borderThickness = new Thickness(1);
@@ -108,7 +110,23 @@ namespace ProgrammingAdvent2018.Program
 
                 _ = grid.Children.Add(dayLabel);
                 _ = grid.Children.Add(partOneLabel);
-                _ = grid.Children.Add(partOneTextBox);
+                if (day == 10)
+                {
+                    Image image = new Image
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Margin = marginThickness,
+                        SnapsToDevicePixels = true
+                    };
+                    image.SetValue(Grid.ColumnProperty, 2);
+                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+                    images.Add(day, image);
+                    _ = grid.Children.Add(image);
+                }
+                else
+                {
+                    _ = grid.Children.Add(partOneTextBox);
+                }
                 _ = grid.Children.Add(partTwoLabel);
                 _ = grid.Children.Add(partTwoTextBox);
                 _ = grid.Children.Add(timeLabel);
@@ -137,6 +155,7 @@ namespace ProgrammingAdvent2018.Program
                 partTwoTextBoxes[dayNumber].Text = "";
                 timeOutputLabels[dayNumber].Content = "-.-- seconds";
             }
+            images[10].Source = null;
 
             // Make sure the Day objects are initialized before parallel computation.
             _ = Day.GetDayObject(days[0]);
@@ -155,6 +174,12 @@ namespace ProgrammingAdvent2018.Program
                 Task<(PuzzleAnswers, int)> finishedTask = await Task.WhenAny(tasks);
                 int dayNumber = finishedTask.Result.Item2;
                 partOneTextBoxes[dayNumber].Text = finishedTask.Result.Item1.PartOneAnswer;
+                if (dayNumber == 10)
+                {
+                    SimpleBitmap bitmap = finishedTask.Result.Item1.PartOneBitmap;
+                    images[dayNumber].Source = bitmap.ToBitmapSource();
+                    images[dayNumber].Height = bitmap.Height;
+                }
                 partTwoTextBoxes[dayNumber].Text = finishedTask.Result.Item1.PartTwoAnswer;
                 long elapsedMilliseconds = finishedTask.Result.Item1.ElapsedMilliseconds;
                 longestTime = Math.Max(longestTime, elapsedMilliseconds);

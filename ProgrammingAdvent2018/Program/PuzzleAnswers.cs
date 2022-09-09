@@ -12,6 +12,7 @@ namespace ProgrammingAdvent2018.Program
         internal string PartOneAnswer { get; set; }
         internal string PartTwoAnswer { get; set; }
         internal long ElapsedMilliseconds { get; set; }
+        internal SimpleBitmap PartOneBitmap { get; set; }
 
         internal PuzzleAnswers()
         {
@@ -27,6 +28,11 @@ namespace ProgrammingAdvent2018.Program
                 if (partOne is char[] charArray)
                 {
                     PartOneAnswer = string.Join(null, charArray);
+                }
+                else if (partOne is SimpleBitmap bitmap)
+                {
+                    PartOneAnswer = "See image.";
+                    PartOneBitmap = bitmap;
                 }
                 else
                 {
