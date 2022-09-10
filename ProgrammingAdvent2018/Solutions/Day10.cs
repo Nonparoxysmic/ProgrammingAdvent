@@ -72,9 +72,10 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
 
+            SimpleBitmap partOneAnswer = DrawPoints(points);
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
         }
 
@@ -138,6 +139,31 @@ namespace ProgrammingAdvent2018.Solutions
                 yMax = Math.Max(yMax, point.Position.Y);
             }
             return xMax + yMax - xMin - yMin;
+        }
+
+        private SimpleBitmap DrawPoints(Point[] points)
+        {
+            int xMin = int.MaxValue;
+            int xMax = int.MinValue;
+            int yMin = int.MaxValue;
+            int yMax = int.MinValue;
+            foreach (Point point in points)
+            {
+                xMin = Math.Min(xMin, point.Position.X);
+                xMax = Math.Max(xMax, point.Position.X);
+                yMin = Math.Min(yMin, point.Position.Y);
+                yMax = Math.Max(yMax, point.Position.Y);
+            }
+            xMin--;
+            xMax++;
+            yMin--;
+            yMax++;
+            SimpleBitmap output = new SimpleBitmap(xMax - xMin + 1, yMax - yMin + 1, Color.Black);
+            foreach (Point point in points)
+            {
+                output.SetPixel(point.Position.X - xMin, point.Position.Y - yMin, Color.White);
+            }
+            return SimpleBitmap.Scale(output, 2);
         }
 
         private class Point

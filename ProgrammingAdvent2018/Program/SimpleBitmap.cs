@@ -23,6 +23,20 @@ namespace ProgrammingAdvent2018.Program
             pixelData = new byte[4 * width * height];
         }
 
+        public SimpleBitmap(int width, int height, Color color)
+        {
+            Width = width;
+            Height = height;
+            pixelData = new byte[4 * width * height];
+            for (int index = 0; index < pixelData.Length - 3; index += 4)
+            {
+                pixelData[index + 3] = color.A;
+                pixelData[index + 2] = color.R;
+                pixelData[index + 1] = color.G;
+                pixelData[index] = color.B;
+            }
+        }
+
         public BitmapSource ToBitmapSource()
         {
             BitmapSource output = BitmapSource.Create(
@@ -44,7 +58,7 @@ namespace ProgrammingAdvent2018.Program
             {
                 throw new ArgumentOutOfRangeException();
             }
-            int index = (Width * y + x) * 4;
+            int index = ((Width * y) + x) * 4;
             return Color.FromArgb(
                 pixelData[index + 3],
                 pixelData[index + 2],
@@ -58,11 +72,39 @@ namespace ProgrammingAdvent2018.Program
             {
                 return;
             }
-            int index = (Width * y + x) * 4;
+            int index = ((Width * y) + x) * 4;
             pixelData[index + 3] = color.A;
             pixelData[index + 2] = color.R;
             pixelData[index + 1] = color.G;
             pixelData[index] = color.B;
+        }
+
+        public static SimpleBitmap Scale(SimpleBitmap input, int scale)
+        {
+            if (scale < 1)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+            if (scale == 1)
+            {
+                return input;
+            }
+            SimpleBitmap output = new SimpleBitmap(input.Width * scale, input.Height * scale);
+            for (int y = 0; y < input.Height; y++)
+            {
+                for (int x = 0; x < input.Width; x++)
+                {
+                    Color color = input.GetPixel(x, y);
+                    for (int Δy = 0; Δy < scale; Δy++)
+                    {
+                        for (int Δx = 0; Δx < scale; Δx++)
+                        {
+                            output.SetPixel((scale * x) + Δx, (scale * y) + Δy, color);
+                        }
+                    }
+                }
+            }
+            return output;
         }
     }
 }
