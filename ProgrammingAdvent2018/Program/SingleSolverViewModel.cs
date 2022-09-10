@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ProgrammingAdvent2018.Program
 {
@@ -101,6 +102,16 @@ namespace ProgrammingAdvent2018.Program
             }
         }
 
+        public BitmapSource PartOneImage
+        {
+            get => _singleSolverModel.PartOneImage;
+            set
+            {
+                _singleSolverModel.PartOneImage = value;
+                OnPropertyChanged(nameof(PartOneImage));
+            }
+        }
+
         public string PartTwoOutput
         {
             get => _singleSolverModel.PartTwoOutput;
@@ -142,6 +153,10 @@ namespace ProgrammingAdvent2018.Program
         {
             SolveButtonEnabled = false;
             Status = "Working...";
+            PartOneOutput = "";
+            PartOneImage = null;
+            PartTwoOutput = "";
+            TimeOutput = "";
             _ = Task.Run(() => CalculateAnswers());
         }
 
@@ -151,6 +166,10 @@ namespace ProgrammingAdvent2018.Program
             PuzzleAnswers answers = Day.GetDayObject(dayNumber).Solve(InputText);
             Status = DaySelected + " Solution";
             PartOneOutput = answers.PartOneAnswer;
+            if (answers.PartOneBitmap != null)
+            {
+                PartOneImage = answers.PartOneBitmap.ToBitmapSource();
+            }
             PartTwoOutput = answers.PartTwoAnswer;
             TimeOutput = PuzzleAnswers.MillisecondsToDisplayTime(answers.ElapsedMilliseconds);
             SolveButtonEnabled = true;

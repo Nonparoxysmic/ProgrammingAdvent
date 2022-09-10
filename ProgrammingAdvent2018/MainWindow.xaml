@@ -136,6 +136,14 @@
                     Margin="10,0,10,0"
                     VerticalAlignment="Center"
                     IsReadOnly="True"/>
+                <Image
+                    Source="{Binding PartOneImage}"
+                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                    SnapsToDevicePixels="True"
+                    Stretch="None"
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    HorizontalAlignment="Left"/>
                 <Label
                     Content="Part 2 Solution:"
                     Grid.Row="5"

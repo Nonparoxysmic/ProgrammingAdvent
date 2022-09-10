@@ -25,15 +25,17 @@ namespace ProgrammingAdvent2018.Program
 
         public BitmapSource ToBitmapSource()
         {
-            return BitmapSource.Create(
-                Width, 
-                Height, 
-                96, 
-                96, 
-                PixelFormats.Bgra32, 
-                null, 
-                pixelData, 
+            BitmapSource output = BitmapSource.Create(
+                Width,
+                Height,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null,
+                pixelData,
                 4 * Width);
+            output.Freeze();
+            return output;
         }
 
         public Color GetPixel(int x, int y)

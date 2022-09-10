@@ -3,6 +3,8 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System.Windows.Media.Imaging;
+
 namespace ProgrammingAdvent2018.Program
 {
     internal class SingleSolverModel
@@ -20,6 +22,8 @@ namespace ProgrammingAdvent2018.Program
         internal string Status { get; set; }
 
         internal string PartOneOutput { get; set; }
+
+        internal BitmapSource PartOneImage { get; set; }
 
         internal string PartTwoOutput { get; set; }
 
