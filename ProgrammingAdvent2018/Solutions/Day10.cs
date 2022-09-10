@@ -54,7 +54,8 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             int boundingBoxSize = int.MaxValue;
-            for (int t = 0; t < 6000; t++)
+            int t;
+            for (t = 0; t < 6000; t++)
             {
                 int newBoundingBoxSize = BoundingBoxSize(points);
                 if (newBoundingBoxSize > boundingBoxSize)
@@ -74,8 +75,10 @@ namespace ProgrammingAdvent2018.Solutions
 
             SimpleBitmap partOneAnswer = DrawPoints(points);
 
+            int partTwoAnswer = timeOfInterest + t - 1;
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
