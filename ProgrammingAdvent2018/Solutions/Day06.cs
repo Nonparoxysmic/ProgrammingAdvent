@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
 
@@ -14,14 +15,6 @@ namespace ProgrammingAdvent2018.Solutions
     internal class Day06 : Day
     {
         private readonly Regex validLine = new Regex(@"^(\d+), (\d+)$");
-
-        private readonly Vector2Int[] adjacentDirections = new Vector2Int[]
-        {
-            new Vector2Int(-1,  0),
-            new Vector2Int( 0, -1),
-            new Vector2Int( 1,  0),
-            new Vector2Int( 0,  1)
-        };
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -59,197 +52,144 @@ namespace ProgrammingAdvent2018.Solutions
             }
             Vector2Int[] coordinates = coordList.ToArray();
 
-            GridArray grid = new GridArray(lowestX, lowestY, highestX, highestY);
-            int coordNumber = 1;
-            foreach (Vector2Int coord in coordinates)
-            {
-                grid[coord.X, coord.Y] = coordNumber++;
-            }
-            grid.Apply();
+            GridArray grid = new GridArray(lowestX, lowestY, highestX, highestY, coordinates);
 
-            bool hasUndeterminedNodes = true;
-            while (hasUndeterminedNodes)
-            {
-                hasUndeterminedNodes = false;
-                for (int y = lowestY; y <= highestY; y++)
-                {
-                    for (int x = lowestX; x <= highestX; x++)
-                    {
-                        if (grid[x, y] != 0) { continue; }
-                        hasUndeterminedNodes = true;
-                        int adjacentValues = 0;
-                        foreach (Vector2Int dir in adjacentDirections)
-                        {
-                            if (grid[x + dir.X, y + dir.Y] > 0)
-                            {
-                                if (adjacentValues == 0)
-                                {
-                                    adjacentValues = grid[x + dir.X, y + dir.Y];
-                                }
-                                else if (grid[x + dir.X, y + dir.Y] != adjacentValues)
-                                {
-                                    adjacentValues = -1;
-                                }
-                            }
-                            if (grid[x + dir.X, y + dir.Y] < 0)
-                            {
-                                adjacentValues = -1;
-                            }
-                        }
-                        grid[x, y] = adjacentValues;
-                    }
-                }
-                grid.Apply();
-            }
+            int largestFiniteArea = grid.LargestFiniteArea();
 
-            Dictionary<int, int> areas = new Dictionary<int, int>();
-            HashSet<int> indices = grid.InternalIndices();
-            foreach (int i in indices)
-            {
-                areas.Add(i, 0);
-            }
-            for (int y = lowestY; y <= highestY; y++)
-            {
-                for (int x = lowestX; x <= highestX; x++)
-                {
-                    if (areas.ContainsKey(grid[x, y]))
-                    {
-                        areas[grid[x, y]]++;
-                    }
-                }
-            }
-
-            int largestNoninfiniteArea = 0;
-            foreach (var kvp in areas)
-            {
-                largestNoninfiniteArea = Math.Max(largestNoninfiniteArea, kvp.Value);
-            }
-
-            GridArray distances = new GridArray(lowestX, lowestY, highestX, highestY);
-            for (int y = lowestY; y <= highestY; y++)
-            {
-                for (int x = lowestX; x <= highestX; x++)
-                {
-                    foreach (Vector2Int coord in coordinates)
-                    {
-                        int distance = (coord - new Vector2Int(x, y)).TaxicabMagnitude();
-                        distances.ApplyValue(x, y, distances[x, y] + distance);
-                    }
-                }
-            }
-            int locationsInRegion = 0;
-            for (int y = lowestY; y <= highestY; y++)
-            {
-                for (int x = lowestX; x <= highestX; x++)
-                {
-                    if (distances[x, y] < 10_000) { locationsInRegion++; }
-                }
-            }
+            int locationsInRegion = grid.LocationsInRegion(10_000);
 
             sw.Stop();
-            output.WriteAnswers(largestNoninfiniteArea, locationsInRegion, sw);
+            output.WriteAnswers(largestFiniteArea, locationsInRegion, sw);
             return output;
         }
 
         class GridArray
         {
-            private readonly int[,] values;
-            private readonly int[,] buffer;
+            public int NumberOfPoints { get; private set; }
+
+            private readonly GridCoord[,] coords;
             private readonly int lengthX;
             private readonly int lengthY;
-            private readonly int shiftX;
-            private readonly int shiftY;
 
-            public GridArray(int lowestX, int lowestY, int highestX, int highestY)
+            public GridArray(int lowestX, int lowestY, int highestX, int highestY, Vector2Int[] coordinates)
             {
+                NumberOfPoints = coordinates.Length;
                 if (highestX < lowestX || highestY < lowestY)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
                 lengthX = highestX - lowestX + 1;
                 lengthY = highestY - lowestY + 1;
-                values = new int[lengthX, lengthY];
-                buffer = new int[lengthX, lengthY];
-                shiftX = lowestX;
-                shiftY = lowestY;
-            }
-
-            public int this[int x, int y]
-            {
-                get { return GetValue(x, y); }
-                set { SetValue(x, y, value); }
-            }
-
-            private int GetValue(int x, int y)
-            {
-                int xIndex = x - shiftX;
-                int yIndex = y - shiftY;
-                if (xIndex < 0 || yIndex < 0 || xIndex >= lengthX || yIndex >= lengthY)
-                {
-                    return 0;
-                }
-                return values[xIndex, yIndex];
-            }
-
-            private void SetValue(int x, int y, int value)
-            {
-                int xIndex = x - shiftX;
-                int yIndex = y - shiftY;
-                if (xIndex < 0 || yIndex < 0 || xIndex >= lengthX || yIndex >= lengthY)
-                {
-                    return;
-                }
-                buffer[xIndex, yIndex] = value;
-            }
-
-            public void ApplyValue(int x, int y, int value)
-            {
-                int xIndex = x - shiftX;
-                int yIndex = y - shiftY;
-                if (xIndex < 0 || yIndex < 0 || xIndex >= lengthX || yIndex >= lengthY)
-                {
-                    return;
-                }
-                values[xIndex, yIndex] = value;
-            }
-
-            public void Apply()
-            {
+                coords = new GridCoord[lengthX, lengthY];
                 for (int y = 0; y < lengthY; y++)
                 {
                     for (int x = 0; x < lengthX; x++)
                     {
-                        values[x, y] = buffer[x, y];
+                        coords[x, y] = new GridCoord(x + lowestX, y + lowestY, coordinates);
                     }
                 }
             }
 
-            public HashSet<int> InternalIndices()
+            public int LargestFiniteArea()
+            {
+                Dictionary<int, int> areas = new Dictionary<int, int>();
+                HashSet<int> indices = InternalIndices(NumberOfPoints);
+                foreach (int i in indices)
+                {
+                    areas.Add(i, 0);
+                }
+                for (int y = 0; y < lengthY; y++)
+                {
+                    for (int x = 0; x < lengthX; x++)
+                    {
+                        int i = coords[x, y].NearestPoint;
+                        if (areas.ContainsKey(i))
+                        {
+                            areas[i]++;
+                        }
+                    }
+                }
+                return areas.Values.Max();
+            }
+
+            public int LocationsInRegion(int sumLimit)
+            {
+                int sum = 0;
+                for (int y = 0; y < lengthY; y++)
+                {
+                    for (int x = 0; x < lengthX; x++)
+                    {
+                        if (coords[x, y].SumOfDistances < sumLimit)
+                        {
+                            sum++;
+                        }
+                    }
+                }
+                return sum;
+            }
+
+            public HashSet<int> InternalIndices(int numberOfPoints)
             {
                 HashSet<int> indices = new HashSet<int>();
-                for (int y = 0; y < lengthY; y++)
+                for (int i = 0; i < numberOfPoints; i++)
                 {
-                    for (int x = 0; x < lengthX; x++)
-                    {
-                        indices.Add(values[x, y]);
-                    }
+                    indices.Add(i);
                 }
-                indices.Remove(-1);
                 for (int y = 0; y < lengthY; y += lengthY - 1)
                 {
                     for (int x = 0; x < lengthX; x++)
                     {
-                        indices.Remove(values[x, y]);
+                        indices.Remove(coords[x, y].NearestPoint);
                     }
                 }
                 for (int y = 0; y < lengthY; y++)
                 {
                     for (int x = 0; x < lengthX; x += lengthX - 1)
                     {
-                        indices.Remove(values[x, y]);
+                        indices.Remove(coords[x, y].NearestPoint);
                     }
                 }
                 return indices;
+            }
+        }
+
+        class GridCoord
+        {
+            public int X { get; private set; }
+            public int Y { get; private set; }
+            public int NearestPoint { get; private set; }
+            public long SumOfDistances { get; private set; }
+
+            private readonly int[] distances;
+
+            public GridCoord(int x, int y, Vector2Int[] coordinates)
+            {
+                X = x;
+                Y = y;
+                distances = new int[coordinates.Length];
+                for (int i = 0; i < coordinates.Length; i++)
+                {
+                    distances[i] = Math.Abs(coordinates[i].X - X) + Math.Abs(coordinates[i].Y - Y);
+                }
+                SumOfDistances = distances.Sum();
+                int shortestDistance = distances.Min();
+                bool shortestFound = false;
+                for (int i = 0; i < distances.Length; i++)
+                {
+                    if (distances[i] == shortestDistance)
+                    {
+                        if (shortestFound)
+                        {
+                            NearestPoint = -1;
+                            break;
+                        }
+                        else
+                        {
+                            NearestPoint = i;
+                            shortestFound = true;
+                        }
+                    }
+                }
             }
         }
     }
