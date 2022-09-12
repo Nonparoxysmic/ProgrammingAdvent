@@ -30,80 +30,83 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             int[,] gridPower = new int[300, 300];
-            for (int y = 1; y <= 300; y++)
+            for (int y = 0; y < 300; y++)
             {
-                for (int x = 1; x <= 300; x++)
+                for (int x = 0; x < 300; x++)
                 {
-                    gridPower[x - 1, y - 1] = CellPowerLevel(x, y, gridSerialNumber);
+                    gridPower[x, y] = CellPowerLevel(x + 1, y + 1, gridSerialNumber);
                 }
             }
 
-            int[,] threeByThreePower = new int[298, 298];
-            for (int y = 1; y <= 298; y++)
+            int[,] summedAreaTable = new int[300, 300];
+            for (int y = 0; y < 300; y++)
             {
-                for (int x = 1; x <= 298; x++)
+                for (int x = 0; x < 300; x++)
                 {
-                    for (int Δy = 0; Δy < 3; Δy++)
+                    summedAreaTable[x, y] = gridPower[x, y];
+                    if (x > 0)
                     {
-                        for (int Δx = 0; Δx < 3; Δx++)
-                        {
-                            threeByThreePower[x - 1, y - 1] += gridPower[x + Δx - 1, y + Δy - 1];
-                        }
+                        summedAreaTable[x, y] += summedAreaTable[x - 1, y];
+                    }
+                    if (y > 0)
+                    {
+                        summedAreaTable[x, y] += summedAreaTable[x, y - 1];
+                    }
+                    if (x > 0 && y > 0)
+                    {
+                        summedAreaTable[x, y] -= summedAreaTable[x - 1, y - 1];
                     }
                 }
             }
+
             int partOnePower = int.MinValue;
             int partOneX = -1;
             int partOneY = -1;
-            for (int y = 1; y <= 298; y++)
-            {
-                for (int x = 1; x <= 298; x++)
-                {
-                    if (threeByThreePower[x - 1, y - 1] > partOnePower)
-                    {
-                        partOnePower = threeByThreePower[x - 1, y - 1];
-                        partOneX = x;
-                        partOneY = y;
-                    }
-                }
-            }
-            string partOneAnswer = partOneX + "," + partOneY;
-
             int partTwoPower = int.MinValue;
             int partTwoX = -1;
             int partTwoY = -1;
             int partTwoSize = -1;
-            for (int y = 1; y <= 300; y++)
+            for (int y = 0; y < 300; y++)
             {
-                for (int x = 1; x <= 300; x++)
+                for (int x = 0; x < 300; x++)
                 {
-                    int maxSquareSize = Math.Min(300 - x + 1, 300 - y + 1);
-                    int sum = 0;
+                    int maxSquareSize = Math.Min(300 - x, 300 - y);
                     for (int squareSize = 1; squareSize <= maxSquareSize; squareSize++)
                     {
-                        int stepX = x + squareSize - 1;
-                        int stepY = y;
-                        while (stepY <= y + squareSize - 1)
+                        int totalPower = summedAreaTable[x + squareSize - 1, y + squareSize - 1];
+                        if (x > 0)
                         {
-                            sum += gridPower[stepX - 1, stepY - 1];
-                            if (stepY < y + squareSize - 1) { stepY++; }
-                            else break;
+                            totalPower -= summedAreaTable[x - 1, y + squareSize - 1];
                         }
-                        while (stepX > x)
+                        if (y > 0)
                         {
-                            stepX--;
-                            sum += gridPower[stepX - 1, stepY - 1];
+                            totalPower -= summedAreaTable[x + squareSize - 1, y - 1];
                         }
-                        if (sum > partTwoPower)
+                        if (x > 0 && y > 0)
                         {
-                            partTwoPower = sum;
+                            totalPower += summedAreaTable[x - 1, y - 1];
+                        }
+                        if (totalPower > partTwoPower)
+                        {
+                            partTwoPower = totalPower;
                             partTwoX = x;
                             partTwoY = y;
                             partTwoSize = squareSize;
                         }
+                        if (squareSize == 3 && totalPower > partOnePower)
+                        {
+                            partOnePower = totalPower;
+                            partOneX = x;
+                            partOneY = y;
+                        }
                     }
                 }
             }
+            partOneX++;
+            partOneY++;
+            string partOneAnswer = partOneX + "," + partOneY;
+            partTwoX++;
+            partTwoY++;
             string partTwoAnswer = partTwoX + "," + partTwoY + "," + partTwoSize;
 
             sw.Stop();
