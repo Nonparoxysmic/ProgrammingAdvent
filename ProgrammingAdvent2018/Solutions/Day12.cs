@@ -85,10 +85,10 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
 
-            for (int i = 0; i < 20; i++)
+            for (int gen = 1; gen <= 20; gen++)
             {
                 PotCollection nextGen = new PotCollection(pots.LowestPotNumber - 2);
-                foreach (byte pattern in pots.NextGenPatterns())
+                foreach (int pattern in pots.NextGenPatterns())
                 {
                     nextGen.AddLast(rules[pattern]);
                 }
@@ -96,10 +96,48 @@ namespace ProgrammingAdvent2018.Solutions
                 pots = nextGen;
             }
 
-            int partOneAnswer = pots.PartOneSum();
+            int partOneAnswer = pots.SumOfNumbersWithPlants();
+
+            long partTwoAnswer = long.MinValue;
+            int lastSum = int.MinValue;
+            LinkedList<int> previousChanges = new LinkedList<int>();
+            for (int i = 0; i < 5; i++)
+            {
+                previousChanges.AddLast(int.MinValue + i);
+            }
+            for (long gen = 21; gen < 2048; gen++)
+            {
+                PotCollection nextGen = new PotCollection(pots.LowestPotNumber - 2);
+                foreach (int pattern in pots.NextGenPatterns())
+                {
+                    nextGen.AddLast(rules[pattern]);
+                }
+                nextGen.Trim();
+                pots = nextGen;
+
+                int currentSum = pots.SumOfNumbersWithPlants();
+                previousChanges.AddLast(currentSum - lastSum);
+                previousChanges.RemoveFirst();
+                bool lineFound = true;
+                foreach (int change in previousChanges)
+                {
+                    lineFound &= change == currentSum - lastSum;
+                }
+                if (lineFound)
+                {
+                    partTwoAnswer = (50_000_000_000 - gen) * (currentSum - lastSum) + currentSum;
+                    break;
+                }
+                lastSum = currentSum;
+            }
+            if (partTwoAnswer == long.MinValue)
+            {
+                output.WriteError("Part Two: Behavior does not converge.", sw);
+                return output;
+            }
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -127,7 +165,7 @@ namespace ProgrammingAdvent2018.Solutions
                 return pots.AddLast(n);
             }
 
-            public int PartOneSum()
+            public int SumOfNumbersWithPlants()
             {
                 int sum = 0;
                 int index = LowestPotNumber;
