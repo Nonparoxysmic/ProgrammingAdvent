@@ -4,6 +4,7 @@
 // https://adventofcode.com/2018
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
@@ -41,6 +42,7 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             TrackMap tracks = new TrackMap(inputLines[0].Length, inputLines.Length);
+            List<Cart> cartList = new List<Cart>();
             for (int y = 0; y < inputLines.Length; y++)
             {
                 if (inputLines[y].Length != inputLines[0].Length)
@@ -81,14 +83,74 @@ namespace ProgrammingAdvent2018.Solutions
                             default:
                                 throw new ApplicationException();
                         }
+                        cartList.Add(new Cart(x, y, direction));
                     }
                     tracks[x, y] = c;
                 }
             }
+            if (cartList.Count < 2)
+            {
+                output.WriteError("Not enough carts.", sw);
+                return output;
+            }
+            Cart[] carts = cartList.ToArray();
+
+            string partOneAnswer = "";
+            for (int tick = 0; tick < 65536; tick++)
+            {
+                foreach (Cart cart in carts)
+                {
+                    cart.X += directions[cart.Direction].X;
+                    cart.Y += directions[cart.Direction].Y;
+                    char newTrack = tracks[cart.X, cart.Y];
+                    if (newTrack == '\0')
+                    {
+                        int startingX = cart.ID & 0b1111_1111_1111_1111;
+                        int startingY = cart.ID >> 16;
+                        output.WriteError($"Cart starting at {startingX}, {startingY} left the map.", sw);
+                        return output;
+                    }
+                    if (newTrack == ' ')
+                    {
+                        int startingX = cart.ID & 0b1111_1111_1111_1111;
+                        int startingY = cart.ID >> 16;
+                        output.WriteError($"Cart starting at {startingX}, {startingY} left the tracks.", sw);
+                        return output;
+                    }
+                    cart.Turn(newTrack);
+                }
+                if (FindFirstCollision(carts, out partOneAnswer))
+                {
+                    break;
+                }
+                Array.Sort(carts);
+            }
+            if (partOneAnswer == "")
+            {
+                output.WriteError("No collisions found.", sw);
+                return output;
+            }
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
+        }
+
+        private bool FindFirstCollision(Cart[] carts, out string coordinates)
+        {
+            for (int j = 1; j < carts.Length; j++)
+            {
+                for (int i = 0; i < j; i++)
+                {
+                    if (carts[i].X == carts[j].X && carts[i].Y == carts[j].Y)
+                    {
+                        coordinates = $"{carts[i].X},{carts[i].Y}";
+                        return true;
+                    }
+                }
+            }
+            coordinates = "";
+            return false;
         }
 
         private class TrackMap
@@ -119,6 +181,72 @@ namespace ProgrammingAdvent2018.Solutions
             private void SetValue(int x, int y, char c)
             {
                 tracks[x + 1, y + 1] = c;
+            }
+        }
+
+        private class Cart : IComparable
+        {
+            public int ID { get; private set; }
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int Direction { get; set; }
+
+            private readonly int[] leftTurns = new int[] { 2, 3, 1, 0 };
+            private readonly int[] rightTurns = new int[] { 3, 2, 0, 1 };
+
+            private int currentTurn;
+
+            public Cart(int x, int y, int direction)
+            {
+                ID = y << 16 | x;
+                X = x;
+                Y = y;
+                Direction = direction;
+                currentTurn = 0;
+            }
+
+            public void Turn(char track)
+            {
+                if (track == '/')
+                {
+                    Direction = 3 - Direction;
+                }
+                else if (track == '\\')
+                {
+                    Direction = (Direction + 2) % 4;
+                }
+                else if (track == '+')
+                {
+                    if (currentTurn == 0)
+                    {
+                        Direction = leftTurns[Direction];
+                    }
+                    else if (currentTurn == 2)
+                    {
+                        Direction = rightTurns[Direction];
+                    }
+                    currentTurn = ++currentTurn % 3;
+                }
+            }
+
+            public int CompareTo(object obj)
+            {
+                if (obj == null)
+                {
+                    return 1;
+                }
+                if (obj is Cart otherCart)
+                {
+                    if (X == otherCart.X && Y == otherCart.Y)
+                    {
+                        return 0;
+                    }
+                    if (Y < otherCart.Y || (Y == otherCart.Y && X < otherCart.X))
+                    {
+                        return -1;
+                    }
+                }
+                return 1;
             }
         }
     }
