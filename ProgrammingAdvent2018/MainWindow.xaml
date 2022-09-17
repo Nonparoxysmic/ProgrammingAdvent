@@ -78,8 +78,10 @@
                     Grid.Column="1"
                     Grid.ColumnSpan="2"
                     Margin="10"
-                    TextWrapping="Wrap"
+                    FontFamily="Consolas, Courier New, Courier, Lucida Console"
+                    TextWrapping="NoWrap"
                     AcceptsReturn="True"
+                    HorizontalScrollBarVisibility="Auto"
                     VerticalScrollBarVisibility="Auto"/>
                 <Button
                     Content="Solve"
