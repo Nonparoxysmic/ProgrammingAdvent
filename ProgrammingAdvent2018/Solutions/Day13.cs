@@ -15,13 +15,14 @@ namespace ProgrammingAdvent2018.Solutions
     {
         private readonly Regex validLine = new Regex(@"^[ |\-/\\+^v<>]{2,}$");
 
-        private readonly Vector2Int[] directions = new Vector2Int[]
-        {
-            new Vector2Int( 0, -1),  // [0] ^ up
-            new Vector2Int( 0,  1),  // [1] v down
-            new Vector2Int(-1,  0),  // [2] < left
-            new Vector2Int( 1,  0)   // [3] > right
-        };
+        //  Direction    x   y      i
+        // --------------------------
+        //  ^ up       ( 0, -1)    [0]
+        //  v down     ( 0,  1)    [1]
+        //  < left     (-1,  0)    [2]
+        //  > right    ( 1,  0)    [3]
+        private readonly int[] moveX = new int[] { 0, 0, -1, 1 };
+        private readonly int[] moveY = new int[] { -1, 1, 0, 0 };
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -96,12 +97,13 @@ namespace ProgrammingAdvent2018.Solutions
             Cart[] carts = cartList.ToArray();
 
             string partOneAnswer = "";
+            bool collisionFound = false;
             for (int tick = 0; tick < 65536; tick++)
             {
                 foreach (Cart cart in carts)
                 {
-                    cart.X += directions[cart.Direction].X;
-                    cart.Y += directions[cart.Direction].Y;
+                    cart.X += moveX[cart.Direction];
+                    cart.Y += moveY[cart.Direction];
                     char newTrack = tracks[cart.X, cart.Y];
                     if (newTrack == '\0')
                     {
@@ -117,9 +119,14 @@ namespace ProgrammingAdvent2018.Solutions
                         output.WriteError($"Cart starting at {startingX}, {startingY} left the tracks.", sw);
                         return output;
                     }
+                    if (FindFirstCollision(carts, out partOneAnswer))
+                    {
+                        collisionFound = true;
+                        break;
+                    }
                     cart.Turn(newTrack);
                 }
-                if (FindFirstCollision(carts, out partOneAnswer))
+                if (collisionFound)
                 {
                     break;
                 }
