@@ -16,7 +16,7 @@ namespace ProgrammingAdvent2018.Solutions
         private readonly Regex validLine = new Regex(@"^[ |\-/\\+^v<>]{2,}$");
 
         //  Direction    x   y      i
-        // --------------------------
+        // ----------------------------
         //  ^ up       ( 0, -1)    [0]
         //  v down     ( 0,  1)    [1]
         //  < left     (-1,  0)    [2]
@@ -43,7 +43,7 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             TrackMap tracks = new TrackMap(inputLines[0].Length, inputLines.Length);
-            List<Cart> cartList = new List<Cart>();
+            List<Cart> carts = new List<Cart>();
             for (int y = 0; y < inputLines.Length; y++)
             {
                 if (inputLines[y].Length != inputLines[0].Length)
@@ -84,24 +84,27 @@ namespace ProgrammingAdvent2018.Solutions
                             default:
                                 throw new ApplicationException();
                         }
-                        cartList.Add(new Cart(x, y, direction));
+                        carts.Add(new Cart(x, y, direction));
                     }
                     tracks[x, y] = c;
                 }
             }
-            if (cartList.Count < 2)
+            if (carts.Count < 2)
             {
                 output.WriteError("Not enough carts.", sw);
                 return output;
             }
-            Cart[] carts = cartList.ToArray();
 
-            string partOneAnswer = "";
-            bool collisionFound = false;
+            Queue<string> collisionLocations = new Queue<string>();
+            Queue<Cart> collidedCarts = new Queue<Cart>();
             for (int tick = 0; tick < 65536; tick++)
             {
                 foreach (Cart cart in carts)
                 {
+                    if (cart.Collided)
+                    {
+                        continue;
+                    }
                     cart.X += moveX[cart.Direction];
                     cart.Y += moveY[cart.Direction];
                     char newTrack = tracks[cart.X, cart.Y];
@@ -119,45 +122,59 @@ namespace ProgrammingAdvent2018.Solutions
                         output.WriteError($"Cart starting at {startingX}, {startingY} left the tracks.", sw);
                         return output;
                     }
-                    if (FindFirstCollision(carts, out partOneAnswer))
-                    {
-                        collisionFound = true;
-                        break;
-                    }
                     cart.Turn(newTrack);
+                    HandleCollisions(carts, collisionLocations, collidedCarts);
                 }
-                if (collisionFound)
+                while (collidedCarts.Count > 0)
+                {
+                    _ = carts.Remove(collidedCarts.Dequeue());
+                }
+                if (carts.Count < 2)
                 {
                     break;
                 }
-                Array.Sort(carts);
+                carts.Sort();
             }
-            if (partOneAnswer == "")
+            if (collisionLocations.Count < 1)
             {
                 output.WriteError("No collisions found.", sw);
                 return output;
             }
+            if (carts.Count == 0)
+            {
+                output.WriteError("No carts remaining.", sw);
+                return output;
+            }
+
+            string partOneAnswer = collisionLocations.Dequeue();
+            string partTwoAnswer = $"{carts[0].X},{carts[0].Y}";
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
-        private bool FindFirstCollision(Cart[] carts, out string coordinates)
+        private void HandleCollisions(List<Cart> carts, Queue<string> collisionLocations, Queue<Cart> collidedCarts)
         {
-            for (int j = 1; j < carts.Length; j++)
+            for (int j = 1; j < carts.Count; j++)
             {
                 for (int i = 0; i < j; i++)
                 {
+                    if (carts[i].Collided || carts[j].Collided)
+                    {
+                        continue;
+                    }
                     if (carts[i].X == carts[j].X && carts[i].Y == carts[j].Y)
                     {
-                        coordinates = $"{carts[i].X},{carts[i].Y}";
-                        return true;
+                        string coordinates = $"{carts[i].X},{carts[i].Y}";
+                        collisionLocations.Enqueue(coordinates);
+                        carts[i].Collided = true;
+                        carts[j].Collided = true;
+                        collidedCarts.Enqueue(carts[i]);
+                        collidedCarts.Enqueue(carts[j]);
                     }
                 }
             }
-            coordinates = "";
-            return false;
         }
 
         private class TrackMap
@@ -197,6 +214,7 @@ namespace ProgrammingAdvent2018.Solutions
             public int X { get; set; }
             public int Y { get; set; }
             public int Direction { get; set; }
+            public bool Collided { get; set; }
 
             private readonly int[] leftTurns = new int[] { 2, 3, 1, 0 };
             private readonly int[] rightTurns = new int[] { 3, 2, 0, 1 };
@@ -209,6 +227,7 @@ namespace ProgrammingAdvent2018.Solutions
                 X = x;
                 Y = y;
                 Direction = direction;
+                Collided = false;
                 currentTurn = 0;
             }
 
