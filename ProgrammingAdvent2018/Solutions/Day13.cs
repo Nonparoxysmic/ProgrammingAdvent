@@ -42,7 +42,7 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
-            TrackMap tracks = new TrackMap(inputLines[0].Length, inputLines.Length);
+            MapArray<char> tracks = new MapArray<char>(inputLines[0].Length, inputLines.Length);
             List<Cart> carts = new List<Cart>();
             for (int y = 0; y < inputLines.Length; y++)
             {
@@ -174,37 +174,6 @@ namespace ProgrammingAdvent2018.Solutions
                         collidedCarts.Enqueue(carts[j]);
                     }
                 }
-            }
-        }
-
-        private class TrackMap
-        {
-            public int Width { get; private set; }
-            public int Height { get; private set; }
-
-            private readonly char[,] tracks;
-
-            public TrackMap(int width, int height)
-            {
-                Width = width;
-                Height = height;
-                tracks = new char[width + 2, height + 2];
-            }
-
-            public char this[int x, int y]
-            {
-                get => GetValue(x, y);
-                set => SetValue(x, y, value);
-            }
-
-            private char GetValue(int x, int y)
-            {
-                return tracks[x + 1, y + 1];
-            }
-
-            private void SetValue(int x, int y, char c)
-            {
-                tracks[x + 1, y + 1] = c;
             }
         }
 
