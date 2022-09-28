@@ -241,8 +241,8 @@ namespace ProgrammingAdvent2018.Solutions
 
         internal class Unit : IComparable
         {
-            public UnitType Type { get; private set; }
-            public UnitType EnemyType { get; private set; }
+            public UnitType Type { get; set; }
+            public UnitType EnemyType { get; set; }
             public bool IsDead { get; set; }
             public int HP { get; set; }
             public int X { get; set; }
@@ -382,23 +382,85 @@ namespace ProgrammingAdvent2018.Solutions
                             return true;
                         }
 
-                        // Identify all of the open squares that are adjacent to any target.
-
+                        // Identify potential targets.
+                        bool adjacentToTarget = false;
+                        foreach (BattleSquare square in _map[unit.X, unit.Y].AdjacentSquares)
+                        {
+                            if (square.Occupant?.Type == unit.EnemyType)
+                            {
+                                adjacentToTarget = true;
+                                break;
+                            }
+                        }
+                        bool hasOpenTargets = false;
+                        if (!adjacentToTarget)
+                        {
+                            foreach (Unit target in targets)
+                            {
+                                if (target.IsDead)
+                                {
+                                    continue;
+                                }
+                                foreach (BattleSquare square in _map[target.X, target.Y].AdjacentSquares)
+                                {
+                                    if (square.Occupant == null)
+                                    {
+                                        hasOpenTargets = true;
+                                        break;
+                                    }
+                                }
+                                if (hasOpenTargets)
+                                {
+                                    break;
+                                }
+                            }
+                        }
                         // If the unit is not already adjacent to a target, and there are
                         // no open squares which are adjacent to a target, the unit ends its turn.
+                        if (!adjacentToTarget && !hasOpenTargets)
+                        {
+                            continue;
+                        }
 
                         // If not adjacent to a target, move.
+                        if (!adjacentToTarget)
+                        {
+                            // Identify the nearest open square adjacent to a target. (Usual tie-breaker)
 
-                        //     Identify the nearest open square adjacent to a target. (Usual tie-breaker)
+                            // Take one step toward the chosen square along the shortest path.
+                            // (Usual tie-breaker for first step)
 
-                        //     Take one step toward the chosen square along the shortest path.
-                        //     (Usual tie-breaker for first step)
+                        }
 
-                        // Then, if adjacent to a target, attack adjacent target with
-                        // the fewest hit points. (Usual tie-breaker)
-
-                        //     Deal damage equal to attack power to the selected target.
-                        //     If this reduces its hit points to 0 or fewer, the selected target dies.
+                        // Then, if now adjacent to a target, attack.
+                        List<Unit> adjacentTargets = new List<Unit>();
+                        foreach (BattleSquare square in _map[unit.X, unit.Y].AdjacentSquares)
+                        {
+                            if (square.Occupant?.Type == unit.EnemyType)
+                            {
+                                adjacentTargets.Add(square.Occupant);
+                            }
+                        }
+                        if (adjacentTargets.Count > 0)
+                        {
+                            // Select adjacent target with the fewest hit points.
+                            if (!SelectTarget(adjacentTargets, out Unit target))
+                            {
+                                errorMessage = "Unknown error when selecting an adjacent target.";
+                                return false;
+                            }
+                            // Deal damage equal to attack power to the selected target.
+                            target.HP -= 3;
+                            // If this reduces its hit points to 0 or fewer, the selected target dies.
+                            if (target.HP <= 0)
+                            {
+                                target.HP = 0;
+                                target.IsDead = true;
+                                target.Type = UnitType.None;
+                                target.EnemyType = UnitType.None;
+                                _map[target.X, target.Y].Occupant = null;
+                            }
+                        }
 
                         targets.RemoveAll(u => u.IsDead);
                     }
@@ -410,8 +472,27 @@ namespace ProgrammingAdvent2018.Solutions
                     errorMessage = $"Combat did not end after {roundLimit} rounds.";
                     return false;
                 }
-                errorMessage = string.Empty;
-                return true;
+                errorMessage = "Unknown error";
+                return false;
+            }
+
+            private bool SelectTarget(List<Unit> adjacentTargets, out Unit selectedTarget)
+            {
+                int lowestHP = int.MaxValue;
+                foreach (Unit target in adjacentTargets)
+                {
+                    lowestHP = Math.Min(lowestHP, target.HP);
+                }
+                foreach (Unit target in adjacentTargets)
+                {
+                    if (target.HP == lowestHP)
+                    {
+                        selectedTarget = target;
+                        return true;
+                    }
+                }
+                selectedTarget = null;
+                return false;
             }
         }
     }
