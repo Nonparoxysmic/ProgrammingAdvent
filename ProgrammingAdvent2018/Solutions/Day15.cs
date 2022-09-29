@@ -23,12 +23,12 @@ namespace ProgrammingAdvent2018.Solutions
             sw.Start();
 
             string[] inputLines = input.ToLines();
-
             if (!ValidateInput(inputLines, out string inputError))
             {
                 output.WriteError(inputError, sw);
                 return output;
             }
+
             List<Unit> units = new List<Unit>();
             BattleSquare[,] map = InputToMap(inputLines, units);
             Battle battle = new Battle(map, units);
@@ -161,10 +161,17 @@ namespace ProgrammingAdvent2018.Solutions
             return map;
         }
 
-        internal void Debug_DrawMap(BattleSquare[,] map)
+        internal static void Debug_DrawMap(BattleSquare[,] map)
         {
+            Debug.Write(' ');
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                Debug.Write(x % 10);
+            }
+            Debug.WriteLine("");
             for (int y = 0; y < map.GetLength(1); y++)
             {
+                Debug.Write(y % 10);
                 for (int x = 0; x < map.GetLength(0); x++)
                 {
                     if (map[x, y] == null)
@@ -298,6 +305,8 @@ namespace ProgrammingAdvent2018.Solutions
             public int Y { get; private set; }
             public Unit Occupant { get; set; }
             public List<BattleSquare> AdjacentSquares { get; private set; }
+            public bool Searched { get; set; }
+            public int SearchValue { get; set; }
 
             public BattleSquare(int x, int y, Unit occupant)
             {
@@ -305,6 +314,8 @@ namespace ProgrammingAdvent2018.Solutions
                 Y = y;
                 Occupant = occupant;
                 AdjacentSquares = new List<BattleSquare>(4);
+                Searched = false;
+                SearchValue = int.MaxValue;
             }
 
             public int CompareTo(object obj)
@@ -341,7 +352,7 @@ namespace ProgrammingAdvent2018.Solutions
 
             public bool CalculateOutcome(out int answer, out string errorMessage)
             {
-                int roundLimit = 60;
+                int roundLimit = 2048;
                 List<Unit> goblins = _units.Where(u => u.Type == UnitType.Goblin).ToList();
                 List<Unit> elves = _units.Where(u => u.Type == UnitType.Elf).ToList();
                 answer = -1;
@@ -361,9 +372,14 @@ namespace ProgrammingAdvent2018.Solutions
                         {
                             targets = elves;
                         }
-                        else
+                        else if (unit.Type == UnitType.Elf)
                         {
                             targets = goblins;
+                        }
+                        else
+                        {
+                            errorMessage = "Unknown error when identifying targets.";
+                            return false;
                         }
 
                         // If no targets remain, combat ends. Calculate answer and return.
@@ -425,11 +441,16 @@ namespace ProgrammingAdvent2018.Solutions
                         // If not adjacent to a target, move.
                         if (!adjacentToTarget)
                         {
-                            // Identify the nearest open square adjacent to a target. (Usual tie-breaker)
-
-                            // Take one step toward the chosen square along the shortest path.
-                            // (Usual tie-breaker for first step)
-
+                            // Identify the nearest reachable open square adjacent to a target.
+                            if (NearestOpenSquare(unit, out (int, int) coordinates))
+                            {
+                                // Take one step toward the chosen square along the shortest path.
+                                (int, int) move = GetMoveToward(coordinates, unit);
+                                _map[unit.X, unit.Y].Occupant = null;
+                                unit.X = move.Item1;
+                                unit.Y = move.Item2;
+                                _map[unit.X, unit.Y].Occupant = unit;
+                            }
                         }
 
                         // Then, if now adjacent to a target, attack.
@@ -469,15 +490,203 @@ namespace ProgrammingAdvent2018.Solutions
                 }
                 if (answer < 0)
                 {
-                    errorMessage = $"Combat did not end after {roundLimit} rounds.";
+                    errorMessage = $"Combat did not end in the first {roundLimit} rounds.";
                     return false;
                 }
-                errorMessage = "Unknown error";
+                errorMessage = "Unknown error.";
                 return false;
+            }
+
+            private bool NearestOpenSquare(Unit unit, out (int, int) coordinates)
+            {
+                int maxSearchDistance = int.MaxValue - 1;
+                HashSet<BattleSquare> pending = new HashSet<BattleSquare>();
+                HashSet<BattleSquare> searched = new HashSet<BattleSquare>();
+                HashSet<BattleSquare> targetOpenSquares = new HashSet<BattleSquare>();
+                BattleSquare currentSquare = _map[unit.X, unit.Y];
+                currentSquare.SearchValue = 0;
+                while (true)
+                {
+                    // Search adjacent squares.
+                    foreach (BattleSquare adjacent in currentSquare.AdjacentSquares)
+                    {
+                        if (!adjacent.Searched)
+                        {
+                            if (adjacent.Occupant == null)
+                            {
+                                // Add adjacent empty square to be searched.
+                                adjacent.SearchValue = Math.Min(adjacent.SearchValue, currentSquare.SearchValue + 1);
+                                pending.Add(adjacent);
+                            }
+                            else if (adjacent.Occupant.Type == unit.EnemyType)
+                            {
+                                // Current square is adjacent to an enemy.
+                                targetOpenSquares.Add(currentSquare);
+                                // Don't search beyond the closest enemy.
+                                maxSearchDistance = Math.Min(maxSearchDistance, currentSquare.SearchValue);
+                            }
+                        }
+                    }
+                    currentSquare.Searched = true;
+                    pending.Remove(currentSquare);
+                    searched.Add(currentSquare);
+                    
+                    // Choose a square with the lowest value to search next.
+                    if (pending.Count == 0)
+                    {
+                        break;
+                    }
+                    int closest = int.MaxValue;
+                    foreach (BattleSquare square in pending)
+                    {
+                        closest = Math.Min(closest, square.SearchValue);
+                    }
+                    foreach (BattleSquare square in pending)
+                    {
+                        if (square.SearchValue == closest)
+                        {
+                            currentSquare = square;
+                            break;
+                        }
+                    }
+
+                    // If all the squares within range have been searched, the algorithm has finished.
+                    if (currentSquare.SearchValue > maxSearchDistance)
+                    {
+                        break;
+                    }
+                }
+
+                // Reset search values.
+                foreach (BattleSquare square in pending)
+                {
+                    square.Searched = false;
+                    square.SearchValue = int.MaxValue;
+                }
+                foreach (BattleSquare square in searched)
+                {
+                    square.Searched = false;
+                    square.SearchValue = int.MaxValue;
+                }
+
+                // If there are no paths to a target, return false.
+                if (targetOpenSquares.Count == 0)
+                {
+                    coordinates = (0, 0);
+                    return false;
+                }
+
+                // Select the candidate square that is first in top-to-bottom, left-to-right order.
+                BattleSquare[] nearestTargetOpenSquares = targetOpenSquares.ToArray();
+                Array.Sort(nearestTargetOpenSquares);
+                coordinates = (nearestTargetOpenSquares[0].X, nearestTargetOpenSquares[0].Y);
+                return true;
+            }
+
+            private (int, int) GetMoveToward((int, int) coordinates, Unit unit)
+            {
+                int maxSearchDistance = int.MaxValue - 1;
+                HashSet<BattleSquare> pending = new HashSet<BattleSquare>();
+                HashSet<BattleSquare> searched = new HashSet<BattleSquare>();
+                BattleSquare currentSquare = _map[coordinates.Item1, coordinates.Item2];
+                currentSquare.SearchValue = 0;
+                while (true)
+                {
+                    // Search adjacent squares.
+                    foreach (BattleSquare adjacent in currentSquare.AdjacentSquares)
+                    {
+                        if (!adjacent.Searched)
+                        {
+                            if (adjacent.Occupant == null)
+                            {
+                                // Add adjacent empty square to be searched.
+                                adjacent.SearchValue = Math.Min(adjacent.SearchValue, currentSquare.SearchValue + 1);
+                                pending.Add(adjacent);
+                            }
+                            else if (adjacent.Occupant == unit)
+                            {
+                                // Don't search beyond the moving unit.
+                                maxSearchDistance = Math.Min(maxSearchDistance, currentSquare.SearchValue);
+                            }
+                        }
+                    }
+                    currentSquare.Searched = true;
+                    pending.Remove(currentSquare);
+                    searched.Add(currentSquare);
+
+                    // Choose a square with the lowest value to search next.
+                    if (pending.Count == 0)
+                    {
+                        break;
+                    }
+                    int closest = int.MaxValue;
+                    foreach (BattleSquare square in pending)
+                    {
+                        closest = Math.Min(closest, square.SearchValue);
+                    }
+                    foreach (BattleSquare square in pending)
+                    {
+                        if (square.SearchValue == closest)
+                        {
+                            currentSquare = square;
+                            break;
+                        }
+                    }
+
+                    // If all the squares within range have been searched, the algorithm has finished.
+                    if (currentSquare.SearchValue > maxSearchDistance)
+                    {
+                        break;
+                    }
+                }
+
+                // Choose potential moves that are closest to the target coordinates.
+                List<BattleSquare> potentialMoves = new List<BattleSquare>();
+                int minimumDistance = int.MaxValue;
+                foreach (BattleSquare square in _map[unit.X, unit.Y].AdjacentSquares)
+                {
+                    if (square.Occupant != null)
+                    {
+                        continue;
+                    }
+                    if (square.SearchValue < minimumDistance)
+                    {
+                        potentialMoves.Clear();
+                        minimumDistance = square.SearchValue;
+                    }
+                    if (square.SearchValue <= minimumDistance)
+                    {
+                        potentialMoves.Add(square);
+                    }
+                }
+
+                // Reset search values.
+                foreach (BattleSquare square in pending)
+                {
+                    square.Searched = false;
+                    square.SearchValue = int.MaxValue;
+                }
+                foreach (BattleSquare square in searched)
+                {
+                    square.Searched = false;
+                    square.SearchValue = int.MaxValue;
+                }
+
+                if (potentialMoves.Count == 0)
+                {
+                    // There are no adjacent open squares. (This shouldn't happen.)
+                    return (unit.X, unit.Y);
+                }
+
+                // Select the move that is first in top-to-bottom, left-to-right order.
+                potentialMoves.Sort();
+                return (potentialMoves[0].X, potentialMoves[0].Y);
             }
 
             private bool SelectTarget(List<Unit> adjacentTargets, out Unit selectedTarget)
             {
+                // Select the first unit in the list with the lowest HP.
+                // The list should already be sorted in top-to-bottom, left-to-right order.
                 int lowestHP = int.MaxValue;
                 foreach (Unit target in adjacentTargets)
                 {
