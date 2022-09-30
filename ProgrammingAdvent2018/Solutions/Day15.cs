@@ -30,7 +30,7 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             List<Unit> units = new List<Unit>();
-            BattleSquare[,] map = InputToMap(inputLines, units);
+            BattleSquare[,] map = InputToMap(inputLines, units, 3);
             Battle battle = new Battle(map, units);
             if (!battle.CalculateOutcome(out int partOneAnswer, out string battleError))
             {
@@ -38,8 +38,31 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
+            int partTwoResult = -1;
+            int powerLimit = 201;
+            for (int elfAttackPower = 4; elfAttackPower < powerLimit; elfAttackPower++)
+            {
+                List<Unit> testUnits = new List<Unit>();
+                BattleSquare[,] testMap = InputToMap(inputLines, testUnits, elfAttackPower);
+                Battle testBattle = new Battle(testMap, testUnits, true);
+                if (testBattle.CalculateOutcome(out int calculatedResult, out string _))
+                {
+                    partTwoResult = calculatedResult;
+                    break;
+                }
+            }
+            string partTwoAnswer;
+            if (partTwoResult < 0)
+            {
+                partTwoAnswer = "The Elves cannot win.";
+            }
+            else
+            {
+                partTwoAnswer = partTwoResult.ToString();
+            }
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -101,7 +124,7 @@ namespace ProgrammingAdvent2018.Solutions
             return true;
         }
 
-        private BattleSquare[,] InputToMap(string[] inputLines, List<Unit> units)
+        private BattleSquare[,] InputToMap(string[] inputLines, List<Unit> units, int elfAttackPower)
         {
             BattleSquare[,] map = new BattleSquare[inputLines[0].Length, inputLines.Length];
             for (int y = 0; y < inputLines.Length; y++)
@@ -115,7 +138,7 @@ namespace ProgrammingAdvent2018.Solutions
                             break;
                         case 'G':
                         case 'E':
-                            Unit newUnit = new Unit(inputLines[y][x], x, y);
+                            Unit newUnit = new Unit(inputLines[y][x], x, y, elfAttackPower);
                             units.Add(newUnit);
                             map[x, y] = new BattleSquare(x, y, newUnit);
                             break;
@@ -201,19 +224,18 @@ namespace ProgrammingAdvent2018.Solutions
 
         internal void Debug_Tests()
         {
-            (string, int)[] examples = new (string, int)[]
+            (string, int, int)[] examples = new (string, int, int)[]
             {
-                ("#######\xA#.G...#\xA#...EG#\xA#.#.#G#\xA#..G#E#\xA#.....#\xA#######", 27730),
-                ("#######\xA#G..#E#\xA#E#E.E#\xA#G.##.#\xA#...#E#\xA#...E.#\xA#######", 36334),
-                ("#######\xA#E..EG#\xA#.#G.E#\xA#E.##E#\xA#G..#.#\xA#..E#.#\xA#######", 39514),
-                ("#######\xA#E.G#.#\xA#.#G..#\xA#G.#.G#\xA#G..#.#\xA#...E.#\xA#######", 27755),
-                ("#######\xA#.E...#\xA#.#..G#\xA#.###.#\xA#E#G#G#\xA#...#G#\xA#######", 28944),
-                ("#########\xA#G......#\xA#.E.#...#\xA#..##..G#\xA#...##..#\xA#...#...#\xA#.G...G.#\xA#.....G.#\xA#########", 18740)
+                ("#######\xA#.G...#\xA#...EG#\xA#.#.#G#\xA#..G#E#\xA#.....#\xA#######", 27730, 4988),
+                ("#######\xA#G..#E#\xA#E#E.E#\xA#G.##.#\xA#...#E#\xA#...E.#\xA#######", 36334, int.MinValue),
+                ("#######\xA#E..EG#\xA#.#G.E#\xA#E.##E#\xA#G..#.#\xA#..E#.#\xA#######", 39514, 31284),
+                ("#######\xA#E.G#.#\xA#.#G..#\xA#G.#.G#\xA#G..#.#\xA#...E.#\xA#######", 27755, 3478),
+                ("#######\xA#.E...#\xA#.#..G#\xA#.###.#\xA#E#G#G#\xA#...#G#\xA#######", 28944, 6474),
+                ("#########\xA#G......#\xA#.E.#...#\xA#..##..G#\xA#...##..#\xA#...#...#\xA#.G...G.#\xA#.....G.#\xA#########", 18740, 1140)
             };
             for (int i = 0; i < examples.Length; i++)
             {
                 string exampleInput = examples[i].Item1;
-                int exampleOutput = examples[i].Item2;
                 string[] lines = exampleInput.ToLines();
                 if (!ValidateInput(lines, out string inputError))
                 {
@@ -221,20 +243,54 @@ namespace ProgrammingAdvent2018.Solutions
                     continue;
                 }
                 List<Unit> units = new List<Unit>();
-                BattleSquare[,] map = InputToMap(lines, units);
+                BattleSquare[,] map = InputToMap(lines, units, 3);
                 Battle battle = new Battle(map, units);
-                if (!battle.CalculateOutcome(out int calculatedAnswer, out string battleError))
+                if (!battle.CalculateOutcome(out int calculatedPartOneAnswer, out string battleError))
                 {
-                    Debug.WriteLine($"DEBUG {i}: " + battleError);
+                    Debug.WriteLine($"DEBUG {i} PART 1: " + battleError);
                     continue;
                 }
-                if (calculatedAnswer == exampleOutput)
+                int examplePartOneOutput = examples[i].Item2;
+                if (calculatedPartOneAnswer == examplePartOneOutput)
                 {
-                    Debug.WriteLine($"DEBUG {i}: MATCH");
+                    Debug.WriteLine($"DEBUG {i} PART 1: MATCH");
                 }
                 else
                 {
-                    Debug.WriteLine($"DEBUG {i}: EXPECTED {exampleOutput}, ACTUAL {calculatedAnswer}");
+                    Debug.WriteLine($"DEBUG {i} PART 1: EXPECTED {examplePartOneOutput}, ACTUAL {calculatedPartOneAnswer}");
+                }
+                if (i == 1)
+                {
+                    // No Part Two for this example.
+                    Debug.WriteLine($"DEBUG {i} PART 2: N/A");
+                    continue;
+                }
+                int calculatedPartTwoAnswer = -1;
+                int powerLimit = 201;
+                for (int elfAttackPower = 4; elfAttackPower < powerLimit; elfAttackPower++)
+                {
+                    List<Unit> testUnits = new List<Unit>();
+                    BattleSquare[,] testMap = InputToMap(lines, testUnits, elfAttackPower);
+                    Battle testBattle = new Battle(testMap, testUnits, true);
+                    if (testBattle.CalculateOutcome(out int calculatedResult, out string _))
+                    {
+                        calculatedPartTwoAnswer = calculatedResult;
+                        break;
+                    }
+                }
+                if (calculatedPartTwoAnswer < 0)
+                {
+                    Debug.WriteLine($"DEBUG {i} PART 2: NO ANSWER FOUND BELOW ATTACK POWER {powerLimit}");
+                    continue;
+                }
+                int examplePartTwoOutput = examples[i].Item3;
+                if (calculatedPartTwoAnswer == examplePartTwoOutput)
+                {
+                    Debug.WriteLine($"DEBUG {i} PART 2: MATCH");
+                }
+                else
+                {
+                    Debug.WriteLine($"DEBUG {i} PART 2: EXPECTED {examplePartTwoOutput}, ACTUAL {calculatedPartTwoAnswer}");
                 }
             }
         }
@@ -254,18 +310,21 @@ namespace ProgrammingAdvent2018.Solutions
             public int HP { get; set; }
             public int X { get; set; }
             public int Y { get; set; }
+            public int AttackPower { get; set; }
 
-            public Unit(char type, int x, int y)
+            public Unit(char type, int x, int y, int elfAttackPower)
             {
                 if (type == 'G')
                 {
                     Type = UnitType.Goblin;
                     EnemyType = UnitType.Elf;
+                    AttackPower = 3;
                 }
                 else if (type == 'E')
                 {
                     Type = UnitType.Elf;
                     EnemyType = UnitType.Goblin;
+                    AttackPower = elfAttackPower;
                 }
                 else
                 {
@@ -339,15 +398,19 @@ namespace ProgrammingAdvent2018.Solutions
             }
         }
 
-        internal class Battle
+        private class Battle
         {
             private readonly BattleSquare[,] _map;
             private readonly List<Unit> _units;
+            private readonly bool _failOnElfDeath;
 
-            public Battle(BattleSquare[,] map, List<Unit> units)
+            public Battle(BattleSquare[,] map, List<Unit> units) : this(map, units, false) { }
+
+            public Battle(BattleSquare[,] map, List<Unit> units, bool failOnElfDeath)
             {
                 _map = map;
                 _units = units;
+                _failOnElfDeath = failOnElfDeath;
             }
 
             public bool CalculateOutcome(out int answer, out string errorMessage)
@@ -471,12 +534,18 @@ namespace ProgrammingAdvent2018.Solutions
                                 return false;
                             }
                             // Deal damage equal to attack power to the selected target.
-                            target.HP -= 3;
+                            target.HP -= unit.AttackPower;
                             // If this reduces its hit points to 0 or fewer, the selected target dies.
                             if (target.HP <= 0)
                             {
                                 target.HP = 0;
                                 target.IsDead = true;
+                                if (target.Type == UnitType.Elf && _failOnElfDeath)
+                                {
+                                    answer = int.MinValue;
+                                    errorMessage = "An Elf has died.";
+                                    return false;
+                                }
                                 target.Type = UnitType.None;
                                 target.EnemyType = UnitType.None;
                                 _map[target.X, target.Y].Occupant = null;
