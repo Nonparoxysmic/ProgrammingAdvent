@@ -3,7 +3,13 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
 
 namespace ProgrammingAdvent2018.Solutions
