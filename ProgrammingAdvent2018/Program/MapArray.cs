@@ -1,4 +1,9 @@
-﻿using System;
+﻿// ProgrammingAdvent2018 by Nonparoxysmic
+// https://github.com/Nonparoxysmic/ProgrammingAdvent
+// for Advent of Code 2018
+// https://adventofcode.com/2018
+
+using System;
 
 namespace ProgrammingAdvent2018.Program
 {
