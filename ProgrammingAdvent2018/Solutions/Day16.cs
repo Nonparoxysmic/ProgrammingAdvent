@@ -35,6 +35,7 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
+            int partOneAnswer = 0;
             int lastAfter = -1;
             for (int i = 0; i <= inputLines.Length - 4; i += 4)
             {
@@ -63,8 +64,10 @@ namespace ProgrammingAdvent2018.Solutions
                     output.WriteError($"Cannot parse register values \"{inputLines[i + 2]}\".", sw);
                     return output;
                 }
-
-
+                if (CountPossibleOpcodes(registersBefore, registersAfter, A, B, C) >= 3)
+                {
+                    partOneAnswer++;
+                }
                 lastAfter = i + 2;
             }
             if (lastAfter < 0)
@@ -74,7 +77,7 @@ namespace ProgrammingAdvent2018.Solutions
             }
 
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
         }
 
@@ -95,6 +98,101 @@ namespace ProgrammingAdvent2018.Solutions
             }
             registerValues = new ulong[] { first, second, third, fourth };
             return true;
+        }
+
+        private int CountPossibleOpcodes(ulong[] before, ulong[] after, ulong A, ulong B, int C)
+        {
+            int count = 0;
+            if (A < 4 && B < 4)
+            {
+                // addr (add register)
+                if (after[C] == before[A] + before[B])
+                {
+                    count++;
+                }
+                // mulr (multiply register)
+                if (after[C] == before[A] * before[B])
+                {
+                    count++;
+                }
+                // banr (bitwise AND register)
+                if (after[C] == (before[A] & before[B]))
+                {
+                    count++;
+                }
+                // borr (bitwise OR register)
+                if (after[C] == (before[A] | before[B]))
+                {
+                    count++;
+                }
+                // gtrr (greater-than register/register)
+                if (after[C] == (before[A] > before[B] ? 1UL : 0))
+                {
+                    count++;
+                }
+                // eqrr (equal register/register)
+                if (after[C] == (before[A] == before[B] ? 1UL : 0))
+                {
+                    count++;
+                }
+            }
+            if (A < 4)
+            {
+                // setr (set register)
+                if (after[C] == before[A])
+                {
+                    count++;
+                }
+                // addi (add immediate)
+                if (after[C] == before[A] + B)
+                {
+                    count++;
+                }
+                // muli (multiply immediate)
+                if (after[C] == before[A] * B)
+                {
+                    count++;
+                }
+                // bani (bitwise AND immediate)
+                if (after[C] == (before[A] & B))
+                {
+                    count++;
+                }
+                // bori (bitwise OR immediate)
+                if (after[C] == (before[A] | B))
+                {
+                    count++;
+                }
+                // gtri (greater-than register/immediate)
+                if (after[C] == (before[A] > B ? 1UL : 0))
+                {
+                    count++;
+                }
+                // eqri	(equal register/immediate)
+                if (after[C] == (before[A] == B ? 1UL : 0))
+                {
+                    count++;
+                }
+            }
+            if (B < 4)
+            {
+                // gtir (greater-than immediate/register)
+                if (after[C] == (A > before[B] ? 1UL : 0))
+                {
+                    count++;
+                }
+                // eqir (equal immediate/register)
+                if (after[C] == (A == before[B] ? 1UL : 0))
+                {
+                    count++;
+                }
+            }
+            // seti	(set immediate)
+            if (after[C] == A)
+            {
+                count++;
+            }
+            return count;
         }
     }
 }
