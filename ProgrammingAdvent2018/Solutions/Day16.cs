@@ -68,7 +68,7 @@ namespace ProgrammingAdvent2018.Solutions
                     || !ulong.TryParse(instruction.Groups[3].Value, out ulong B)
                     || !int.TryParse(instruction.Groups[4].Value, out int C))
                 {
-                    output.WriteError($"Cannot parse instruction \"{inputLines[i + 1]}\".", sw);
+                    output.WriteError($"Cannot parse sample instruction \"{inputLines[i + 1]}\".", sw);
                     return output;
                 }
                 if (!TryParseRegisters(after, out ulong[] registersAfter))
@@ -99,8 +99,105 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
+            int programStart = lastAfter + 1;
+            for (int i = programStart; i < inputLines.Length; i++)
+            {
+                if (inputLines[i] != "")
+                {
+                    programStart = i;
+                    break;
+                }
+            }
+
+            ulong[] registers = new ulong[4];
+            for (int i = programStart; i < inputLines.Length; i++)
+            {
+                Match instruction = instructionLine.Match(inputLines[i]);
+                if (!int.TryParse(instruction.Groups[1].Value, out int opcodeNumber)
+                    || !ulong.TryParse(instruction.Groups[2].Value, out ulong A)
+                    || !ulong.TryParse(instruction.Groups[3].Value, out ulong B)
+                    || !int.TryParse(instruction.Groups[4].Value, out int C))
+                {
+                    output.WriteError($"Cannot parse program instruction \"{inputLines[i]}\".", sw);
+                    return output;
+                }
+                int opcodeEnum = (int)opcodes[opcodeNumber];
+                if (!ValidInputs(opcodeEnum, A, B))
+                {
+                    output.WriteError($"Invalid inputs in program instruction \"{inputLines[i]}\".", sw);
+                    return output;
+                }
+                switch (opcodeEnum)
+                {
+                    case 0:
+                        // addi
+                        registers[C] = registers[A] + B;
+                        break;
+                    case 1:
+                        // addr
+                        registers[C] = registers[A] + registers[B];
+                        break;
+                    case 2:
+                        // bani
+                        registers[C] = registers[A] & B;
+                        break;
+                    case 3:
+                        // banr
+                        registers[C] = registers[A] & registers[B];
+                        break;
+                    case 4:
+                        // bori
+                        registers[C] = registers[A] | B;
+                        break;
+                    case 5:
+                        // borr
+                        registers[C] = registers[A] | registers[B];
+                        break;
+                    case 6:
+                        // eqir
+                        registers[C] = A == registers[B] ? 1UL : 0;
+                        break;
+                    case 7:
+                        // eqri
+                        registers[C] = registers[A] == B ? 1UL : 0;
+                        break;
+                    case 8:
+                        // eqrr
+                        registers[C] = registers[A] == registers[B] ? 1UL : 0;
+                        break;
+                    case 9:
+                        // gtir
+                        registers[C] = A > registers[B] ? 1UL : 0;
+                        break;
+                    case 10:
+                        // gtri
+                        registers[C] = registers[A] > B ? 1UL : 0;
+                        break;
+                    case 11:
+                        // gtrr
+                        registers[C] = registers[A] > registers[B] ? 1UL : 0;
+                        break;
+                    case 12:
+                        // muli
+                        registers[C] = registers[A] * B;
+                        break;
+                    case 13:
+                        // mulr
+                        registers[C] = registers[A] * registers[B];
+                        break;
+                    case 14:
+                        // seti
+                        registers[C] = A;
+                        break;
+                    case 15:
+                        // setr
+                        registers[C] = registers[A];
+                        break;
+                }
+            }
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, registers[0], sw);
             return output;
         }
 
@@ -384,6 +481,48 @@ namespace ProgrammingAdvent2018.Solutions
                     possibleOpcodes[x].Remove((Opcode)i);
                 }
             }
+        }
+
+        private bool ValidInputs(int opcodeNumber, ulong A, ulong B)
+        {
+            switch (opcodeNumber)
+            {
+                case 0: // addi
+                case 2: // bani
+                case 4: // bori
+                case 7: // eqri
+                case 10: // gtri
+                case 12: // muli
+                case 15: // setr
+                    if (A > 3)
+                    {
+                        return false;
+                    }
+                    break;
+                case 1: // addr
+                case 3: // banr
+                case 5: // borr
+                case 8: // eqrr
+                case 11: // gtrr
+                case 13: // mulr
+                    if (A > 3 || B > 3)
+                    {
+                        return false;
+                    }
+                    break;
+                case 6: // eqir
+                case 9: // gtir
+                    if (B > 3)
+                    {
+                        return false;
+                    }
+                    break;
+                case 14: // seti
+                    return true;
+                default:
+                    return false;
+            }
+            return true;
         }
 
         private enum Opcode
