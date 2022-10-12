@@ -3,6 +3,8 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
@@ -27,6 +29,11 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
             string[] inputLines = input.ToLines();
+            int minimumX = int.MaxValue;
+            int minimumY = int.MaxValue;
+            int maximumX = int.MinValue;
+            int maximumY = int.MinValue;
+            List<(int, int, int, int)> clayInput = new List<(int, int, int, int)>();
             foreach (string line in inputLines)
             {
                 Match horizontalMatch = horzClayLine.Match(line);
@@ -37,9 +44,38 @@ namespace ProgrammingAdvent2018.Solutions
                     return output;
                 }
                 Match match = horizontalMatch.Success ? horizontalMatch : verticalMatch;
-                (int lowerX, int lowerY, int upperX, int upperY) = Clay(match);
-
+                (int lowerX, int lowerY, int upperX, int upperY) clay = Clay(match);
+                minimumX = Math.Min(minimumX, clay.lowerX);
+                minimumY = Math.Min(minimumY, clay.lowerY);
+                maximumX = Math.Max(maximumX, clay.upperX);
+                maximumY = Math.Max(maximumY, clay.upperY);
+                clayInput.Add(clay);
             }
+            if (500 < minimumX || 500 > maximumX)
+            {
+                // Water hits no clay.
+            }
+
+            int width = maximumX - minimumX + 3;
+            int height = maximumY - minimumY + 1;
+            MapArray<char> map = new MapArray<char>(width, height, 2, '.', (minimumX - 1, minimumY));
+            map.Fill('.');
+            foreach ((int lowerX, int lowerY, int upperX, int upperY) in clayInput)
+            {
+                for (int y = lowerY; y <= upperY; y++)
+                {
+                    for (int x = lowerX; x <= upperX; x++)
+                    {
+                        map[x, y] = '#';
+                    }
+                }
+            }
+            (int X, int Y) springPosition = (500, 0);
+            if (minimumY > 2)
+            {
+                springPosition = (500, minimumY - 2);
+            }
+            map[springPosition.X, springPosition.Y] = '+';
 
             sw.Stop();
             output.WriteAnswers(null, null, sw);
