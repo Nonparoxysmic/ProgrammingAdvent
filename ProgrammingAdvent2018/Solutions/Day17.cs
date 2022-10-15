@@ -22,6 +22,7 @@ namespace ProgrammingAdvent2018.Solutions
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            // Read input.
             input = input.Trim();
             if (input == "")
             {
@@ -53,9 +54,11 @@ namespace ProgrammingAdvent2018.Solutions
             }
             if (500 < minimumX || 500 > maximumX)
             {
-                // Water hits no clay.
+                output.WriteError("Water hits no clay.", sw);
+                return output;
             }
 
+            // Create map from input.
             int width = maximumX - minimumX + 3;
             int height = maximumY - minimumY + 1;
             MapArray<char> map = new MapArray<char>(width, height, 2, '.', (minimumX - 1, minimumY));
@@ -77,8 +80,42 @@ namespace ProgrammingAdvent2018.Solutions
             }
             map[springPosition.X, springPosition.Y] = '+';
 
+            // Carry out water pathfinding simulation.
+            Pathfinder.Reset();
+            Pathfinder.Map = map;
+            new Pathfinder(springPosition.X, springPosition.Y, Pathfinder.State.Falling);
+            int stepLimit = 65536;
+            for (; stepLimit > 0; stepLimit--)
+            {
+                int count = Pathfinder.Count;
+                if (count == 0)
+                {
+                    break;
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    Pathfinder current = Pathfinder.Dequeue();
+                    if (!current.Step())
+                    {
+                        output.WriteError($"Error encountered at ({current.X}, {current.Y}).", sw);
+                        return output;
+                    }
+                    if (current.IsAlive && current.Y < maximumY + 2)
+                    {
+                        Pathfinder.Enqueue(current);
+                    }
+                }
+            }
+            if (stepLimit <= 0)
+            {
+                output.WriteError("Could not complete simulation in 65,536 steps.", sw);
+                return output;
+            }
+
+            int partOneAnswer = CountWaterTiles(map);
+
             sw.Stop();
-            output.WriteAnswers(null, null, sw);
+            output.WriteAnswers(partOneAnswer, null, sw);
             return output;
         }
 
@@ -100,6 +137,246 @@ namespace ProgrammingAdvent2018.Solutions
             else
             {
                 return (lowerRange, fixedCoord, upperRange, fixedCoord);
+            }
+        }
+
+        private int CountWaterTiles(MapArray<char> map)
+        {
+            int sum = 0;
+            for (int y = map.Position.Y; y < map.Position.Y + map.Height; y++)
+            {
+                for (int x = map.Position.X; x < map.Position.X + map.Width; x++)
+                {
+                    switch (map[x, y])
+                    {
+                        case '~':
+                        case '|':
+                        case '+':
+                            sum++;
+                            break;
+                    }
+                }
+            }
+            return sum;
+        }
+
+        private class Pathfinder
+        {
+            public static MapArray<char> Map { get; set; }
+            public static int Count { get => _queue.Count; }
+
+            public bool IsAlive { get; private set; }
+            public int X { get; private set; }
+            public int Y { get; private set; }
+
+            private static readonly Queue<Pathfinder> _queue = new Queue<Pathfinder>();
+            private static readonly List<(int, int)> _splits = new List<(int, int)>();
+
+            private State _state;
+
+            public Pathfinder(int x, int y, State state)
+            {
+                IsAlive = true;
+                X = x;
+                Y = y;
+                _state = state;
+                _queue.Enqueue(this);
+            }
+
+            public static Pathfinder Dequeue()
+            {
+                return _queue.Dequeue();
+            }
+
+            public static void Enqueue(Pathfinder item)
+            {
+                _queue.Enqueue(item);
+            }
+
+            public static void Reset()
+            {
+                Map = null;
+                _queue.Clear();
+                _splits.Clear();
+            }
+
+            public bool Step()
+            {
+                if (_state == State.Dead)
+                {
+                    return true;
+                }
+                if (Map[X, Y] == '#')
+                {
+                    _state = State.Invalid;
+                }
+                if (Map[X, Y] == '~')
+                {
+                    _state = State.Floating;
+                }
+                switch (_state)
+                {
+                    case State.Falling:
+                        // Fall down until hitting a solid surface.
+                        if (Map[X, Y + 1] == '.' || Map[X, Y + 1] == '|')
+                        {
+                            Y++;
+                            Map[X, Y] = '|';
+                        }
+                        else
+                        {
+                            _state = State.Spreading;
+                        }
+                        break;
+                    case State.Floating:
+                        // Rise above the surface of the water.
+                        while (Map[X, Y] == '~')
+                        {
+                            Y--;
+                        }
+                        if (Map[X, Y] == '.' || Map[X, Y] == '|')
+                        {
+                            Map[X, Y] = '|';
+                            _state = State.Spreading;
+                        }
+                        else
+                        {
+                            _state = State.Invalid;
+                            Map[X, Y + 1] = 'X';
+                        }
+                        break;
+                    case State.SlidingLeft:
+                        Slide(-1);
+                        break;
+                    case State.SlidingRight:
+                        Slide(1);
+                        break;
+                    case State.Splitting:
+                        Split();
+                        break;
+                    case State.Spreading:
+                        Spread();
+                        break;
+                }
+                if (_state == State.Invalid)
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            private void Slide(int direction)
+            {
+                // Not supposed to slide into a wall or in water.
+                if (Map[X + direction, Y] == '#' || Map[X + direction, Y] == '~')
+                {
+                    _state = State.Invalid;
+                    Map[X, Y] = 'X';
+                    return;
+                }
+                // Slide horizontally until the fall.
+                X += direction;
+                Map[X, Y] = '|';
+                if (Map[X, Y + 1] == '.' || Map[X, Y + 1] == '|')
+                {
+                    _state = State.Falling;
+                }
+            }
+
+            private void Split()
+            {
+                // If a previous Pathfinder has already split from this location, this one can terminate.
+                // This prevents the number of Pathfinders from exploding.
+                if (_splits.Contains((X, Y)))
+                {
+                    IsAlive = false;
+                    _state = State.Dead;
+                    return;
+                }
+                new Pathfinder(X, Y, State.SlidingLeft);
+                _state = State.SlidingRight;
+                _splits.Add((X, Y));
+            }
+
+            private void Spread()
+            {
+                // Check for walls or falls on both sides, while spreading '|' tiles.
+                Map[X, Y] = '|';
+                bool leftWall = false;
+                for (int Δx = -1; ; Δx--)
+                {
+                    if (Map[X + Δx, Y] == '#')
+                    {
+                        leftWall = true;
+                        break;
+                    }
+                    Map[X + Δx, Y] = '|';
+                    if (Map[X + Δx, Y + 1] == '.' || Map[X + Δx, Y + 1] == '|')
+                    {
+                        break;
+                    }
+                }
+                bool rightWall = false;
+                for (int Δx = 1; ; Δx++)
+                {
+                    if (Map[X + Δx, Y] == '#')
+                    {
+                        rightWall = true;
+                        break;
+                    }
+                    Map[X + Δx, Y] = '|';
+                    if (Map[X + Δx, Y + 1] == '.' || Map[X + Δx, Y + 1] == '|')
+                    {
+                        break;
+                    }
+                }
+
+                // If both are walls, fill with water ('~').
+                // Otherwise, send a pathfinder toward each fall.
+                if (leftWall && rightWall)
+                {
+                    for (int Δx = -1; ; Δx--)
+                    {
+                        if (Map[X + Δx, Y] == '#')
+                        {
+                            break;
+                        }
+                        Map[X + Δx, Y] = '~';
+                    }
+                    for (int Δx = 1; ; Δx++)
+                    {
+                        if (Map[X + Δx, Y] == '#')
+                        {
+                            break;
+                        }
+                        Map[X + Δx, Y] = '~';
+                    }
+                    Map[X, Y] = '~';
+                }
+                else if (!leftWall && !rightWall)
+                {
+                    _state = State.Splitting;
+                }
+                else if (leftWall)
+                {
+                    _state = State.SlidingRight;
+                }
+                else if (rightWall)
+                {
+                    _state = State.SlidingLeft;
+                }
+            }
+
+            public enum State
+            {
+                Invalid = -1,
+                Dead,
+                Falling,
+                Floating,
+                SlidingLeft,
+                SlidingRight,
+                Splitting,
+                Spreading
             }
         }
     }
