@@ -112,10 +112,10 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
-            int partOneAnswer = CountWaterTiles(map);
+            CountWaterTiles(map, out int partOneAnswer, out int partTwoAnswer);
 
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -140,9 +140,10 @@ namespace ProgrammingAdvent2018.Solutions
             }
         }
 
-        private int CountWaterTiles(MapArray<char> map)
+        private void CountWaterTiles(MapArray<char> map, out int wetTiles, out int waterTiles)
         {
-            int sum = 0;
+            int wetSandSum = 0;
+            waterTiles = 0;
             for (int y = map.Position.Y; y < map.Position.Y + map.Height; y++)
             {
                 for (int x = map.Position.X; x < map.Position.X + map.Width; x++)
@@ -150,14 +151,16 @@ namespace ProgrammingAdvent2018.Solutions
                     switch (map[x, y])
                     {
                         case '~':
+                            waterTiles++;
+                            break;
                         case '|':
                         case '+':
-                            sum++;
+                            wetSandSum++;
                             break;
                     }
                 }
             }
-            return sum;
+            wetTiles = waterTiles + wetSandSum;
         }
 
         private class Pathfinder
