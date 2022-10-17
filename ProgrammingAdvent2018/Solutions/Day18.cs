@@ -70,6 +70,26 @@ namespace ProgrammingAdvent2018.Solutions
 
             int partOneAnswer = ResourceValue(map);
 
+            for (int i = 10; i < 512; i++)
+            {
+                Step(ref map, ref buffer);
+            }
+            CycleDetector cycleDetector = new CycleDetector();
+            for (int i = 512; i < 4096; i++)
+            {
+                Step(ref map, ref buffer);
+                cycleDetector.Add(i + 1, ResourceValue(map));
+                if (cycleDetector.Success)
+                {
+                    break;
+                }
+            }
+            if (!cycleDetector.Success)
+            {
+                output.WriteError("Did not find a cycle after 4,096 minutes.", sw);
+                return output;
+            }
+
             sw.Stop();
             output.WriteAnswers(partOneAnswer, null, sw);
             return output;
@@ -137,6 +157,16 @@ namespace ProgrammingAdvent2018.Solutions
                 }
             }
             return trees * lumberyards;
+        }
+
+        private class CycleDetector
+        {
+            public bool Success { get; private set; }
+
+            public void Add(int minutesPassed, int resourceValue)
+            {
+
+            }
         }
     }
 }
