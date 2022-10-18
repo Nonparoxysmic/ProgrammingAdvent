@@ -3,6 +3,7 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
@@ -74,7 +75,7 @@ namespace ProgrammingAdvent2018.Solutions
             {
                 Step(ref map, ref buffer);
             }
-            CycleDetector cycleDetector = new CycleDetector();
+            CycleDetector cycleDetector = new CycleDetector(512, ResourceValue(map));
             for (int i = 512; i < 4096; i++)
             {
                 Step(ref map, ref buffer);
@@ -90,8 +91,10 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
+            int partTwoAnswer = cycleDetector.Extrapolate(1_000_000_000);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -163,9 +166,74 @@ namespace ProgrammingAdvent2018.Solutions
         {
             public bool Success { get; private set; }
 
+            private readonly int _firstKey;
+            private int _cycleIndex;
+            private int _cycleLength;
+            private readonly Dictionary<int, int> _history = new Dictionary<int, int>();
+
+            public CycleDetector(int minutesPassed, int resourceValue)
+            {
+                _firstKey = minutesPassed;
+                _cycleIndex = 0;
+                _cycleLength = 1;
+                Add(minutesPassed, resourceValue);
+            }
+
             public void Add(int minutesPassed, int resourceValue)
             {
+                _history.Add(minutesPassed, resourceValue);
+                if (minutesPassed % 64 == 0)
+                {
+                    CheckForCycle(minutesPassed);
+                }
+            }
 
+            private void CheckForCycle(int lastKey)
+            {
+                if (Success || lastKey - _firstKey < 4)
+                {
+                    return;
+                }
+                int middleKey = lastKey - (lastKey - _firstKey) / 2;
+                for (int i = lastKey - 1; i >= middleKey; i--)
+                {
+                    if (_history[lastKey] == _history[i] && _history[i] == _history[2 * i - lastKey])
+                    {
+                        if (IsCycle(2 * i - lastKey, lastKey - i))
+                        {
+                            Success = true;
+                            _cycleIndex = 2 * i - lastKey;
+                            _cycleLength = lastKey - i;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            private bool IsCycle(int startingIndex, int length)
+            {
+                for (int i = startingIndex; i < startingIndex + length; i++)
+                {
+                    if (_history[i] != _history[i + length])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            public int Extrapolate(int minutesPassed)
+            {
+                if (!Success || minutesPassed < _cycleIndex)
+                {
+                    return -400;
+                }
+                int index = (minutesPassed - _cycleIndex) % _cycleLength + _cycleIndex;
+                if (!_history.ContainsKey(index))
+                {
+                    return -500;
+                }
+                return _history[index];
             }
         }
     }
