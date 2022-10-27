@@ -48,6 +48,11 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
             instructionPointerBinding = int.Parse(instructionPointerMatch.Groups[1].Value);
+            if (instructionPointerBinding != 4)
+            {
+                output.WriteError($"Instruction pointer binding of {instructionPointerBinding} not supported.", sw);
+                return output;
+            }
             instructions = new List<(int, int, int, int)>();
             for (int i = 1; i < inputLines.Length; i++)
             {
@@ -73,13 +78,36 @@ namespace ProgrammingAdvent2018.Solutions
             }
             int partOneAnswer = registers[0];
 
+            instructionPointer = 0;
+            registers = new int[6];
+            registers[0] = 1;
+            while (0 <= instructionPointer && instructionPointer < instructions.Count)
+            {
+                PerformInstruction();
+            }
+            int partTwoAnswer = registers[0];
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
         private void PerformInstruction()
         {
+            if (instructionPointer == 3)
+            {
+                // Bypass the loop.
+                if (registers[2] % registers[1] == 0)
+                {
+                    registers[0] += registers[1];
+                }
+                registers[3] = registers[2] + 1;
+                registers[4] = 11;
+                registers[5] = 1;
+                instructionPointer = 12;
+                return;
+            }
+
             registers[instructionPointerBinding] = instructionPointer;
             (int opcode, int A, int B, int C) = instructions[instructionPointer];
             switch (opcode)
