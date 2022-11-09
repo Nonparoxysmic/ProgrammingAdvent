@@ -62,8 +62,10 @@ namespace ProgrammingAdvent2018.Solutions
 
             int partOneAnswer = LongestShortestPath(input);
 
+            int partTwoAnswer = RoomsFarAway(input, 1000);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -109,6 +111,59 @@ namespace ProgrammingAdvent2018.Solutions
                 previousInput = input;
             }
             return input.Length - 2;
+        }
+
+        private int RoomsFarAway(string input, int distance)
+        {
+            Stack<int> lastBranchDistances = new Stack<int>();
+            lastBranchDistances.Push(0);
+            int steps = 0, rooms = 0;
+            char lastDir = '\0';
+            for (int i = 0; i < input.Length; i++)
+            {
+                switch (input[i])
+                {
+                    case 'N':
+                    case 'S':
+                    case 'E':
+                    case 'W':
+                        if (IsBacktracking(input[i], lastDir))
+                        {
+                            i += steps - lastBranchDistances.Peek() - 1;
+                            lastDir = '\0';
+                            break;
+                        }
+                        steps++;
+                        if (steps >= distance)
+                        {
+                            rooms++;
+                        }
+                        lastDir = input[i];
+                        break;
+                    case '|':
+                        steps = lastBranchDistances.Peek();
+                        break;
+                    case '(':
+                        lastBranchDistances.Push(steps);
+                        break;
+                    case ')':
+                        steps = lastBranchDistances.Pop();
+                        break;
+                }
+            }
+            return rooms;
+        }
+
+        private bool IsBacktracking(char a, char b)
+        {
+            if ((a == 'N' && b == 'S') ||
+                (a == 'S' && b == 'N') ||
+                (a == 'E' && b == 'W') ||
+                (a == 'W' && b == 'E'))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
