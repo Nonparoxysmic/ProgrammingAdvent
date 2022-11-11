@@ -62,6 +62,8 @@ namespace ProgrammingAdvent2018.Solutions
 
             int partOneAnswer = LongestShortestPath(input);
 
+            // REASON THIS IS NOT WORKING:
+            // INPUT CAN CONTAIN REDUNDANT DOUBLING BACK, E.G. "NWNENENNWS(NESSWSNENNWS|)"
             int partTwoAnswer = RoomsFarAway(input, 1000);
 
             sw.Stop();
