@@ -3,8 +3,10 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2018.Program;
 
@@ -12,9 +14,6 @@ namespace ProgrammingAdvent2018.Solutions
 {
     internal class Day20 : Day
     {
-        private readonly Regex backtracking = new Regex(@"(NS|SN|EW|WE)");
-        private readonly Regex innerRouteOptions = new Regex(@"\([NSEW|]*\)");
-
         internal override PuzzleAnswers Solve(string input)
         {
             PuzzleAnswers output = new PuzzleAnswers();
@@ -49,10 +48,9 @@ namespace ProgrammingAdvent2018.Solutions
                         return output;
                 }
             }
-            Regex inputRegex;
             try
             {
-                inputRegex = new Regex(input);
+                Regex inputRegex = new Regex(input);
             }
             catch
             {
@@ -60,67 +58,21 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
 
-            int partOneAnswer = LongestShortestPath(input);
+            MapArray<int> distanceMap = CreateDistanceMap(input);
 
-            // REASON THIS IS NOT WORKING:
-            // INPUT CAN CONTAIN REDUNDANT DOUBLING BACK, E.G. "NWNENENNWS(NESSWSNENNWS|)"
-            int partTwoAnswer = RoomsFarAway(input, 1000);
+            (int partOneAnswer, int partTwoAnswer) = FindAnswers(distanceMap, 1000);
 
             sw.Stop();
             output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
-        private string LongestBranch(Match match)
+        private MapArray<int> CreateDistanceMap(string input)
         {
-            string[] options = match.Value[1..^1].Split('|');
-            string longest = string.Empty;
-            int longestLength = 0;
-            for (int i = 0; i < options.Length; i++)
-            {
-                // Cancel out backtracking.
-                string next = options[i];
-                while (true)
-                {
-                    next = backtracking.Replace(options[i], "");
-                    if (options[i] == next)
-                    {
-                        break;
-                    }
-                    options[i] = next;
-                }
-
-                if (options[i].Length > longestLength)
-                {
-                    longestLength = options[i].Length;
-                    longest = options[i];
-                }
-            }
-            return longest;
-        }
-
-        private int LongestShortestPath(string input)
-        {
-            MatchEvaluator longestBranchEvaluator = new MatchEvaluator(LongestBranch);
-            string previousInput = input;
-            while (true)
-            {
-                input = innerRouteOptions.Replace(previousInput, longestBranchEvaluator);
-                if (input == previousInput)
-                {
-                    break;
-                }
-                previousInput = input;
-            }
-            return input.Length - 2;
-        }
-
-        private int RoomsFarAway(string input, int distance)
-        {
+            MapArray<int> distanceMap = new MapArray<int>(300, 300, 100, (-150, -150));
+            StringBuilder pathTraveled = new StringBuilder();
             Stack<int> lastBranchDistances = new Stack<int>();
-            lastBranchDistances.Push(0);
-            int steps = 0, rooms = 0;
-            char lastDir = '\0';
+            int x = 0, y = 0;
             for (int i = 0; i < input.Length; i++)
             {
                 switch (input[i])
@@ -129,31 +81,90 @@ namespace ProgrammingAdvent2018.Solutions
                     case 'S':
                     case 'E':
                     case 'W':
-                        if (IsBacktracking(input[i], lastDir))
+                        if (pathTraveled.Length > 0 && IsBacktracking(input[i], pathTraveled[^1]))
                         {
-                            i += steps - lastBranchDistances.Peek() - 1;
-                            lastDir = '\0';
+                            Reverse(ref pathTraveled, ref x, ref y);
                             break;
                         }
-                        steps++;
-                        if (steps >= distance)
-                        {
-                            rooms++;
-                        }
-                        lastDir = input[i];
+                        Step(input[i], ref pathTraveled, ref x, ref y);
+                        distanceMap[x, y] = pathTraveled.Length;
                         break;
                     case '|':
-                        steps = lastBranchDistances.Peek();
+                        while (pathTraveled.Length > lastBranchDistances.Peek())
+                        {
+                            Reverse(ref pathTraveled, ref x, ref y);
+                        }
                         break;
                     case '(':
-                        lastBranchDistances.Push(steps);
+                        lastBranchDistances.Push(pathTraveled.Length);
                         break;
                     case ')':
-                        steps = lastBranchDistances.Pop();
+                        int startOfBranch = lastBranchDistances.Pop();
+                        while (pathTraveled.Length > startOfBranch)
+                        {
+                            Reverse(ref pathTraveled, ref x, ref y);
+                        }
                         break;
                 }
             }
-            return rooms;
+            return distanceMap;
+        }
+
+        private void Step(char direction, ref StringBuilder pathTraveled, ref int x, ref int y)
+        {
+            switch (direction)
+            {
+                case 'N':
+                    y--;
+                    break;
+                case 'S':
+                    y++;
+                    break;
+                case 'E':
+                    x++;
+                    break;
+                case 'W':
+                    x--;
+                    break;
+            }
+            pathTraveled.Append(direction);
+        }
+
+        private void Reverse(ref StringBuilder pathTraveled, ref int x, ref int y)
+        {
+            switch (pathTraveled[^1])
+            {
+                case 'N':
+                    y++;
+                    break;
+                case 'S':
+                    y--;
+                    break;
+                case 'E':
+                    x--;
+                    break;
+                case 'W':
+                    x++;
+                    break;
+            }
+            pathTraveled.Remove(pathTraveled.Length - 1, 1);
+        }
+
+        private (int, int) FindAnswers(MapArray<int> distanceMap, int minimumDistance)
+        {
+            int largest = -1, count = 0;
+            for (int y = distanceMap.Position.Y; y < distanceMap.Position.Y + distanceMap.Height; y++)
+            {
+                for (int x = distanceMap.Position.X; x < distanceMap.Position.X + distanceMap.Width; x++)
+                {
+                    if (distanceMap[x, y] >= minimumDistance)
+                    {
+                        count++;
+                        largest = Math.Max(largest, distanceMap[x, y]);
+                    }
+                }
+            }
+            return (largest, count);
         }
 
         private bool IsBacktracking(char a, char b)
