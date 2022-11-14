@@ -3,6 +3,7 @@
 // for Advent of Code 2018
 // https://adventofcode.com/2018
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using ProgrammingAdvent2018.Program;
 
@@ -40,8 +41,10 @@ namespace ProgrammingAdvent2018.Solutions
 
             int partOneAnswer = PartOneAnswer(A, B);
 
+            string partTwoAnswer = PartTwoAnswer(A, B);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
@@ -59,6 +62,33 @@ namespace ProgrammingAdvent2018.Solutions
                 R2 /= 256;
             }
             return R3;
+        }
+
+        private string PartTwoAnswer(int A, int B)
+        {
+            HashSet<int> previousValues = new HashSet<int>();
+            int previousValue = -1;
+            int R2, R3 = 0;
+            for (int i = 0; i < 50_000_000; i++)
+            {
+                R2 = R3 | 65536;
+                R3 = A;
+                while (true)
+                {
+                    R3 += R2 & 255;
+                    R3 &= 16777215;
+                    R3 *= B;
+                    R3 &= 16777215;
+                    if (256 > R2) { break; }
+                    R2 /= 256;
+                }
+                if (!previousValues.Add(R3))
+                {
+                    return previousValue.ToString();
+                }
+                previousValue = R3;
+            }
+            return "Part Two answer not found.";
         }
     }
 }
