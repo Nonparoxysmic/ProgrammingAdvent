@@ -13,6 +13,8 @@ namespace ProgrammingAdvent2018.Solutions
 {
     internal class Day22 : Day
     {
+        public static (int X, int Y) Target { get; private set; }
+
         static readonly (int Δx, int Δy)[] adjacentDirections = new (int, int)[]
         {
             (-1,  0),
@@ -23,9 +25,6 @@ namespace ProgrammingAdvent2018.Solutions
 
         private readonly Regex depthLine = new Regex(@"depth: ([0-9]{1,9})");
         private readonly Regex targetLine = new Regex(@"target: ([0-9]{1,4}),([0-9]{1,4})");
-
-        private int targetX;
-        private int targetY;
 
         internal override PuzzleAnswers Solve(string input)
         {
@@ -52,14 +51,13 @@ namespace ProgrammingAdvent2018.Solutions
                 return output;
             }
             int depth = int.Parse(depthMatch.Groups[1].Value);
-            targetX = int.Parse(targetMatch.Groups[1].Value);
-            targetY = int.Parse(targetMatch.Groups[2].Value);
+            int targetX = int.Parse(targetMatch.Groups[1].Value);
+            int targetY = int.Parse(targetMatch.Groups[2].Value);
+            Target = (targetX, targetY);
 
             MapArray<int> regions = MakeMap(depth);
 
             int partOneAnswer = TotalRiskLevel(regions);
-
-            ConvertToBitFlags(ref regions);
 
             int partTwoAnswer = ShortestTimeToTarget(regions);
 
@@ -70,8 +68,8 @@ namespace ProgrammingAdvent2018.Solutions
 
         private MapArray<int> MakeMap(int depth)
         {
-            int width = targetX + 100;
-            int height = targetY + 100;
+            int width = Target.X + 100;
+            int height = Target.Y + 100;
             MapArray<int> erosionLevels = new MapArray<int>(width, height);
             erosionLevels[0, 0] = depth % 20183;
             for (int x = 1; x < width; x++)
@@ -86,7 +84,7 @@ namespace ProgrammingAdvent2018.Solutions
             {
                 for (int x = 1; x < width; x++)
                 {
-                    if (x == targetX && y == targetY)
+                    if (x == Target.X && y == Target.Y)
                     {
                         erosionLevels[x, y] = depth % 20183;
                         continue;
@@ -110,9 +108,9 @@ namespace ProgrammingAdvent2018.Solutions
         private int TotalRiskLevel(MapArray<int> regionTypes)
         {
             int riskSum = 0;
-            for (int y = 0; y <= targetY; y++)
+            for (int y = 0; y <= Target.Y; y++)
             {
-                for (int x = 0; x <= targetX; x++)
+                for (int x = 0; x <= Target.X; x++)
                 {
                     riskSum += regionTypes[x, y];
                 }
@@ -144,64 +142,66 @@ namespace ProgrammingAdvent2018.Solutions
 
         private int ShortestTimeToTarget(MapArray<int> regions)
         {
-            SearchNode.Target = (targetX, targetY);
-            List<SearchNode> visitedNodes = new List<SearchNode>();
-            List<SearchNode> seenNodes = new List<SearchNode>
+            ConvertToBitFlags(ref regions);
+
+            SearchNode currentNode = new SearchNode(0, 0, Tool.Torch, 0);
+            HashSet<SearchNode> openSet = new HashSet<SearchNode>
             {
-                new SearchNode(0, 0, Tool.Torch, 0)
+                currentNode
             };
-            SearchNode currentNode = seenNodes[0];
+            HashSet<SearchNode> closedSet = new HashSet<SearchNode>();
+
             while (true)
             {
                 // If there are no more nodes to search, return an error code.
-                if (seenNodes.Count == 0)
+                if (openSet.Count == 0)
                 {
                     return -1;
                 }
 
-                // Select the unvisited node with the shortest tentative travel time.
-                int shortestTime = int.MaxValue;
-                foreach (SearchNode node in seenNodes)
+                // Select the open node with the best tentative score.
+                int bestScore = int.MaxValue;
+                foreach (SearchNode node in openSet)
                 {
-                    if (node.Time < shortestTime)
+                    if (node.Score < bestScore)
                     {
                         currentNode = node;
-                        shortestTime = node.Time;
+                        bestScore = node.Score;
                     }
                 }
 
                 // If the target has been reached, return the travel time.
                 if (currentNode.IsTarget())
                 {
-                    return currentNode.Time;
+                    return currentNode.TimeFromStart;
                 }
 
-                // Consider all unvisited neighbors and update their tentative times.
+                // Consider all neighbors and update their tentative times.
                 foreach ((int Δx, int Δy) in adjacentDirections)
                 {
                     if ((currentNode.Tool & regions[currentNode.X + Δx, currentNode.Y + Δy]) == 0)
                     {
                         continue;
                     }
-                    SearchNode neighborNode = new SearchNode(currentNode.X + Δx, currentNode.Y + Δy, currentNode.Tool, currentNode.Time + 1);
-                    if (visitedNodes.Contains(neighborNode))
+                    SearchNode neighborNode = new SearchNode(currentNode.X + Δx, currentNode.Y + Δy, currentNode.Tool, currentNode.TimeFromStart + 1);
+                    if (closedSet.Contains(neighborNode))
                     {
-                        continue;
-                    }
-                    if (!seenNodes.Contains(neighborNode))
-                    {
-                        seenNodes.Add(neighborNode);
-                        continue;
-                    }
-                    for (int i = 0; i < seenNodes.Count; i++)
-                    {
-                        SearchNode node = seenNodes[i];
-                        if (node == neighborNode)
+                        SearchNode closedNode = GetNode(neighborNode, closedSet);
+                        if (currentNode.TimeFromStart + 1 < closedNode.TimeFromStart)
                         {
-                            node.Time = Math.Min(node.Time, currentNode.Time + 1);
-                            break;
+                            closedNode.TimeFromStart = currentNode.TimeFromStart + 1;
+                            openSet.Add(closedNode);
+                            closedSet.Remove(closedNode);
                         }
+                        continue;
                     }
+                    if (!openSet.Contains(neighborNode))
+                    {
+                        openSet.Add(neighborNode);
+                        continue;
+                    }
+                    SearchNode nodeToUpdate = GetNode(neighborNode, openSet);
+                    nodeToUpdate.TimeFromStart = Math.Min(nodeToUpdate.TimeFromStart, currentNode.TimeFromStart + 1);
                 }
                 foreach (int tool in Enum.GetValues(typeof(Tool)))
                 {
@@ -213,57 +213,76 @@ namespace ProgrammingAdvent2018.Solutions
                     {
                         continue;
                     }
-                    SearchNode neighborNode = new SearchNode(currentNode.X, currentNode.Y, tool, currentNode.Time + 7);
-                    if (visitedNodes.Contains(neighborNode))
+                    SearchNode neighborNode = new SearchNode(currentNode.X, currentNode.Y, tool, currentNode.TimeFromStart + 7);
+                    if (closedSet.Contains(neighborNode))
                     {
-                        break;
-                    }
-                    if (!seenNodes.Contains(neighborNode))
-                    {
-                        seenNodes.Add(neighborNode);
-                        break;
-                    }
-                    for (int i = 0; i < seenNodes.Count; i++)
-                    {
-                        SearchNode node = seenNodes[i];
-                        if (node == neighborNode)
+                        SearchNode closedNode = GetNode(neighborNode, closedSet);
+                        if (currentNode.TimeFromStart + 7 < closedNode.TimeFromStart)
                         {
-                            node.Time = Math.Min(node.Time, currentNode.Time + 7);
-                            break;
+                            closedNode.TimeFromStart = currentNode.TimeFromStart + 7;
+                            openSet.Add(closedNode);
+                            closedSet.Remove(closedNode);
                         }
+                        break;
                     }
+                    if (!openSet.Contains(neighborNode))
+                    {
+                        openSet.Add(neighborNode);
+                        break;
+                    }
+                    SearchNode nodeToUpdate = GetNode(neighborNode, openSet);
+                    nodeToUpdate.TimeFromStart = Math.Min(nodeToUpdate.TimeFromStart, currentNode.TimeFromStart + 7);
                     break;
                 }
 
-                // Mark the current node as visited.
-                visitedNodes.Add(currentNode);
-                seenNodes.Remove(currentNode);
+                // Move the current node to the closed set.
+                closedSet.Add(currentNode);
+                openSet.Remove(currentNode);
             }
         }
 
-        private struct SearchNode : IEquatable<SearchNode>
+        private SearchNode GetNode(SearchNode example, HashSet<SearchNode> hashSet)
         {
-            public static (int X, int Y) Target { get; set; }
+            foreach (SearchNode node in hashSet)
+            {
+                if (node.Equals(example))
+                {
+                    return node;
+                }
+            }
+            return new SearchNode(0, 0, Tool.Torch, 0);
+        }
+
+        private struct SearchNode
+        {
+            public static (int X, int Y) Target { get => Day22.Target; }
 
             public int X { get; private set; }
             public int Y { get; private set; }
             public int Tool { get; private set; }
-            public int Time { get; set; }
-
-            public SearchNode(int x, int y, Tool tool, int time)
-            {
-                X = x;
-                Y = y;
-                Tool = (int)tool;
-                Time = time;
-            }
+            public int DistanceToEnd { get; private set; }
+            public int TimeFromStart { get; set; }
+            public int Score { get => CalculateScore(); }
 
             public SearchNode(int x, int y, int tool, int time)
             {
                 X = x;
                 Y = y;
                 Tool = tool;
-                Time = time;
+                DistanceToEnd = Math.Abs(x - Target.X) + Math.Abs(y - Target.Y);
+                TimeFromStart = time;
+            }
+
+            public SearchNode(int x, int y, Tool tool, int time) : this(x, y, (int)tool, time) { }
+
+            private int CalculateScore()
+            {
+                int score = TimeFromStart + DistanceToEnd;
+                if (Tool == 1 || Tool == 4)
+                {
+                    score += 7;
+                }
+                return score;
             }
 
             public bool IsTarget()
@@ -275,27 +294,21 @@ namespace ProgrammingAdvent2018.Solutions
                 return false;
             }
 
-            bool IEquatable<SearchNode>.Equals(SearchNode other)
+            public override int GetHashCode()
             {
-                if (X == other.X && Y == other.Y && Tool == other.Tool)
-                {
-                    return true;
-                }
-                return false;
+                return X << 16 ^ Y << 3 ^ Tool;
             }
-
-            public static bool operator ==(SearchNode a, SearchNode b) => a.Equals(b);
-
-            public static bool operator !=(SearchNode a, SearchNode b) => !a.Equals(b);
 
             public override bool Equals(object obj)
             {
-                return base.Equals(obj);
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
+                if (obj is SearchNode otherNode)
+                {
+                    if (X == otherNode.X && Y == otherNode.Y && Tool == otherNode.Tool)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
         }
 
