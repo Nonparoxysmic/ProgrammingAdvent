@@ -80,13 +80,27 @@ namespace ProgrammingAdvent2018.Solutions
 
             int partOneAnswer = RemainingUnits(groups);
 
+            int partTwoAnswer = RemainingImmuneUnitsAfterMinimumBoost(groups);
+
             sw.Stop();
-            output.WriteAnswers(partOneAnswer, null, sw);
+            output.WriteAnswers(partOneAnswer, partTwoAnswer, sw);
             return output;
         }
 
-        private int RemainingUnits(List<Group> groups)
+        private int RemainingUnits(List<Group> groupList, int boost = 0)
         {
+            List<Group> groups = Group.CopyList(groupList);
+            if (boost > 0)
+            {
+                for (int i = 0; i < groups.Count; i++)
+                {
+                    if (groups[i].Army == Army.ImmuneSystem)
+                    {
+                        groups[i].Boost = boost;
+                    }
+                }
+            }
+            int totalUnits = -1;
             while (true)
             {
                 // Target selection phase
@@ -165,13 +179,44 @@ namespace ProgrammingAdvent2018.Solutions
                 {
                     break;
                 }
+
+                // If no units were killed in a round, it's a stalemate.
+                if (remainingUnits[0] + remainingUnits[1] == totalUnits)
+                {
+                    return -1;
+                }
+                totalUnits = remainingUnits[0] + remainingUnits[1];
             }
             int sum = 0;
+            if (boost > 0)
+            {
+                foreach (Group group in groups)
+                {
+                    if (group.Army == Army.ImmuneSystem)
+                    {
+                        sum += group.Units;
+                    }
+                }
+                return sum;
+            }
             foreach (Group group in groups)
             {
                 sum += group.Units;
             }
             return sum;
+        }
+
+        private int RemainingImmuneUnitsAfterMinimumBoost(List<Group> groups)
+        {
+            for (int i = 1; i < 2048; i++)
+            {
+                int unitsRemaining = RemainingUnits(groups, i);
+                if (unitsRemaining > 0)
+                {
+                    return unitsRemaining;
+                }
+            }
+            return -1;
         }
 
         private class Group
@@ -186,7 +231,7 @@ namespace ProgrammingAdvent2018.Solutions
                 set
                 {
                     _units = value;
-                    EffectivePower = _units * AttackDamage;
+                    EffectivePower = _units * (AttackDamage + Boost);
                 }
             }
 
@@ -201,7 +246,20 @@ namespace ProgrammingAdvent2018.Solutions
 
             public Group Target { get; set; }
             public bool IsTargeted { get; set; }
-            public int IncomingDamage { get; set; }
+
+            private int _boost;
+            public int Boost
+            {
+                get
+                {
+                    return _boost;
+                }
+                set
+                {
+                    _boost = value;
+                    EffectivePower = Units * (AttackDamage + _boost);
+                }
+            }
 
             private readonly string _weaknessesAndImmunities;
 
@@ -216,6 +274,22 @@ namespace ProgrammingAdvent2018.Solutions
                 Army = army;
                 EffectivePower = unitCount * attDamage;
                 _weaknessesAndImmunities = weaknessesAndImmunities;
+            }
+
+            public Group(Group groupToCopy)
+            {
+                _units = groupToCopy.Units;
+                UnitHP = groupToCopy.UnitHP;
+                AttackDamage = groupToCopy.AttackDamage;
+                AttackDamageType = groupToCopy.AttackDamageType;
+                Initiative = groupToCopy.Initiative;
+                Army = groupToCopy.Army;
+                EffectivePower = groupToCopy.EffectivePower;
+                Weaknesses = groupToCopy.Weaknesses.ToArray();
+                Immunities = groupToCopy.Immunities.ToArray();
+                Target = groupToCopy.Target;
+                IsTargeted = groupToCopy.IsTargeted;
+                _boost = groupToCopy.Boost;
             }
 
             public void ProcessWeaknessesAndImmunities(List<string> damageTypes)
@@ -271,6 +345,16 @@ namespace ProgrammingAdvent2018.Solutions
                 int damageDealt = Target.DamageReceived(EffectivePower, AttackDamageType);
                 int unitsLost = damageDealt / Target.UnitHP;
                 Target.Units -= unitsLost;
+            }
+
+            public static List<Group> CopyList(List<Group> groups)
+            {
+                List<Group> output = new List<Group>();
+                foreach (Group group in groups)
+                {
+                    output.Add(new Group(group));
+                }
+                return output;
             }
         }
 
