@@ -34,7 +34,8 @@ namespace ProgrammingAdvent2015
                 Print.PrintErrorAndExit("Day 25: Cannot parse input integers in " + input1Path);
             }
 
-            Console.WriteLine("Day 25 Answer: " + GetCode(GetCodeNumber(inputRow, inputCol)));
+            Console.WriteLine("Day 25 Part One Answer: " + GetCode(GetCodeNumber(inputRow, inputCol)));
+            Console.WriteLine("Day 25 Part Two Answer: Start the Weather Machine");
         }
 
         static int GetCodeNumber(int row, int col)
