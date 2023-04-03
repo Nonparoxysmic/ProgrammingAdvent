@@ -1,4 +1,9 @@
-﻿namespace ProgrammingAdvent2019.Common;
+﻿// ProgrammingAdvent2019 by Nonparoxysmic
+// https://github.com/Nonparoxysmic/ProgrammingAdvent
+// for Advent of Code 2019
+// https://adventofcode.com/2019
+
+namespace ProgrammingAdvent2019.Common;
 
 internal readonly struct Vector3Int
 {
