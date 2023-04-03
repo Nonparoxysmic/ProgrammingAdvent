@@ -23,7 +23,7 @@ internal class PuzzleAnswers
         ErrorMessage = string.Empty;
     }
 
-    public void WriteAnswers(object partOne, object partTwo)
+    public PuzzleAnswers WriteAnswers(object? partOne, object? partTwo)
     {
         if (partOne is not null)
         {
@@ -63,21 +63,24 @@ internal class PuzzleAnswers
                 }
             }
         }
+        return this;
     }
 
-    public void WriteTime(Stopwatch stopwatch) => WriteTime(stopwatch.ElapsedMilliseconds);
+    public PuzzleAnswers WriteTime(Stopwatch stopwatch) => WriteTime(stopwatch.ElapsedMilliseconds);
 
-    public void WriteTime(long milliseconds)
+    public PuzzleAnswers WriteTime(long milliseconds)
     {
         if (milliseconds >= 0)
         {
             ElapsedMilliseconds = milliseconds;
         }
+        return this;
     }
 
-    public void WriteError(string message)
+    public PuzzleAnswers WriteError(string message)
     {
         IsError = true;
         ErrorMessage = "ERROR: " + message;
+        return this;
     }
 }
