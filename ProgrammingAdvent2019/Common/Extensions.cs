@@ -27,6 +27,59 @@ internal static class Extensions
     }
 
     /// <summary>
+    /// Retrieves a substring starting at the left end of a string.
+    /// </summary>
+    /// <remarks>
+    /// This method returns:
+    /// <list type="bullet">
+    /// <item>
+    /// The empty string, if the instance string has no characters or 
+    /// the specified maximum length is less than one.
+    /// </item>
+    /// <item>
+    /// Otherwise, the instance string unchanged, if the instance string is shorter 
+    /// than the specified maximum length.
+    /// </item>
+    /// <item>
+    /// Otherwise, a new string consisting of the leftmost characters 
+    /// of the instance string, up to the specified maximum length. <br/>
+    /// If <paramref name="allowEllipsis"/> is <b>true</b>, up to three of the 
+    /// trailing characters of the new string will be replaced with periods.
+    /// </item>
+    /// </list>
+    /// </remarks>
+    /// <returns>
+    /// A string containing the leftmost characters of the instance string.
+    /// </returns>
+    /// <param name="instance">The string from which to take the leftmost characters.</param>
+    /// <param name="maxLength">The maximum length of the returned string.</param>
+    /// <param name="allowEllipsis">Whether to end a truncated string with an ellipsis.</param>
+    public static string Left(this string instance, int maxLength, bool allowEllipsis = false)
+    {
+        if (string.IsNullOrEmpty(instance) || maxLength < 1)
+        {
+            return string.Empty;
+        }
+        if (instance.Length <= maxLength)
+        {
+            return instance;
+        }
+        if (allowEllipsis)
+        {
+            char[] charArray = instance.ToCharArray();
+            for (int i = maxLength - 1; i >= maxLength - 3 && i >= 0; i--)
+            {
+                charArray[i] = '.';
+            }
+            return new string(charArray, 0, maxLength);
+        }
+        else
+        {
+            return instance[..maxLength];
+        }
+    }
+
+    /// <summary>
     /// Returns a new string in which all white space characters 
     /// in the current string are deleted.
     /// </summary>

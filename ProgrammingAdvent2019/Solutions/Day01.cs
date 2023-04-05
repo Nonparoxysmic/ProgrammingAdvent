@@ -23,7 +23,7 @@ internal class Day01 : Day
             }
             else
             {
-                errorMessage = $"Line \"{line}\" cannot be parsed as an Int32.";
+                errorMessage = $"Line \"{line.Left(20, true)}\" cannot be parsed as an Int32.";
                 return false;
             }
         }
