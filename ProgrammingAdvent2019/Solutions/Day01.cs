@@ -17,7 +17,7 @@ internal class Day01 : Day
             {
                 if (number < 6)
                 {
-                    errorMessage = $"Input values must be integers greater than or equal to 6.";
+                    errorMessage = "Input values must be integers greater than or equal to 6.";
                     return false;
                 }
             }
@@ -34,7 +34,14 @@ internal class Day01 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
     {
         PuzzleAnswers output = new();
-        int totalFuelRequired = inputLines.Sum(line => int.Parse(line) / 3 - 2);
-        return output.WriteAnswers(totalFuelRequired, null);
+        int moduleFuelRequired = inputLines.Sum(line => int.Parse(line) / 3 - 2);
+        int totalFuelRequired = inputLines.Sum(line => FuelRequiredRecursive(int.Parse(line)));
+        return output.WriteAnswers(moduleFuelRequired, totalFuelRequired);
+    }
+
+    private int FuelRequiredRecursive(int mass)
+    {
+        int fuelRequired = mass / 3 - 2;
+        return fuelRequired < 0 ? 0 : fuelRequired + FuelRequiredRecursive(fuelRequired);
     }
 }
