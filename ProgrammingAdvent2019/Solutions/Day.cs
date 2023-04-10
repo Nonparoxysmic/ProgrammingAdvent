@@ -15,7 +15,7 @@ internal abstract class Day
         Stopwatch stopwatch = Stopwatch.StartNew();
         PuzzleAnswers answers = CalculateAnswers(input);
         stopwatch.Stop();
-        return answers.WriteTime(stopwatch);
+        return answers.WriteDayNumber(this).WriteTime(stopwatch);
     }
 
     public abstract bool ValidateInput(string[] input, out string errorMessage);

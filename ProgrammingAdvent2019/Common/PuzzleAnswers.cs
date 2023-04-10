@@ -4,11 +4,13 @@
 // https://adventofcode.com/2019
 
 using System.Diagnostics;
+using ProgrammingAdvent2019.Solutions;
 
 namespace ProgrammingAdvent2019.Common;
 
 internal class PuzzleAnswers
 {
+    public int DayNumber { get; private set; }
     public string PartOneAnswer { get; private set; }
     public string PartTwoAnswer { get; private set; }
     public long ElapsedMilliseconds { get; private set; }
@@ -17,6 +19,7 @@ internal class PuzzleAnswers
 
     public PuzzleAnswers()
     {
+        DayNumber = -1;
         PartOneAnswer = "Part One solution not yet implemented.";
         PartTwoAnswer = "Part Two solution not yet implemented.";
         ElapsedMilliseconds = long.MinValue / 2;
@@ -72,7 +75,7 @@ internal class PuzzleAnswers
     {
         if (milliseconds >= 0)
         {
-            ElapsedMilliseconds = milliseconds;
+            ElapsedMilliseconds = milliseconds + 1;
         }
         return this;
     }
@@ -82,5 +85,33 @@ internal class PuzzleAnswers
         IsError = true;
         ErrorMessage = "ERROR: " + message;
         return this;
+    }
+
+    public PuzzleAnswers WriteDayNumber(Day day)
+    {
+        string className = day.GetType().ToString();
+        if (className.Length >= 5 && int.TryParse(className[^2..^0], out int dayNumber))
+        {
+            DayNumber = dayNumber;
+        }
+        return this;
+    }
+
+    public override string ToString()
+    {
+        string output;
+        if (IsError)
+        {
+            output = $"Day {DayNumber:00} {ErrorMessage}";
+        }
+        else
+        {
+            output = $"Day {DayNumber:00} Part One: {PartOneAnswer}{Environment.NewLine}Day {DayNumber:00} Part Two: {PartTwoAnswer}";
+        }
+        if (ElapsedMilliseconds > 0)
+        {
+            output += $"{Environment.NewLine}Day {DayNumber:00} Time: {ElapsedMilliseconds} ms";
+        }
+        return output;
     }
 }
