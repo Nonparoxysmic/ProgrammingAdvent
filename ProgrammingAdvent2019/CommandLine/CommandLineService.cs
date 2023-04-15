@@ -4,9 +4,10 @@
 // https://adventofcode.com/2019
 
 using Microsoft.Extensions.Hosting;
+using ProgrammingAdvent2019.Common;
 using ProgrammingAdvent2019.Solutions;
 
-namespace ProgrammingAdvent2019.Common;
+namespace ProgrammingAdvent2019.CommandLine;
 
 internal class CommandLineService : BackgroundService
 {
@@ -42,10 +43,39 @@ internal class CommandLineService : BackgroundService
         {
             Console.Write("> ");
             string input = Console.ReadLine() ?? string.Empty;
-            if (input == "exit")
+            string[] terms = input.Split(null as char[], StringSplitOptions.RemoveEmptyEntries);
+            if (terms.Length == 0)
             {
-                break;
+                continue;
             }
+            ICommand? command = null;
+            switch (terms[0].ToLower())
+            {
+                case "exit":
+                case "quit":
+                case "x":
+                case "q":
+                    return;
+                case "solve":
+                case "s":
+                    command = new SolveCommand();
+                    break;
+                case "test":
+                case "t":
+                    // TODO: Test command
+                    break;
+                case "help":
+                case "?":
+                case "\"help\"":
+                case "h":
+                    // TODO: Help command
+                    Console.WriteLine("TODO: Help command");
+                    break;
+                default:
+                    Console.WriteLine("Unrecognized command. Type \"help\" for a list of commands.");
+                    break;
+            }
+            command?.Execute(terms.TakeLast(terms.Length - 1).ToArray());
         }
     }
 }

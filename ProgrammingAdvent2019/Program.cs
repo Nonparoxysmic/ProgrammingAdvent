@@ -5,7 +5,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ProgrammingAdvent2019.Common;
+using ProgrammingAdvent2019.CommandLine;
 
 Console.Title = "ProgrammingAdvent2019 by Nonparoxysmic";
 
