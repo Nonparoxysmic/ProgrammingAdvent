@@ -54,23 +54,24 @@ internal class Day03 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
     {
         PuzzleAnswers output = new();
-        HashSet<Vector2Int> firstWire = WireCoordinates(inputLines[0]);
-        HashSet<Vector2Int> secondWire = WireCoordinates(inputLines[1]);
-        IEnumerable<Vector2Int> intersections = firstWire.Intersect(secondWire);
+        Dictionary<Vector2Int, int> firstWire = WireData(inputLines[0]);
+        Dictionary<Vector2Int, int> secondWire = WireData(inputLines[1]);
+        IEnumerable<Vector2Int> intersections = firstWire.Keys.Intersect(secondWire.Keys);
         if (!intersections.Any())
         {
             output.WriteError("Wires do not intersect.");
             return output;
         }
         int partOneAnswer = intersections.Select(v => v.TaxicabMagnitude()).Min();
-        return output.WriteAnswers(partOneAnswer, null);
+        int partTwoAnswer = intersections.Select(v => firstWire[v] + secondWire[v]).Min();
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static HashSet<Vector2Int> WireCoordinates(string input)
+    private static Dictionary<Vector2Int, int> WireData(string input)
     {
-        HashSet<Vector2Int> output = new();
+        Dictionary<Vector2Int, int> output = new();
         string[] terms = input.Split(',');
-        int x = 0, y = 0;
+        int x = 0, y = 0, totalSteps = 0;
         foreach (string term in terms)
         {
             int steps = int.Parse(_validTerm.Match(term).Groups["Steps"].Value);
@@ -86,10 +87,14 @@ internal class Day03 : Day
             {
                 x += stepX;
                 y += stepY;
-                output.Add(new Vector2Int(x, y));
+                totalSteps++;
+                Vector2Int position = new(x, y);
+                if (!output.ContainsKey(position))
+                {
+                    output.Add(position, totalSteps);
+                }
             }
         }
-        output.Remove(Vector2Int.Zero);
         return output;
     }
 }
