@@ -60,14 +60,10 @@ internal class SolveCommand : ICommand
             Console.WriteLine($"Solution not available for Day {dayNumber}.");
             return;
         }
-        if (!SystemIO.TryReadInputFile(dayNumber, out string[] input))
+        if (!InputManager.TryGetInput(dayNumber, out string[] input, out string errorMessage))
         {
-            Console.WriteLine($"Unable to read input file InputDay{dayNumber:00}.txt.");
-            return;
-        }
-        if (!solution.ValidateInput(input, out string errorMessage))
-        {
-            Console.WriteLine($"Input error: {errorMessage}");
+            Console.WriteLine($"Input not available for Day {dayNumber}.");
+            Console.WriteLine(errorMessage);
             return;
         }
         PuzzleAnswers answers = solution.Solve(input);

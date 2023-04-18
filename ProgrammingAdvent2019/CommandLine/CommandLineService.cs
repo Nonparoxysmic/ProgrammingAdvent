@@ -5,7 +5,6 @@
 
 using Microsoft.Extensions.Hosting;
 using ProgrammingAdvent2019.Common;
-using ProgrammingAdvent2019.Solutions;
 
 namespace ProgrammingAdvent2019.CommandLine;
 
@@ -39,6 +38,7 @@ internal class CommandLineService : BackgroundService
 
     private static void ExecuteCommandLineInterface(CancellationToken stoppingToken)
     {
+        InputManager.Update();
         while (!stoppingToken.IsCancellationRequested)
         {
             Console.Write("> ");
