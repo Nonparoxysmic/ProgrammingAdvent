@@ -3,6 +3,8 @@
 // for Advent of Code 2019
 // https://adventofcode.com/2019
 
+using System.Text.Json;
+
 namespace ProgrammingAdvent2019.Common;
 
 internal static class SystemIO
@@ -18,12 +20,36 @@ internal static class SystemIO
         try
         {
             lines = File.ReadAllLines(path);
+            return true;
         }
         catch
         {
             lines = Array.Empty<string>();
             return false;
         }
-        return true;
+    }
+
+    public static bool TryReadExampleFile(out JsonDocument? jsonDocument, out string errorMessage)
+    {
+        string path = "Examples.json";
+        if (!File.Exists(path))
+        {
+            jsonDocument = null;
+            errorMessage = $"Example file \"{path}\" does not exist.";
+            return false;
+        }
+        try
+        {
+            using StreamReader? streamReader = new(path);
+            jsonDocument = JsonDocument.Parse(streamReader.BaseStream);
+            errorMessage = string.Empty;
+            return true;
+        }
+        catch
+        {
+            jsonDocument = null;
+            errorMessage = $"Unable to read and parse example file \"{path}\".";
+            return false;
+        }
     }
 }

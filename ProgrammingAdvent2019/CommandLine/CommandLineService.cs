@@ -38,6 +38,7 @@ internal class CommandLineService : BackgroundService
 
     private static void ExecuteCommandLineInterface(CancellationToken stoppingToken)
     {
+        ExampleSource.Initialize();
         InputManager.Update();
         while (!stoppingToken.IsCancellationRequested)
         {
