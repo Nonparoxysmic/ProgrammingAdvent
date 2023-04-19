@@ -1,0 +1,63 @@
+{
+  "Day01": {
+    "Example01": {
+      "Input": "12",
+      "PartOne": "2",
+      "PartTwo": "2"
+    },
+    "Example02": {
+      "Input": "14",
+      "PartOne": "2",
+      "PartTwo": "2"
+    },
+    "Example03": {
+      "Input": "1969",
+      "PartOne": "654",
+      "PartTwo": "966"
+    },
+    "Example04": {
+      "Input": "100756",
+      "PartOne": "33583",
+      "PartTwo": "50346"
+    }
+  },
+  "Day02": {
+    "Example01": {
+      "Input": "1,9,10,3,2,3,11,0,99,30,40,50,0",
+      "PartOne": "100"
+    },
+    "Example02": {
+      "Input": "1,0,0,0,99,0,0,0,0,0,0,0,0",
+      "PartOne": "2"
+    },
+    "Example03": {
+      "Input": "2,3,0,0,99,0,0,0,0,0,0,0,3",
+      "PartOne": "6"
+    },
+    "Example04": {
+      "Input": "2,4,4,0,99,0,0,0,0,0,0,0,99",
+      "PartOne": "198"
+    },
+    "Example05": {
+      "Input": "1,1,1,4,99,5,6,0,99,0,0,0,0",
+      "PartOne": "30"
+    }
+  },
+  "Day03": {
+    "Example01": {
+      "Input": "R8,U5,L5,D3\r\nU7,R6,D4,L4",
+      "PartOne": "6",
+      "PartTwo": "30"
+    },
+    "Example02": {
+      "Input": "R75,D30,R83,U83,L12,D49,R71,U7,L72\r\nU62,R66,U55,R34,D71,R55,D58,R83",
+      "PartOne": "159",
+      "PartTwo": "610"
+    },
+    "Example03": {
+      "Input": "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51\r\nU98,R91,D20,R16,D67,R40,U7,R15,U6,R7",
+      "PartOne": "135",
+      "PartTwo": "410"
+    }
+  }
+}
