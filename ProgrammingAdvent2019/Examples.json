@@ -59,5 +59,19 @@
       "PartOne": "135",
       "PartTwo": "410"
     }
+  },
+  "Day04": {
+    "Example01": {
+      "Input": "111111-111111",
+      "PartOne": "1"
+    },
+    "Example02": {
+      "Input": "223450-223450",
+      "PartOne": "0"
+    },
+    "Example03": {
+      "Input": "123789-123789",
+      "PartOne": "0"
+    }
   }
 }
