@@ -56,8 +56,7 @@ internal class Day02 : Day
         }
         if (!PartTwoAnswer(input, out int partTwoAnswer, out string error2))
         {
-            output.WriteError(error2);
-            return output;
+            return output.WriteAnswers(partOneAnswer, error2);
         }
         return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
@@ -129,7 +128,7 @@ internal class Day02 : Day
                 }
             }
         }
-        errorMessage = "No valid Part Two answer exists.";
+        errorMessage = "No valid answer exists.";
         answer = -1;
         return false;
     }

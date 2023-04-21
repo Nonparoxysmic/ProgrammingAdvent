@@ -63,7 +63,11 @@ internal class CommandLineService : BackgroundService
                     break;
                 case "test":
                 case "t":
-                    // TODO: Test command
+                    command = new TestCommand();
+                    break;
+                case "input":
+                case "i":
+                    // TODO: Input command
                     break;
                 case "help":
                 case "?":
