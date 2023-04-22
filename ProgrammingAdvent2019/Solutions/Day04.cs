@@ -42,35 +42,55 @@ internal class Day04 : Day
         Match match = _validInput.Match(inputLines[0]);
         string start = match.Groups["Start"].Value;
         int end = int.Parse(match.Groups["End"].Value);
-        int partOneAnswer = CountPotentialPasswords(start.ToCharArray(), end - int.Parse(start) + 1);
-        return output.WriteAnswers(partOneAnswer, null);
+        int partOneAnswer = CountPotentialPasswords(start, end - int.Parse(start) + 1, 1);
+        int partTwoAnswer = CountPotentialPasswords(start, end - int.Parse(start) + 1, 2);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static int CountPotentialPasswords(char[] start, int steps)
+    private static int CountPotentialPasswords(string start, int steps, int part)
     {
         char[] current = new char[start.Length];
-        Array.Copy(start, current, start.Length);
+        Array.Copy(start.ToCharArray(), current, start.Length);
         int count = 0;
         for (int i = 0; i < steps; i++)
         {
-            count += IsPotentialPassword(current) ? 1 : 0;
+            count += IsPotentialPassword(current)[part - 1] ? 1 : 0;
             Increment(current);
         }
         return count;
     }
 
-    private static bool IsPotentialPassword(char[] chars)
+    private static bool[] IsPotentialPassword(char[] chars)
     {
         bool hasDoubles = false;
         for (int i = 0; i < chars.Length - 1; i++)
         {
             if (chars[i] > chars[i + 1])
             {
-                return false;
+                return new bool[] { false, false };
             }
             hasDoubles |= chars[i] == chars[i + 1];
         }
-        return hasDoubles;
+        if (hasDoubles)
+        {
+            for (int i = 1; i < chars.Length - 2; i++)
+            {
+                if (chars[i] == chars[i + 1] && chars[i - 1] != chars[i] && chars[i + 1] != chars[i + 2])
+                {
+                    return new bool[] { true, true };
+                }
+            }
+            if (chars[0] == chars[1] && chars[1] != chars[2])
+            {
+                return new bool[] { true, true };
+            }
+            if (chars[^1] == chars[^2] && chars[^2] != chars[^3])
+            {
+                return new bool[] { true, true };
+            }
+            return new bool[] { true, false };
+        }
+        return new bool[] { false, false };
     }
 
     private static void Increment(char[] chars, int carryoverPosition = 0)

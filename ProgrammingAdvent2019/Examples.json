@@ -72,6 +72,18 @@
     "Example03": {
       "Input": "123789-123789",
       "PartOne": "0"
+    },
+    "Example04": {
+      "Input": "112233-112233",
+      "PartTwo": "1"
+    },
+    "Example05": {
+      "Input": "123444-123444",
+      "PartTwo": "0"
+    },
+    "Example06": {
+      "Input": "111122-111122",
+      "PartTwo": "1"
     }
   }
 }
