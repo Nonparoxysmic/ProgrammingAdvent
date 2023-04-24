@@ -49,11 +49,16 @@ internal class Day05 : Day
     {
         PuzzleAnswers output = new();
         _program = inputLines[0].Split(',');
-        if (!RunProgram(1, out int diagnosticCode))
+        if (!RunProgram(1, out int diagnosticCode1))
         {
-            return output.WriteError($"Program execution failed. Error code {diagnosticCode}.");
+            return output.WriteError($"Program execution failed. Error code {diagnosticCode1}.");
         }
-        return output.WriteAnswers(diagnosticCode, null);
+        _program = inputLines[0].Split(',');
+        if (!RunProgram(5, out int diagnosticCode5))
+        {
+            return output.WriteError($"Program execution failed. Error code {diagnosticCode5}.");
+        }
+        return output.WriteAnswers(diagnosticCode1, diagnosticCode5);
     }
 
     private bool RunProgram(int input, out int code)
@@ -88,6 +93,10 @@ internal class Day05 : Day
                 2 => 4,
                 3 => 2,
                 4 => 2,
+                5 => 3,
+                6 => 3,
+                7 => 4,
+                8 => 4,
                 _ => 0
             };
             if (_instructionPointer > _program.Length - stepSize)
@@ -102,6 +111,8 @@ internal class Day05 : Day
                     return false;
                 case 1:
                 case 2:
+                case 7:
+                case 8:
                     if (!DoMathInstruction(opcode, parameterModes, out int mathCode))
                     {
                         code = mathCode;
@@ -121,19 +132,25 @@ internal class Day05 : Day
                         code = outputCode;
                         return false;
                     }
-                    if (outputCode != 0)
+                    if ((_instructionPointer <= _program.Length - stepSize - 1
+                        && _program[_instructionPointer + stepSize] == "99")
+                        || input == 5)
                     {
-                        if (_instructionPointer <= _program.Length - stepSize - 1
-                            && _program[_instructionPointer + stepSize] == "99")
-                        {
-                            code = outputCode;
-                            return true;
-                        }
-                        else
-                        {
-                            code = -1000000 - _instructionPointer;
-                            return true;
-                        }
+                        code = outputCode;
+                        return true;
+                    }
+                    else if (outputCode != 0)
+                    {
+                        code = -1000000 - _instructionPointer;
+                        return true;
+                    }
+                    break;
+                case 5:
+                case 6:
+                    if (!DoJumpInstruction(opcode, parameterModes, out int jumpCode))
+                    {
+                        code = jumpCode;
+                        return false;
                     }
                     break;
                 default:
@@ -170,6 +187,30 @@ internal class Day05 : Day
             else if (opcode == 2)
             {
                 _program[C] = (A * B).ToString();
+                return true;
+            }
+            else if (opcode == 7)
+            {
+                if (A < B)
+                {
+                    _program[C] = "1";
+                }
+                else
+                {
+                    _program[C] = "0";
+                }
+                return true;
+            }
+            else if (opcode == 8)
+            {
+                if (A == B)
+                {
+                    _program[C] = "1";
+                }
+                else
+                {
+                    _program[C] = "0";
+                }
                 return true;
             }
             else
@@ -209,6 +250,50 @@ internal class Day05 : Day
                     output = A;
                     return true;
                 }
+            }
+            else
+            {
+                output = -200 - opcode;
+                return false;
+            }
+        }
+        catch
+        {
+            output = -100 - opcode;
+            return false;
+        }
+    }
+
+    private bool DoJumpInstruction(int opcode, int[] parameterModes, out int output)
+    {
+        try
+        {
+            output = 0;
+            int A = int.Parse(_program[_instructionPointer + 1]);
+            if (parameterModes[0] == 0)
+            {
+                A = int.Parse(_program[A]);
+            }
+            int B = int.Parse(_program[_instructionPointer + 2]);
+            if (parameterModes[1] == 0)
+            {
+                B = int.Parse(_program[B]);
+            }
+            if (opcode == 5)
+            {
+                if (A != 0)
+                {
+                    _instructionPointer = B - 3;
+                }
+                return true;
+            }
+            else if (opcode == 6)
+            {
+                if (A == 0)
+                {
+                    _instructionPointer = B - 3;
+                }
+                return true;
             }
             else
             {
