@@ -81,9 +81,10 @@ internal class Day06 : Day
             primaries.Add(satellite, primary);
         }
         int orbitCount = 0;
+        string trace;
         foreach (string satellite in primaries.Keys)
         {
-            string trace = primaries[satellite];
+            trace = primaries[satellite];
             orbitCount++;
             while (trace != "COM")
             {
@@ -91,6 +92,30 @@ internal class Day06 : Day
                 orbitCount++;
             }
         }
-        return output.WriteAnswers(orbitCount, null);
+        if (!primaries.ContainsKey("YOU") || !primaries.ContainsKey("SAN"))
+        {
+            return output.WriteAnswers(orbitCount, "Input does not contain YOU and SAN.");
+        }
+        if (primaries["YOU"] == primaries["SAN"])
+        {
+            return output.WriteAnswers(orbitCount, 0);
+        }
+        Dictionary<string, int> santaDistance = new();
+        trace = "SAN";
+        int steps = 0;
+        do
+        {
+            trace = primaries[trace];
+            santaDistance.Add(trace, ++steps);
+        } while (trace != "COM");
+        trace = "YOU";
+        steps = 0;
+        do
+        {
+            trace = primaries[trace];
+            steps++;
+        } while (!santaDistance.ContainsKey(trace));
+        int transfersRequired = steps + santaDistance[trace] - 2;
+        return output.WriteAnswers(orbitCount, transfersRequired);
     }
 }
