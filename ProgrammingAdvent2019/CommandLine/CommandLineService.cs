@@ -67,14 +67,13 @@ internal class CommandLineService : BackgroundService
                     break;
                 case "input":
                 case "i":
-                    // TODO: Input command
+                    command = new InputCommand();
                     break;
                 case "help":
                 case "?":
                 case "\"help\"":
                 case "h":
-                    // TODO: Help command
-                    Console.WriteLine("TODO: Help command");
+                    command = new HelpCommand();
                     break;
                 default:
                     Console.WriteLine("Unrecognized command. Type \"help\" for a list of commands.");

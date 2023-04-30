@@ -73,7 +73,7 @@ internal class TestCommand : ICommand
             if (calculated.IsError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Day {dayNumber} Example {i + 1} ERROR: {calculated.ErrorMessage}");
+                Console.WriteLine($"Day {dayNumber} Example {i + 1} {calculated.ErrorMessage}");
                 Console.ResetColor();
                 continue;
             }
