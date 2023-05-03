@@ -45,20 +45,22 @@ internal class Day09 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
     {
         PuzzleAnswers output = new();
+
+        // Part One
         Day09Program program = new(inputLines[0]);
         program.EnqueueInput(1);
         while (program.Tick()) { }
         if (program.Status == Day09Program.ProgramStatus.Error)
         {
-            return output.WriteError(program.Error);
+            return output.WriteError("Part One: " + program.Error);
         }
         if (program.Status == Day09Program.ProgramStatus.Waiting)
         {
-            return output.WriteError("Program is stuck waiting for input.");
+            return output.WriteError("Part One: Program is stuck waiting for input.");
         }
         if (program.OutputCount == 0)
         {
-            return output.WriteError("Program produced no output.");
+            return output.WriteError("Part One: Program produced no output.");
         }
         if (program.OutputCount > 1)
         {
@@ -67,10 +69,38 @@ internal class Day09 : Day
             {
                 codes.Add(program.DequeueOutput());
             }
-            return output.WriteError("Program has output error codes: " + string.Join(", ", codes));
+            return output.WriteError("Part One: Program has output error codes: " + string.Join(", ", codes));
         }
-        var partOneAnswer = program.DequeueOutput();
-        return output.WriteAnswers(partOneAnswer, null);
+        long partOneAnswer = program.DequeueOutput();
+
+        // Part Two
+        program = new(inputLines[0]);
+        program.EnqueueInput(2);
+        while (program.Tick()) { }
+        if (program.Status == Day09Program.ProgramStatus.Error)
+        {
+            return output.WriteError("Part Two: " + program.Error);
+        }
+        if (program.Status == Day09Program.ProgramStatus.Waiting)
+        {
+            return output.WriteError("Part Two: Program is stuck waiting for input.");
+        }
+        if (program.OutputCount == 0)
+        {
+            return output.WriteError("Part Two: Program produced no output.");
+        }
+        if (program.OutputCount > 1)
+        {
+            List<long> codes = new();
+            while (program.OutputCount > 0)
+            {
+                codes.Add(program.DequeueOutput());
+            }
+            return output.WriteError("Part Two: Program has output error codes: " + string.Join(", ", codes));
+        }
+        long partTwoAnswer = program.DequeueOutput();
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private class Day09Program
@@ -132,7 +162,7 @@ internal class Day09 : Day
 
         public bool Tick()
         {
-            if (_ticks++ > 10_000)
+            if (_ticks++ > 2_000_000)
             {
                 Status = ProgramStatus.Error;
                 Error = "Program ran too long.";
