@@ -103,7 +103,7 @@ internal class Day09 : Day
         return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private class Day09Program
+    public class Day09Program
     {
         private readonly string[] _program;
         private long _instructionPointer;
