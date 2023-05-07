@@ -21,7 +21,7 @@ internal class DayTemplate : Day
         return false;
     }
 
-    protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
+    protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
         return output.WriteAnswers(null, null);

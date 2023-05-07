@@ -43,7 +43,7 @@ internal class Day02 : Day
         return true;
     }
 
-    protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
+    protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
         int[] input = inputLines.First(s => s.Length > 0).Split(',').Select(s => int.Parse(s)).ToArray();

@@ -51,7 +51,7 @@ internal class Day03 : Day
         return true;
     }
 
-    protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
+    protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
         Dictionary<Vector2Int, int> firstWire = WireData(inputLines[0]);

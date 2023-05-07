@@ -10,15 +10,15 @@ namespace ProgrammingAdvent2019.Solutions;
 
 internal abstract class Day
 {
-    public PuzzleAnswers Solve(string[] input)
+    public PuzzleAnswers Solve(string[] input, string? exampleModifier = null)
     {
         Stopwatch stopwatch = Stopwatch.StartNew();
-        PuzzleAnswers answers = CalculateAnswers(input);
+        PuzzleAnswers answers = CalculateAnswers(input, exampleModifier);
         stopwatch.Stop();
         return answers.WriteDayNumber(this).WriteTime(stopwatch);
     }
 
     public abstract bool ValidateInput(string[] input, out string errorMessage);
 
-    protected abstract PuzzleAnswers CalculateAnswers(string[] input);
+    protected abstract PuzzleAnswers CalculateAnswers(string[] input, string? exampleModifier = null);
 }

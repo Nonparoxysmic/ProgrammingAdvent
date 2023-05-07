@@ -61,7 +61,7 @@ internal class TestCommand : ICommand
             return;
         }
         if (!ExampleSource.TryGetExamples(dayNumber,
-            out (string Input, string? PartOne, string? PartTwo)[] examples)
+            out (string Input, string? PartOne, string? PartTwo, string? Modifier)[] examples)
             || examples.Length == 0)
         {
             Console.WriteLine($"No examples available for Day {dayNumber}.");
@@ -69,7 +69,9 @@ internal class TestCommand : ICommand
         }
         for (int i = 0; i < examples.Length; i++)
         {
-            PuzzleAnswers calculated = solution.Solve(examples[i].Input.ToLines());
+            string input = examples[i].Input;
+            string? modifier = examples[i].Modifier;
+            PuzzleAnswers calculated = solution.Solve(input.ToLines(), modifier);
             if (calculated.IsError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;

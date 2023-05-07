@@ -9,7 +9,7 @@ namespace ProgrammingAdvent2019.Common;
 
 internal static class ExampleSource
 {
-    private static readonly SortedDictionary<int, (string, string?, string?)[]> _examples = new();
+    private static readonly SortedDictionary<int, (string, string?, string?, string?)[]> _examples = new();
 
     public static void Initialize()
     {
@@ -24,7 +24,7 @@ internal static class ExampleSource
         {
             if (jsonDocument.RootElement.TryGetProperty($"Day{dayNumber:00}", out JsonElement dayProperty))
             {
-                List<(string, string?, string?)> dayExamples = new();
+                List<(string, string?, string?, string?)> dayExamples = new();
                 for (int i = 1; i < 100; i++)
                 {
                     if (!dayProperty.TryGetProperty($"Example{i:00}", out JsonElement exampleProperty))
@@ -37,7 +37,7 @@ internal static class ExampleSource
                         break;
                     }
                     string input = inputProperty.GetString() ?? string.Empty;
-                    string? partOne = null, partTwo = null;
+                    string? partOne = null, partTwo = null, modifier = null;
                     if (exampleProperty.TryGetProperty("PartOne", out JsonElement partOneProperty))
                     {
                         partOne = partOneProperty.GetString();
@@ -46,9 +46,13 @@ internal static class ExampleSource
                     {
                         partTwo = partTwoProperty.GetString();
                     }
+                    if (exampleProperty.TryGetProperty("ExampleModifier", out JsonElement modifierProperty))
+                    {
+                        modifier = modifierProperty.GetString();
+                    }
                     if (partOne is not null || partTwo is not null)
                     {
-                        dayExamples.Add((input, partOne, partTwo));
+                        dayExamples.Add((input, partOne, partTwo, modifier));
                     }
                     else
                     {
@@ -64,14 +68,14 @@ internal static class ExampleSource
         jsonDocument.Dispose();
     }
 
-    public static bool TryGetExamples(int dayNumber, out (string, string?, string?)[] examples)
+    public static bool TryGetExamples(int dayNumber, out (string, string?, string?, string?)[] examples)
     {
         if (_examples.ContainsKey(dayNumber))
         {
             examples = _examples[dayNumber];
             return true;
         }
-        examples = Array.Empty<(string, string?, string?)>();
+        examples = Array.Empty<(string, string?, string?, string?)>();
         return false;
     }
 

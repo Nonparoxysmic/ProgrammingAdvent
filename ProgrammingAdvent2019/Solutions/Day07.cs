@@ -42,7 +42,7 @@ internal class Day07 : Day
         return true;
     }
 
-    protected override PuzzleAnswers CalculateAnswers(string[] inputLines)
+    protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
 
