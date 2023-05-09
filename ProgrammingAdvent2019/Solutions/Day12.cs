@@ -65,7 +65,17 @@ internal class Day12 : Day
             axis.SimulateTimeSteps(stepsToSimulate);
         });
         int totalEnergy = CalculateTotalEnergy(axes);
-        return output.WriteAnswers(totalEnergy, null);
+        bool foundLoops = true;
+        Parallel.ForEach(axes, axis =>
+        {
+            foundLoops |= axis.SimulateUntilLoop();
+        });
+        if (!foundLoops)
+        {
+            return output.WriteAnswers(totalEnergy, "ERROR: Could not find answer in a reasonable time.");
+        }
+        long loopTime = MathS.LCM(axes[0].StepsSimulated, axes[1].StepsSimulated, axes[2].StepsSimulated);
+        return output.WriteAnswers(totalEnergy, loopTime);
     }
 
     private static int CalculateTotalEnergy(Axis[] axes)
@@ -90,13 +100,17 @@ internal class Day12 : Day
 
     private class Axis
     {
-        public int[] Positions { get; set; }
-        public int[] Velocities { get; set; }
+        public int[] Positions { get; private set; }
+        public int[] Velocities { get; private set; }
+        public int StepsSimulated { get; private set; }
+        public int[] InitialPositions { get; private set; }
 
         public Axis(int[] positions)
         {
             Positions = positions;
             Velocities = new int[positions.Length];
+            InitialPositions = new int[positions.Length];
+            Array.Copy(positions, InitialPositions, positions.Length);
         }
 
         public void SimulateTimeSteps(int steps)
@@ -105,7 +119,27 @@ internal class Day12 : Day
             {
                 ApplyGravity();
                 ApplyVelocities();
+                StepsSimulated++;
             }
+        }
+
+        public bool SimulateUntilLoop(int maxSteps = 10_000_000)
+        {
+            for (int i = 0; i < maxSteps; i++)
+            {
+                ApplyGravity();
+                ApplyVelocities();
+                StepsSimulated++;
+                if (Velocities[0] == 0 && Velocities[1] == 0 && Velocities[2] == 0 && Velocities[3] == 0)
+                {
+                    if (Positions[0] == InitialPositions[0] && Positions[1] == InitialPositions[1] &&
+                        Positions[2] == InitialPositions[2] && Positions[3] == InitialPositions[3])
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void ApplyGravity()
