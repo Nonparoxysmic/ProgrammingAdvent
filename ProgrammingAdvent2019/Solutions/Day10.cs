@@ -146,13 +146,8 @@ internal class Day10 : Day
 
     private static Vector2Int StepVector(int x, int y, out int factor)
     {
-        int a = Math.Abs(x), b = Math.Abs(y);
-        while (b != 0)
-        {
-            (a, b) = (b, a % b);
-        }
-        factor = a;
-        return new Vector2Int(x / a, y / a);
+        factor = MathS.GCD(Math.Abs(x), Math.Abs(y));
+        return new Vector2Int(x / factor, y / factor);
     }
 
     private static (double, int) CalculateAsteroidData(Vector2Int position, Vector2Int bestPosition, string[] inputLines)
