@@ -24,25 +24,12 @@ internal class DayTemplate : Day
 
         // Intcode Validation
 
-        //if (!_validCharacters.IsMatch(inputLines[0]))
+        //if (!ValidateIntcodeInput(inputLines, out errorMessage))
         //{
-        //    errorMessage = $"Input \"{inputLines[0].Left(20, true)}\" contains invalid characters.";
         //    return false;
         //}
-        //string[] terms = inputLines[0].Split(',');
-        //if (terms.Length == 0)
-        //{
-        //    errorMessage = "Insufficient input.";
-        //    return false;
-        //}
-        //foreach (string term in terms)
-        //{
-        //    if (!long.TryParse(term, out long _))
-        //    {
-        //        errorMessage = $"Term \"{term.Left(20, true)}\" cannot be parsed as an Int64.";
-        //        return false;
-        //    }
-        //}
+        //errorMessage = string.Empty;
+        //return true;
 
         // Line Validations
 

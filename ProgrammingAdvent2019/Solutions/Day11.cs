@@ -4,40 +4,17 @@
 // https://adventofcode.com/2019
 
 using System.Drawing;
-using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;
 
 namespace ProgrammingAdvent2019.Solutions;
 
 internal class Day11 : Day
 {
-    private static readonly Regex _validCharacters = new("^[0-9,-]+$");
-
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
-        if (inputLines.Length == 0 || inputLines[0].Length == 0)
+        if (!ValidateIntcodeInput(inputLines, out errorMessage))
         {
-            errorMessage = "No input.";
             return false;
-        }
-        if (!_validCharacters.IsMatch(inputLines[0]))
-        {
-            errorMessage = $"Input \"{inputLines[0].Left(20, true)}\" contains invalid characters.";
-            return false;
-        }
-        string[] terms = inputLines[0].Split(',');
-        if (terms.Length == 0)
-        {
-            errorMessage = "Insufficient input.";
-            return false;
-        }
-        foreach (string term in terms)
-        {
-            if (!long.TryParse(term, out long _))
-            {
-                errorMessage = $"Term \"{term.Left(20, true)}\" cannot be parsed as an Int64.";
-                return false;
-            }
         }
         errorMessage = string.Empty;
         return true;
