@@ -1,0 +1,152 @@
+﻿// Puzzle solution by Nonparoxysmic
+// https://github.com/Nonparoxysmic/ProgrammingAdvent
+// for Advent of Code 2019
+// https://adventofcode.com/2019
+
+using System.Text.RegularExpressions;
+using ProgrammingAdvent2019.Common;
+
+namespace ProgrammingAdvent2019.Solutions;
+
+internal class Day14 : Day
+{
+    private static readonly Regex _validLine =
+        new("^([0-9]{1,4} [A-Z]{1,6})(, [0-9]{1,4} [A-Z]{1,6}){0,12} => ([0-9]{1,4} [A-Z]{1,6})$");
+
+    private readonly Dictionary<string, Reaction> reactions = new();
+
+    public override bool ValidateInput(string[] inputLines, out string errorMessage)
+    {
+        if (inputLines.Length == 0)
+        {
+            errorMessage = "No input.";
+            return false;
+        }
+        // Verify that the input is a set of valid reactions.
+        reactions.Clear();
+        HashSet<string> inputChemicals = new();
+        HashSet<string> outputChemicals = new();
+        foreach (string line in inputLines)
+        {
+            Match match = _validLine.Match(line);
+            if (!match.Success)
+            {
+                errorMessage = $"Invalid input line \"{line.Left(20, true)}\".";
+                return false;
+            }
+            Reaction reaction = new(line);
+            reactions.Add(reaction.Output.Chemical, reaction);
+            foreach ((int quantity, string Chemical) in reaction.Inputs)
+            {
+                if (quantity == 0)
+                {
+                    errorMessage = $"Reaction in line \"{line.Left(20, true)}\" contains a zero quantity input.";
+                    return false;
+                }
+                inputChemicals.Add(Chemical);
+            }
+            if (reaction.Output.Quantity == 0)
+            {
+                errorMessage = $"Reaction in line \"{line.Left(20, true)}\" produces zero output.";
+                return false;
+            }
+            outputChemicals.Add(reaction.Output.Chemical);
+        }
+        if (!outputChemicals.Contains("FUEL"))
+        {
+            errorMessage = "No reaction produces FUEL.";
+            return false;
+        }
+        if (!inputChemicals.Contains("ORE"))
+        {
+            errorMessage = "No reaction consumes ORE.";
+            return false;
+        }
+        if (outputChemicals.Contains("ORE"))
+        {
+            errorMessage = "A reaction produces ORE.";
+            return false;
+        }
+        if (inputChemicals.Contains("FUEL"))
+        {
+            errorMessage = "A reaction consumes FUEL.";
+            return false;
+        }
+        // Verify that the input chemicals are output chemicals of other reactions.
+        outputChemicals.Remove("FUEL");
+        inputChemicals.Remove("ORE");
+        if (!outputChemicals.SetEquals(inputChemicals))
+        {
+            errorMessage = "Mismatched input chemicals and output chemicals.";
+            return false;
+        }
+        // Verify that FUEL can be produced with ORE alone.
+        HashSet<string> targetChemicals = new() { "FUEL" };
+        HashSet<string> ingredients = new();
+        int timeout = 0;
+        while (timeout++ < 1000)
+        {
+            ingredients.Clear();
+            foreach (string chemical in targetChemicals)
+            {
+                if (chemical == "ORE")
+                {
+                    continue;
+                }
+                targetChemicals.Remove(chemical);
+                foreach ((int _, string ingredient) in reactions[chemical].Inputs)
+                {
+                    ingredients.Add(ingredient);
+                }
+            }
+            targetChemicals.UnionWith(ingredients);
+            if (targetChemicals.Count == 1 && targetChemicals.Single() == "ORE")
+            {
+                break;
+            }
+        }
+        if (targetChemicals.Count != 1 || targetChemicals.Single() != "ORE")
+        {
+            errorMessage = "FUEL cannot be produced by ORE.";
+            return true;
+        }
+        errorMessage = string.Empty;
+        return true;
+    }
+
+    protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
+    {
+        PuzzleAnswers output = new();
+        reactions.Clear();
+        foreach (string line in inputLines)
+        {
+            Reaction reaction = new(line);
+            reactions.Add(reaction.Output.Chemical, reaction);
+        }
+        return output.WriteAnswers(null, null);
+    }
+
+    private class Reaction
+    {
+        public (int Quantity, string Chemical) Output { get; private set; }
+        public (int Quantity, string Chemical)[] Inputs { get; private set; }
+
+        public Reaction(string text)
+        {
+            Output = ParseTerm(text[(text.IndexOf(" => ") + 4)..]);
+            string[] terms = text[..text.IndexOf(" => ")].Split(", ");
+            List<(int, string)> inputs = new();
+            foreach (string term in terms)
+            {
+                inputs.Add(ParseTerm(term));
+            }
+            Inputs = inputs.ToArray();
+        }
+
+        private static (int, string) ParseTerm(string term)
+        {
+            int quantity = int.Parse(term[..term.IndexOf(' ')]);
+            return (quantity, term[(term.IndexOf(' ') + 1)..]);
+        }
+    }
+}
