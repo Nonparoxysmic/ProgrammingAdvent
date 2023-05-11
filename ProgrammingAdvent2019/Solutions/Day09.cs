@@ -114,7 +114,7 @@ internal class Day09 : Day
             return _outputs.Dequeue();
         }
 
-        private long ReadMemory(long position)
+        public long ReadMemory(long position)
         {
             if (position < 0 || position >= _program.Length)
             {
@@ -127,7 +127,7 @@ internal class Day09 : Day
             return long.Parse(_program[position]);
         }
 
-        private void WriteMemory(long position, long value)
+        public void WriteMemory(long position, long value)
         {
             if (position < 0 || position >= _program.Length)
             {
