@@ -123,7 +123,73 @@ internal class Day14 : Day
             Reaction reaction = new(line);
             reactions.Add(reaction.Output.Chemical, reaction);
         }
-        return output.WriteAnswers(null, null);
+        int oreForOneFuel = ReduceToOre(1, "FUEL");
+        return output.WriteAnswers(oreForOneFuel, null);
+    }
+
+    private int ReduceToOre(int amount, string chemical)
+    {
+        if (chemical == "ORE")
+        {
+            return amount;
+        }
+        if (!reactions.ContainsKey(chemical))
+        {
+            return -404;
+        }
+        Dictionary<string, int> requiredQuantities = new()
+        {
+            { chemical, amount }
+        };
+        Dictionary<string, int> extraQuantities = new();
+        int timeout = 0;
+        while (timeout++ < 10_000)
+        {
+            if (requiredQuantities.Count == 1 && requiredQuantities.Single().Key == "ORE")
+            {
+                return requiredQuantities["ORE"];
+            }
+            string product = requiredQuantities.First(q => q.Key != "ORE").Key;
+            Reaction reaction = reactions[product];
+            int amountNeeded = requiredQuantities[product]
+                - (extraQuantities.ContainsKey(product) ? extraQuantities[product] : 0);
+            if (amountNeeded == 0)
+            {
+                extraQuantities.Remove(product);
+                requiredQuantities.Remove(product);
+                continue;
+            }
+            if (amountNeeded < 0)
+            {
+                extraQuantities[product] -= requiredQuantities[product];
+                requiredQuantities.Remove(product);
+                continue;
+            }
+            int numberOfReactions = amountNeeded / reaction.Output.Quantity
+                + (amountNeeded % reaction.Output.Quantity > 0 ? 1 : 0);
+            int extraProductProduced = reaction.Output.Quantity * numberOfReactions - requiredQuantities[product];
+            if (extraQuantities.ContainsKey(product))
+            {
+                extraQuantities[product] += extraProductProduced;
+            }
+            else
+            {
+                extraQuantities[product] = extraProductProduced;
+            }
+            requiredQuantities.Remove(product);
+            foreach ((int Quantity, string Chemical) in reaction.Inputs)
+            {
+                if (requiredQuantities.ContainsKey(Chemical))
+                {
+                    requiredQuantities[Chemical] += Quantity * numberOfReactions;
+                }
+                else
+                {
+                    requiredQuantities.Add(Chemical, Quantity * numberOfReactions);
+                }
+            }
+        }
+        return -1;
     }
 
     private class Reaction
