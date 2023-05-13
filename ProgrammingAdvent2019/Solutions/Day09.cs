@@ -98,6 +98,20 @@ internal class Day09 : Day
             _program = intcode.Split(',');
         }
 
+        public Day09Program(Day09Program programToCopy)
+        {
+            _program = new string[programToCopy._program.Length];
+            Array.Copy(programToCopy._program, _program, _program.Length);
+            _instructionPointer = programToCopy._instructionPointer;
+            _relativeBase = programToCopy._relativeBase;
+            _inputs = new Queue<long>(programToCopy._inputs);
+            _outputs = new Queue<long>(programToCopy._outputs);
+            _ticks = programToCopy._ticks;
+            _memory = new Dictionary<long, long>(programToCopy._memory);
+            Status = programToCopy.Status;
+            Error = programToCopy.Error;
+        }
+
         public void EnqueueInput(long input)
         {
             _inputs.Enqueue(input);
