@@ -123,11 +123,14 @@ internal class Day14 : Day
             Reaction reaction = new(line);
             reactions.Add(reaction.Output.Chemical, reaction);
         }
-        int oreForOneFuel = ReduceToOre(1, "FUEL");
-        return output.WriteAnswers(oreForOneFuel, null);
+        long oreForOneFuel = ReduceToOre(1, "FUEL");
+        long fuelForATrillionOre = FuelForATrillionOre(oreForOneFuel);
+        return output.WriteAnswers(oreForOneFuel, fuelForATrillionOre);
     }
 
-    private int ReduceToOre(int amount, string chemical)
+    private long ReduceFuelToOre(long amount) => ReduceToOre(amount, "FUEL");
+
+    private long ReduceToOre(long amount, string chemical)
     {
         if (chemical == "ORE")
         {
@@ -137,11 +140,11 @@ internal class Day14 : Day
         {
             return -404;
         }
-        Dictionary<string, int> requiredQuantities = new()
+        Dictionary<string, long> requiredQuantities = new()
         {
             { chemical, amount }
         };
-        Dictionary<string, int> extraQuantities = new();
+        Dictionary<string, long> extraQuantities = new();
         int timeout = 0;
         while (timeout++ < 10_000)
         {
@@ -151,7 +154,7 @@ internal class Day14 : Day
             }
             string product = requiredQuantities.First(q => q.Key != "ORE").Key;
             Reaction reaction = reactions[product];
-            int amountNeeded = requiredQuantities[product]
+            long amountNeeded = requiredQuantities[product]
                 - (extraQuantities.ContainsKey(product) ? extraQuantities[product] : 0);
             if (amountNeeded == 0)
             {
@@ -165,9 +168,9 @@ internal class Day14 : Day
                 requiredQuantities.Remove(product);
                 continue;
             }
-            int numberOfReactions = amountNeeded / reaction.Output.Quantity
+            long numberOfReactions = amountNeeded / reaction.Output.Quantity
                 + (amountNeeded % reaction.Output.Quantity > 0 ? 1 : 0);
-            int extraProductProduced = reaction.Output.Quantity * numberOfReactions - requiredQuantities[product];
+            long extraProductProduced = reaction.Output.Quantity * numberOfReactions - requiredQuantities[product];
             if (extraQuantities.ContainsKey(product))
             {
                 extraQuantities[product] += extraProductProduced;
@@ -190,6 +193,51 @@ internal class Day14 : Day
             }
         }
         return -1;
+    }
+
+    private long FuelForATrillionOre(long oreForOneFuel)
+    {
+        long start = 1_000_000_000_000 / oreForOneFuel;
+        long increment = start / 10;
+        long oreConsumedLowerBound = ReduceFuelToOre(start);
+        if (oreConsumedLowerBound == 1_000_000_000_000)
+        {
+            return start;
+        }
+        long oreConsumedUpperBound = oreConsumedLowerBound;
+        for (long fuelGuess = start; fuelGuess < 2 * start; fuelGuess += increment)
+        {
+            oreConsumedLowerBound = oreConsumedUpperBound;
+            oreConsumedUpperBound = ReduceFuelToOre(fuelGuess + increment);
+            if (oreConsumedUpperBound == 1_000_000_000_000)
+            {
+                return fuelGuess + increment;
+            }
+            if (oreConsumedLowerBound < 1_000_000_000_000 && oreConsumedUpperBound > 1_000_000_000_000)
+            {
+                return BinarySearch(fuelGuess, fuelGuess + increment);
+            }
+        }
+        return -1;
+    }
+
+    private long BinarySearch(long lowerBound, long upperBound)
+    {
+        if (upperBound - lowerBound <= 1)
+        {
+            return lowerBound;
+        }
+        long middle = (upperBound + lowerBound) / 2;
+        long middleFuel = ReduceFuelToOre(middle);
+        if (middleFuel == 1_000_000_000_000)
+        {
+            return middle;
+        }
+        if (middleFuel > 1_000_000_000_000)
+        {
+            return BinarySearch(lowerBound, middle);
+        }
+        return BinarySearch(middle, upperBound);
     }
 
     private class Reaction
