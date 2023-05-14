@@ -10,6 +10,8 @@ namespace ProgrammingAdvent2019.Solutions;
 
 internal class Day15 : Day
 {
+    private static int StepsToOxygenSystem { get; set; }
+
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
         if (inputLines.Length == 0 || inputLines[0].Length == 0)
@@ -28,84 +30,110 @@ internal class Day15 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
-        char[,] map = ExploreMap(inputLines[0]);
-        return output.WriteAnswers(null, null);
+        StepsToOxygenSystem = -1;
+        ExploreMap(inputLines[0], out int[,] _);
+        if (StepsToOxygenSystem < 0)
+        {
+            return output.WriteError("Part One: Did not find oxygen system.");
+        }
+        return output.WriteAnswers(StepsToOxygenSystem, null);
     }
 
-    private static char[,] ExploreMap(string intcode)
+    private static char[,] ExploreMap(string intcode, out int[,] distances)
     {
-        Dictionary<(int, int), char> map = new()
+        Dictionary<(int, int), (char, int)> map = new()
         {
-            [(0, 0)] = 'D'
+            [(0, 0)] = ('D', 0)
         };
         Day15Robot robot = new(intcode);
         if (!robot.Initialize(out string _))
         {
+            distances = new int[0, 0];
             return new char[0, 0];
         }
         robot.Explore(map);
         Rectangle boundary = Boundary(map);
-        char[,] output = new char[boundary.Width, boundary.Height];
-        output.Fill('#');
-        foreach (KeyValuePair<(int, int), char> kvp in map)
+        char[,] charMap = new char[boundary.Width, boundary.Height];
+        distances = new int[boundary.Width, boundary.Height];
+        charMap.Fill('#');
+        foreach (KeyValuePair<(int X, int Y), (char, int)> kvp in map)
         {
-            int x = kvp.Key.Item1 - boundary.X;
-            int y = kvp.Key.Item2 - boundary.Y;
-            output[x, y] = kvp.Value;
+            int x = kvp.Key.X - boundary.X;
+            int y = kvp.Key.Y - boundary.Y;
+            charMap[x, y] = kvp.Value.Item1;
+            distances[x, y] = kvp.Value.Item2;
         }
-        return output;
+        return charMap;
     }
 
-    private static Rectangle Boundary(Dictionary<(int, int), char> map)
+    private static Rectangle Boundary(Dictionary<(int, int), (char, int)> map)
     {
         int xMin = int.MaxValue, yMin = int.MaxValue;
         int xMax = int.MinValue, yMax = int.MinValue;
-        foreach (KeyValuePair<(int, int), char> kvp in map)
+        foreach (KeyValuePair<(int X, int Y), (char, int)> kvp in map)
         {
-            xMin = Math.Min(xMin, kvp.Key.Item1);
-            yMin = Math.Min(yMin, kvp.Key.Item2);
-            xMax = Math.Max(xMax, kvp.Key.Item1);
-            yMax = Math.Max(yMax, kvp.Key.Item2);
+            xMin = Math.Min(xMin, kvp.Key.X);
+            yMin = Math.Min(yMin, kvp.Key.Y);
+            xMax = Math.Max(xMax, kvp.Key.X);
+            yMax = Math.Max(yMax, kvp.Key.Y);
         }
         return new Rectangle(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
     }
 
-    private static void DebugPrintMap(char[,] map)
-    {
-        for (int y = 0; y < map.GetLength(1); y++)
-        {
-            for (int x = 0; x < map.GetLength(0); x++)
-            {
-                if (map[x, y] == '#')
-                {
-                    Console.Write("██");
-                }
-                else if (map[x, y] == '.')
-                {
-                    Console.Write("  ");
-                }
-                else if (map[x, y] == 'O')
-                {
-                    Console.Write("O2");
-                }
-                else if (map[x, y] == 'D')
-                {
-                    Console.Write("RD");
-                }
-                else
-                {
-                    Console.Write(map[x, y]);
-                    Console.Write(map[x, y]);
-                }
-            }
-            Console.WriteLine();
-        }
-    }
+    //private static void DebugPrintMap(char[,] map, int[,]? distances = null)
+    //{
+    //    for (int y = 0; y < map.GetLength(1); y++)
+    //    {
+    //        for (int x = 0; x < map.GetLength(0); x++)
+    //        {
+    //            if (map[x, y] == '#')
+    //            {
+    //                Console.Write("██");
+    //            }
+    //            else if (map[x, y] == '.')
+    //            {
+    //                int distance = -1;
+    //                if (distances is not null)
+    //                {
+    //                    try
+    //                    {
+    //                        distance = distances[x, y];
+    //                    }
+    //                    catch { }
+    //                }
+    //                if (distance > 0)
+    //                {
+    //                    Console.Write($"{distance % 100:00}");
+    //                }
+    //                else
+    //                {
+    //                    Console.Write("  ");
+    //                }
+    //            }
+    //            else if (map[x, y] == 'O')
+    //            {
+    //                Console.Write("O2");
+    //            }
+    //            else if (map[x, y] == 'D')
+    //            {
+    //                Console.Write("RD");
+    //            }
+    //            else
+    //            {
+    //                Console.Write(map[x, y]);
+    //                Console.Write(map[x, y]);
+    //            }
+    //        }
+    //        Console.WriteLine();
+    //    }
+    //}
 
     private class Day15Robot
     {
         public int X { get; private set; }
         public int Y { get; private set; }
+
+        public int StepsTaken { get; private set; }
 
         private readonly Day09.Day09Program _program;
 
@@ -119,6 +147,7 @@ internal class Day15 : Day
             _program = new(robotToCopy._program);
             X = robotToCopy.X;
             Y = robotToCopy.Y;
+            StepsTaken = robotToCopy.StepsTaken;
         }
 
         public bool Initialize(out string error)
@@ -138,7 +167,7 @@ internal class Day15 : Day
             return true;
         }
 
-        public void Explore(Dictionary<(int, int), char> map)
+        public void Explore(Dictionary<(int, int), (char, int)> map)
         {
             for (int direction = 1; direction <= 4; direction++)
             {
@@ -160,7 +189,7 @@ internal class Day15 : Day
         }
 
         private static  void ExploreDirection(Day15Robot robot, int direction,
-            (int X, int Y) look, Dictionary<(int, int), char> map)
+            (int X, int Y) look, Dictionary<(int, int), (char, int)> map)
         {
             robot._program.EnqueueInput(direction);
             while (robot._program.Tick()) { }
@@ -177,19 +206,21 @@ internal class Day15 : Day
                 long result = robot._program.DequeueOutput();
                 if (result == 0)
                 {
-                    map.Add(look, '#');
+                    map.Add(look, ('#', 0));
                     return;
-                }
-                if (result == 1)
-                {
-                    map.Add(look, '.');
-                }
-                if (result == 2)
-                {
-                    map.Add(look, 'O');
                 }
                 robot.X = look.X;
                 robot.Y = look.Y;
+                robot.StepsTaken++;
+                if (result == 1)
+                {
+                    map.Add(look, ('.', robot.StepsTaken));
+                }
+                if (result == 2)
+                {
+                    map.Add(look, ('O', robot.StepsTaken));
+                    StepsToOxygenSystem = robot.StepsTaken;
+                }
                 robot.Explore(map);
             }
         }
