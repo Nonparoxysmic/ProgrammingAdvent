@@ -11,6 +11,7 @@ namespace ProgrammingAdvent2019.Solutions;
 internal class Day15 : Day
 {
     private static int StepsToOxygenSystem { get; set; }
+    private static (int X, int Y) OxygenSystemPosition { get; set; }
 
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
@@ -31,12 +32,14 @@ internal class Day15 : Day
     {
         PuzzleAnswers output = new();
         StepsToOxygenSystem = -1;
-        ExploreMap(inputLines[0], out int[,] _);
-        if (StepsToOxygenSystem < 0)
+        OxygenSystemPosition = (-1, -1);
+        char[,] map = ExploreMap(inputLines[0], out int[,] _);
+        if (StepsToOxygenSystem < 0 || OxygenSystemPosition.X < 0)
         {
-            return output.WriteError("Part One: Did not find oxygen system.");
+            return output.WriteError("Did not find oxygen system.");
         }
-        return output.WriteAnswers(StepsToOxygenSystem, null);
+        int timeToFullOxygen = SpreadTime(map, OxygenSystemPosition);
+        return output.WriteAnswers(StepsToOxygenSystem, timeToFullOxygen);
     }
 
     private static char[,] ExploreMap(string intcode, out int[,] distances)
@@ -62,6 +65,10 @@ internal class Day15 : Day
             int y = kvp.Key.Y - boundary.Y;
             charMap[x, y] = kvp.Value.Item1;
             distances[x, y] = kvp.Value.Item2;
+            if (charMap[x, y] == 'O')
+            {
+                OxygenSystemPosition = (x, y);
+            }
         }
         return charMap;
     }
@@ -78,6 +85,33 @@ internal class Day15 : Day
             yMax = Math.Max(yMax, kvp.Key.Y);
         }
         return new Rectangle(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+    }
+
+    private static int SpreadTime(char[,] map, (int X, int Y) Position)
+    {
+        return SpreadTime(map, Position.X, Position.Y);
+    }
+
+    private static int SpreadTime(char[,] map, int x, int y, int depth = 0)
+    {
+        map[x, y] = 'O';
+        int max = -1;
+        for (int direction = 1; direction <= 4; direction++)
+        {
+            (int lookX, int lookY) = direction switch
+            {
+                1 => (x, y - 1),
+                2 => (x, y + 1),
+                3 => (x - 1, y),
+                4 => (x + 1, y),
+                _ => (x, y)
+            };
+            if (map[lookX, lookY] == '.')
+            {
+                max = Math.Max(max, SpreadTime(map, lookX, lookY, depth + 1));
+            }
+        }
+        return max < 0 ? depth : max;
     }
 
     //private static void DebugPrintMap(char[,] map, int[,]? distances = null)
