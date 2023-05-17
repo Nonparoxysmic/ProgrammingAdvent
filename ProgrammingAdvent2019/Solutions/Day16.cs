@@ -11,6 +11,7 @@ namespace ProgrammingAdvent2019.Solutions;
 internal class Day16 : Day
 {
     private static readonly Regex _validCharacters = new("^[0-9]+$");
+    private static readonly PatternGenerator _patternGenerator = new();
 
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
@@ -36,33 +37,47 @@ internal class Day16 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
-        byte[] input = new byte[inputLines[0].Length];
+        int[] input = new int[inputLines[0].Length];
         for (int i = 0; i < input.Length; i++)
         {
-            input[i] = (byte)(inputLines[0][i] - '0');
+            input[i] = inputLines[0][i] - '0';
         }
-        byte[] calculated = BruteForceFFT(input);
+        int[] calculated = FFT(input);
         for (int i = 1; i < 100; i++)
         {
-            calculated = BruteForceFFT(calculated);
+            calculated = FFT(calculated);
         }
         string partOneAnswer = string.Join(null, calculated)[..8];
         return output.WriteAnswers(partOneAnswer, null);
     }
 
-    private static byte[] BruteForceFFT(byte[] input)
+    private static int[] FFT(int[] input)
     {
-        byte[] output = new byte[input.Length];
-        PatternGenerator patternGenerator = new();
-        for (int o = 0; o < input.Length; o++)
+        int[] sums = new int[input.Length];
+        sums[^1] = input[^1];
+        for (int i = input.Length - 2; i >= 0; i--)
+        {
+            sums[i] = input[i] + sums[i + 1];
+        }
+
+        int[] output = new int[input.Length];
+        for (int i = 0; i < input.Length / 3; i++)
         {
             int sum = 0;
-            patternGenerator.Reset(o);
-            for (int i = 0; i < input.Length; i++)
+            _patternGenerator.Reset(i);
+            for (int j = 0; j < input.Length; j++)
             {
-                sum += input[i] * patternGenerator.Next();
+                sum += input[j] * _patternGenerator.Next();
             }
-            output[o] = (byte)(Math.Abs(sum) % 10);
+            output[i] = Math.Abs(sum) % 10;
+        }
+        for (int i = input.Length / 3; i < input.Length / 2; i++)
+        {
+            output[i] = (sums[i] - sums[i * 2 + 1]) % 10;
+        }
+        for (int i = input.Length / 2; i < input.Length; i++)
+        {
+            output[i] = sums[i] % 10;
         }
         return output;
     }
