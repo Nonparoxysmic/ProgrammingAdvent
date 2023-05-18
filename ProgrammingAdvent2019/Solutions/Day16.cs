@@ -42,13 +42,30 @@ internal class Day16 : Day
         {
             input[i] = inputLines[0][i] - '0';
         }
+
+        // Part One
         int[] calculated = FFT(input);
         for (int i = 1; i < 100; i++)
         {
             calculated = FFT(calculated);
         }
         string partOneAnswer = string.Join(null, calculated)[..8];
-        return output.WriteAnswers(partOneAnswer, null);
+
+        // Part Two
+        int messageOffset = int.Parse(inputLines[0][..7]);
+        int messageLength = inputLines[0].Length * 10_000;
+        if (messageOffset > messageLength - 8)
+        {
+            // Part One example problems are not valid for Part Two.
+            return output.WriteAnswers(partOneAnswer, "Input is not valid for Part Two.");
+        }
+        if (messageOffset < messageLength / 2 || messageLength - messageOffset > 1_000_000)
+        {
+            return output.WriteAnswers(partOneAnswer, "Unable to calculate Part Two.");
+        }
+        string partTwoAnswer = ExtractMessage(input, messageOffset, messageLength);
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static int[] FFT(int[] input)
@@ -80,6 +97,34 @@ internal class Day16 : Day
             output[i] = sums[i] % 10;
         }
         return output;
+    }
+
+    private static string ExtractMessage(int[] singleInput, int messageOffset, int messageLength)
+    {
+        int[] A = new int[messageLength - messageOffset];
+        int[] B = new int[A.Length];
+        for (int i = 0; i < A.Length; i++)
+        {
+            A[^(i + 1)] = singleInput[^(i % singleInput.Length + 1)];
+        }
+        PartialFFT(A, B);
+        PartialFFT(B, A);
+        for (int i = 2; i < 100; i += 2)
+        {
+            PartialFFT(A, B);
+            PartialFFT(B, A);
+        }
+        return string.Join(null, A)[..8];
+    }
+
+    private static void PartialFFT(int[] input, int[] result)
+    {
+        int sum = 0;
+        for (int i = input.Length - 1; i >= 0; i--)
+        {
+            sum += input[i];
+            result[i] = sum % 10;
+        }
     }
 
     private class PatternGenerator
