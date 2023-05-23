@@ -32,7 +32,23 @@ internal class Day17 : Day
         {
             return output.WriteError("Program did not produce an expected view of the scaffolds.");
         }
-        return output.WriteAnswers(null, null);
+
+        // Part One
+        int sumOfAlignmentParameters = 0;
+        for (int y = 1; y < map.GetLength(1) - 1; y++)
+        {
+            for (int x = 1; x < map.GetLength(0) - 1; x++)
+            {
+                if (map[x, y] == '#' && map[x - 1, y] == '#' && map[x, y - 1] == '#'
+                     && map[x + 1, y] == '#' && map[x, y + 1] == '#')
+                {
+                    map[x, y] = 'O';
+                    sumOfAlignmentParameters += x * y;
+                }
+            }
+        }
+
+        return output.WriteAnswers(sumOfAlignmentParameters, null);
     }
 
     private static bool TryGetMap(string intcode, out char[,] map)
