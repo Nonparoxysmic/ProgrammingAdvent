@@ -4,6 +4,7 @@
 // https://adventofcode.com/2019
 
 using System.Text.Json;
+using ProgrammingAdvent2019.Solutions;
 
 namespace ProgrammingAdvent2019.Common;
 
@@ -24,6 +25,10 @@ internal static class ExampleSource
         {
             if (jsonDocument.RootElement.TryGetProperty($"Day{dayNumber:00}", out JsonElement dayProperty))
             {
+                if (!SolutionSource.TryGetSolution(dayNumber, out Day? solution))
+                {
+                    Console.WriteLine($"Unable to validate example inputs for Day {dayNumber}.");
+                }
                 List<(string, string?, string?, string?)> dayExamples = new();
                 for (int i = 1; i < 100; i++)
                 {
@@ -52,6 +57,14 @@ internal static class ExampleSource
                     }
                     if (partOne is not null || partTwo is not null)
                     {
+                        if (solution is not null)
+                        {
+                            if (!solution.ValidateInput(input.ToLines(), out string error))
+                            {
+                                Console.WriteLine($"Day{dayNumber:00} Example{i:00} Input is invalid.");
+                                Console.WriteLine($"Reason: {error}");
+                            }
+                        }
                         dayExamples.Add((input, partOne, partTwo, modifier));
                     }
                     else
