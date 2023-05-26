@@ -80,6 +80,34 @@ internal class Day18 : Day
     {
         PuzzleAnswers output = new();
 
+        (char[,] map, char[] keys, Vector2Int entrance) = ProcessInput(inputLines);
+
         return output.WriteAnswers(null, null);
+    }
+
+    private static (char[,], char[], Vector2Int) ProcessInput(string[] input)
+    {
+        char[,] map = new char[input[0].Length, input.Length];
+        List<char> keys = new();
+        int entranceX = -1;
+        int entranceY = -1;
+        for (int y = 0; y < input.Length; y++)
+        {
+            for (int x = 0; x < input[0].Length; x++)
+            {
+                map[x, y] = input[y][x];
+                if (map[x, y] == '@')
+                {
+                    entranceX = x;
+                    entranceY = y;
+                }
+                if ('a' <= map[x, y] && map[x, y] <= 'z')
+                {
+                    keys.Add(map[x, y]);
+                }
+            }
+        }
+        keys.Sort();
+        return (map, keys.ToArray(), new Vector2Int(entranceX, entranceY));
     }
 }
