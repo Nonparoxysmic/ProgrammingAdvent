@@ -11,6 +11,13 @@ namespace ProgrammingAdvent2019.Solutions;
 internal class Day18 : Day
 {
     private static readonly Regex _validCharacters = new("^[a-zA-Z@.#]+$");
+    private static readonly Vector2Int[] _steps = new Vector2Int[]
+    {
+        new Vector2Int(-1,  0),
+        new Vector2Int( 0, -1),
+        new Vector2Int( 1,  0),
+        new Vector2Int( 0,  1)
+    };
 
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
@@ -107,7 +114,49 @@ internal class Day18 : Day
                 }
             }
         }
+        PruneDeadEnds(map);
         keys.Sort();
         return (map, keys.ToArray(), new Vector2Int(entranceX, entranceY));
+    }
+
+    private static void PruneDeadEnds(char[,] map)
+    {
+        for (int y = 1; y < map.GetLength(1) - 1; y++)
+        {
+            for (int x = 1; x < map.GetLength(0) - 1; x++)
+            {
+                PruneDeadEnd(map, x, y);
+            }
+        }
+    }
+
+    private static void PruneDeadEnd(char[,] map, int x, int y)
+    {
+        if (('a' <= map[x, y] && map[x, y] <= 'z') || map[x, y] == '@')
+        {
+            return;
+        }
+        int openNeighbors = 0;
+        int openX = -1;
+        int openY = -1;
+        foreach (Vector2Int step in _steps)
+        {
+            if (map[x + step.X, y + step.Y] != '#')
+            {
+                openNeighbors++;
+                openX = x + step.X;
+                openY = y + step.Y;
+            }
+        }
+        if (openNeighbors == 0)
+        {
+            map[x, y] = '#';
+            return;
+        }
+        if (openNeighbors == 1)
+        {
+            map[x, y] = '#';
+            PruneDeadEnd(map, openX, openY);
+        }
     }
 }
