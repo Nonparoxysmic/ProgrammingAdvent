@@ -89,6 +89,8 @@ internal class Day18 : Day
 
         (char[,] map, char[] keys, Vector2Int entrance) = ProcessInput(inputLines);
 
+        MazeNode entranceNode = BuildGraph(map, entrance);
+
         return output.WriteAnswers(null, null);
     }
 
@@ -157,6 +159,101 @@ internal class Day18 : Day
         {
             map[x, y] = '#';
             PruneDeadEnd(map, openX, openY);
+        }
+    }
+
+    private static MazeNode BuildGraph(char[,] map, Vector2Int entrance)
+    {
+        MazeNode root = new(entrance.X, entrance.Y, '@');
+
+        if (map[entrance.X - 1, entrance.Y - 1] == '.'
+            && map[entrance.X, entrance.Y - 1] == '.'
+            && map[entrance.X + 1, entrance.Y - 1] == '.'
+            && map[entrance.X - 1, entrance.Y] == '.'
+            && map[entrance.X + 1, entrance.Y] == '.'
+            && map[entrance.X - 1, entrance.Y + 1] == '.'
+            && map[entrance.X, entrance.Y + 1] == '.'
+            && map[entrance.X + 1, entrance.Y + 1] == '.')
+        {
+            // Actual input can be divided into four quadrants.
+            map[entrance.X - 1, entrance.Y - 1] = '@';
+            map[entrance.X, entrance.Y - 1] = '#';
+            map[entrance.X + 1, entrance.Y - 1] = '@';
+            map[entrance.X - 1, entrance.Y] = '#';
+            map[entrance.X, entrance.Y] = '#';
+            map[entrance.X + 1, entrance.Y] = '#';
+            map[entrance.X - 1, entrance.Y + 1] = '@';
+            map[entrance.X, entrance.Y + 1] = '#';
+            map[entrance.X + 1, entrance.Y + 1] = '@';
+
+            root.CreateEntranceNeighbors();
+            foreach (MazeNode neighbor in root.Neighbors)
+            {
+                MapToNodes(map, neighbor);
+            }
+        }
+        else
+        {
+            // Example inputs do not divide into quadrants.
+            MapToNodes(map, root);
+        }
+
+        return root;
+    }
+
+    private static void MapToNodes(char[,] map, MazeNode node)
+    {
+        map[node.X, node.Y] = '#';
+        for (int direction = 0; direction < 4; direction++)
+        {
+            Vector2Int step = _steps[direction];
+            if (map[node.X + step.X, node.Y + step.Y] == '#')
+            {
+                continue;
+            }
+            // TODO: Get the node(s) in that direction.
+        }
+    }
+
+    private class MazeNode
+    {
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public char Feature { get; private set; }
+
+        public readonly HashSet<MazeNode> Neighbors = new();
+
+        public MazeNode(int x, int y, char feature)
+        {
+            X = x;
+            Y = y;
+            Feature = feature;
+        }
+
+        public MazeNode CreateNeighbor(int x, int y, int distance, List<char> doors, char feature = '.')
+        {
+            MazeNode neighbor = new(x, y, feature);
+            Neighbors.Add(neighbor);
+            neighbor.Neighbors.Add(this);
+            return neighbor;
+        }
+
+        public static void ConnectNodes(MazeNode A, MazeNode B)
+        {
+            A.Neighbors.Add(B);
+            B.Neighbors.Add(A);
+        }
+
+        public void CreateEntranceNeighbors()
+        {
+            MazeNode NW = CreateNeighbor(X - 1, Y - 1, 2, new List<char>());
+            MazeNode NE = CreateNeighbor(X + 1, Y - 1, 2, new List<char>());
+            MazeNode SW = CreateNeighbor(X - 1, Y + 1, 2, new List<char>());
+            MazeNode SE = CreateNeighbor(X + 1, Y + 1, 2, new List<char>());
+            ConnectNodes(NW, NE);
+            ConnectNodes(NW, SW);
+            ConnectNodes(NE, SE);
+            ConnectNodes(SW, SE);
         }
     }
 }
