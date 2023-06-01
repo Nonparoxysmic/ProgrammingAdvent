@@ -235,6 +235,7 @@ internal class Day18 : Day
             MazeNode neighbor = new(x, y, feature);
             Neighbors.Add(neighbor);
             neighbor.Neighbors.Add(this);
+            EdgeInfo.AddEdge(this, neighbor, distance, doors);
             return neighbor;
         }
 
@@ -242,6 +243,7 @@ internal class Day18 : Day
         {
             A.Neighbors.Add(B);
             B.Neighbors.Add(A);
+            EdgeInfo.AddEdge(A, B, Math.Abs(A.X - B.X) + Math.Abs(A.Y - B.Y), new List<char>());
         }
 
         public void CreateEntranceNeighbors()
@@ -254,6 +256,42 @@ internal class Day18 : Day
             ConnectNodes(NW, SW);
             ConnectNodes(NE, SE);
             ConnectNodes(SW, SE);
+        }
+    }
+
+    private static class EdgeInfo
+    {
+        static readonly Dictionary<(MazeNode, MazeNode), (int, List<char>)> _edges = new();
+
+        public static void AddEdge(MazeNode A, MazeNode B, int distance, List<char> doors)
+        {
+            _edges.Add((A, B), (distance, new(doors)));
+        }
+
+        public static int GetDistance(MazeNode A, MazeNode B)
+        {
+            if (_edges.ContainsKey((A, B)))
+            {
+                return _edges[(A, B)].Item1;
+            }
+            if (_edges.ContainsKey((B, A)))
+            {
+                return _edges[(B, A)].Item1;
+            }
+            return int.MaxValue;
+        }
+
+        public static List<char> GetDoors(MazeNode A, MazeNode B)
+        {
+            if (_edges.ContainsKey((A, B)))
+            {
+                return _edges[(A, B)].Item2;
+            }
+            if (_edges.ContainsKey((B, A)))
+            {
+                return _edges[(B, A)].Item2;
+            }
+            return new List<char>();
         }
     }
 }
