@@ -164,6 +164,7 @@ internal class Day18 : Day
 
     private static MazeNode BuildGraph(char[,] map, Vector2Int entrance)
     {
+        MazeNode.AllNodes.Clear();
         MazeNode root = new(entrance.X, entrance.Y, '@');
 
         if (map[entrance.X - 1, entrance.Y - 1] == '.'
@@ -211,12 +212,15 @@ internal class Day18 : Day
             {
                 continue;
             }
-            // TODO: Get the node(s) in that direction.
+            MazeCrawler crawler = new(node.X + step.X, node.Y + step.Y, map, node);
+            crawler.FindNextNode();
         }
     }
 
     private class MazeNode
     {
+        public static List<MazeNode> AllNodes = new();
+
         public int X { get; private set; }
         public int Y { get; private set; }
         public char Feature { get; private set; }
@@ -228,6 +232,7 @@ internal class Day18 : Day
             X = x;
             Y = y;
             Feature = feature;
+            AllNodes.Add(this);
         }
 
         public MazeNode CreateNeighbor(int x, int y, int distance, List<char> doors, char feature = '.')
@@ -256,6 +261,71 @@ internal class Day18 : Day
             ConnectNodes(NW, SW);
             ConnectNodes(NE, SE);
             ConnectNodes(SW, SE);
+        }
+    }
+
+    private class MazeCrawler
+    {
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int Steps { get; private set; }
+        public List<char> DoorsPassed { get; private set; }
+
+        private readonly char[,] _map;
+        private readonly MazeNode _parentNode;
+
+        public MazeCrawler(int x, int y, char[,] map, MazeNode parentNode)
+        {
+            X = x;
+            Y = y;
+            Steps = 1;
+            DoorsPassed = new();
+            _map = map;
+            _parentNode = parentNode;
+        }
+
+        public void FindNextNode()
+        {
+            if (_map[X, Y] == '@')
+            {
+                return;
+            }
+            if ('a' <= _map[X, Y] && _map[X, Y] <= 'z')
+            {
+                MazeNode newNode = _parentNode.CreateNeighbor(X, Y, Steps, DoorsPassed, _map[X, Y]);
+                MapToNodes(_map, newNode);
+                return;
+            }
+            if ('A' <= _map[X, Y] && _map[X, Y] <= 'Z')
+            {
+                DoorsPassed.Add(_map[X, Y]);
+            }
+            _map[X, Y] = '#';
+            int openDirections = 0;
+            int openX = -1, openY = -1;
+            for (int direction = 0; direction < 4; direction++)
+            {
+                Vector2Int step = _steps[direction];
+                if (_map[X + step.X, Y + step.Y] == '#')
+                {
+                    continue;
+                }
+                openDirections++;
+                openX = X + step.X;
+                openY = Y + step.Y;
+            }
+            if (openDirections == 1)
+            {
+                X = openX;
+                Y = openY;
+                Steps++;
+                FindNextNode();
+            }
+            else if (openDirections > 1)
+            {
+                MazeNode junction = _parentNode.CreateNeighbor(X, Y, Steps, DoorsPassed);
+                MapToNodes(_map, junction);
+            }
         }
     }
 
