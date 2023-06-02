@@ -10,6 +10,14 @@ namespace ProgrammingAdvent2019.Solutions;
 
 internal class Day17 : Day
 {
+    private static readonly Vector2Int[] _steps = new Vector2Int[]
+    {
+        new Vector2Int(-1,  0),
+        new Vector2Int( 0,  1),
+        new Vector2Int( 1,  0),
+        new Vector2Int( 0, -1)
+    };
+
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
         if (inputLines.Length == 0 || inputLines[0].Length == 0)
@@ -35,6 +43,7 @@ internal class Day17 : Day
 
         // Part One
         int sumOfAlignmentParameters = 0;
+        int robotStartX = -1, robotStartY = -1;
         for (int y = 1; y < map.GetLength(1) - 1; y++)
         {
             for (int x = 1; x < map.GetLength(0) - 1; x++)
@@ -45,8 +54,20 @@ internal class Day17 : Day
                     map[x, y] = 'O';
                     sumOfAlignmentParameters += x * y;
                 }
+                if (map[x, y] == '^' || map[x, y] == 'v' || map[x, y] == '<' || map[x, y] == '>')
+                {
+                    robotStartX = x;
+                    robotStartY = y;
+                }
             }
         }
+
+        // Part Two
+        if (robotStartX < 0)
+        {
+            return output.WriteAnswers(sumOfAlignmentParameters, "Error: Robot not found.");
+        }
+        List<int> fullPath = GetPath(map, robotStartX, robotStartY);
 
         return output.WriteAnswers(sumOfAlignmentParameters, null);
     }
@@ -115,5 +136,71 @@ internal class Day17 : Day
             }
         }
         return true;
+    }
+
+    private static char LookAtMap(char[,] map, int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= map.GetLength(0) || y >= map.GetLength(1))
+        {
+            return '.';
+        }
+        return map[x, y];
+    }
+
+    private static List<int> GetPath(char[,] map, int startX, int startY)
+    {
+        int currentX = startX, currentY = startY;
+        int currentDirection = map[startX, startY] switch
+        {
+            '<' => 0,
+            'v' => 1,
+            '>' => 2,
+            '^' => 3,
+            _ => throw new InvalidOperationException(nameof(GetPath))
+        };
+        List<int> path = new();
+        int timeout = 0;
+        while (timeout++ < 10_000)
+        {
+            // Move forward if possible.
+            int steps = 0;
+            while (timeout++ < 10_000)
+            {
+                int lookX = currentX + _steps[currentDirection].X;
+                int lookY = currentY + _steps[currentDirection].Y;
+                if (LookAtMap(map, lookX, lookY) == '.')
+                {
+                    break;
+                }
+                currentX = lookX;
+                currentY = lookY;
+                steps++;
+            }
+            if (steps > 0)
+            {
+                path.Add(steps);
+            }
+            // Turn if possible, otherwise stop.
+            int leftDirection = (currentDirection + 1) % 4;
+            int lookLeftX = currentX + _steps[leftDirection].X;
+            int lookLeftY = currentY + _steps[leftDirection].Y;
+            if (LookAtMap(map, lookLeftX, lookLeftY) != '.')
+            {
+                currentDirection = leftDirection;
+                path.Add('L');
+                continue;
+            }
+            int rightDirection = (currentDirection + 3) % 4;
+            int lookRightX = currentX + _steps[rightDirection].X;
+            int lookRightY = currentY + _steps[rightDirection].Y;
+            if (LookAtMap(map, lookRightX, lookRightY) != '.')
+            {
+                currentDirection = rightDirection;
+                path.Add('R');
+                continue;
+            }
+            break;
+        }
+        return path;
     }
 }
