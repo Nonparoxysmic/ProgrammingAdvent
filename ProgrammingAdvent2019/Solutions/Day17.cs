@@ -67,9 +67,36 @@ internal class Day17 : Day
         {
             return output.WriteAnswers(sumOfAlignmentParameters, "Error: Robot not found.");
         }
-        List<int> fullPath = GetPath(map, robotStartX, robotStartY);
+        List<string> fullPath = GetPath(map, robotStartX, robotStartY);
+        List<int> programInput = PathToProgramInput(fullPath);
+        Day09.Day09Program program = new(inputLines[0]);
+        program.WriteMemory(0, 2);
+        foreach (int i in programInput)
+        {
+            program.EnqueueInput(i);
+        }
+        while (program.Tick()) { }
+        if (program.Status == Day09.Day09Program.ProgramStatus.Error)
+        {
+            return output.WriteAnswers(sumOfAlignmentParameters, $"Program Error: {program.Error}");
+        }
+        if (program.Status == Day09.Day09Program.ProgramStatus.Waiting)
+        {
+            string error = "Program Error: Program is stuck waiting for input.";
+            return output.WriteAnswers(sumOfAlignmentParameters, error);
+        }
+        if (program.OutputCount == 0)
+        {
+            string error = "Program Error: Program did not produce output.";
+            return output.WriteAnswers(sumOfAlignmentParameters, error);
+        }
+        while (program.OutputCount > 1)
+        {
+            program.DequeueOutput();
+        }
+        long dustCollected = program.DequeueOutput();
 
-        return output.WriteAnswers(sumOfAlignmentParameters, null);
+        return output.WriteAnswers(sumOfAlignmentParameters, dustCollected);
     }
 
     private static bool TryGetMap(string intcode, out char[,] map)
@@ -147,7 +174,7 @@ internal class Day17 : Day
         return map[x, y];
     }
 
-    private static List<int> GetPath(char[,] map, int startX, int startY)
+    private static List<string> GetPath(char[,] map, int startX, int startY)
     {
         int currentX = startX, currentY = startY;
         int currentDirection = map[startX, startY] switch
@@ -158,7 +185,7 @@ internal class Day17 : Day
             '^' => 3,
             _ => throw new InvalidOperationException(nameof(GetPath))
         };
-        List<int> path = new();
+        List<string> path = new();
         int timeout = 0;
         while (timeout++ < 10_000)
         {
@@ -178,7 +205,7 @@ internal class Day17 : Day
             }
             if (steps > 0)
             {
-                path.Add(steps);
+                path.Add(steps.ToString());
             }
             // Turn if possible, otherwise stop.
             int leftDirection = (currentDirection + 1) % 4;
@@ -187,7 +214,7 @@ internal class Day17 : Day
             if (LookAtMap(map, lookLeftX, lookLeftY) != '.')
             {
                 currentDirection = leftDirection;
-                path.Add('L');
+                path.Add("L");
                 continue;
             }
             int rightDirection = (currentDirection + 3) % 4;
@@ -196,11 +223,16 @@ internal class Day17 : Day
             if (LookAtMap(map, lookRightX, lookRightY) != '.')
             {
                 currentDirection = rightDirection;
-                path.Add('R');
+                path.Add("R");
                 continue;
             }
             break;
         }
         return path;
+    }
+
+    private static List<int> PathToProgramInput(List<string> fullPath)
+    {
+        return new List<int>() { 65, 10, 76, 10, 76, 10, 76, 10, 110, 10 }; // PLACEHOLDER
     }
 }
