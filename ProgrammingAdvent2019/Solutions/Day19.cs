@@ -30,7 +30,7 @@ internal class Day19 : Day
     {
         PuzzleAnswers output = new();
         _code = inputLines[0];
-        if (!ScanBeam(50, out int partOneAnswer, out string error))
+        if (!ScanBeam(50, out int partOneAnswer, out SortedDictionary<int, (int, int)>? bounds, out string error))
         {
             return output.WriteError(error);
         }
@@ -60,8 +60,9 @@ internal class Day19 : Day
         return true;
     }
 
-    private bool ScanBeam(int range, out int pointsAffected, out string error)
+    private bool ScanBeam(int range, out int pointsAffected, out SortedDictionary<int, (int, int)>? bounds, out string error)
     {
+        bounds = null;
         pointsAffected = 1;
         // Scan outward from the emitter until finding the direction of the beam.
         int nearPointsFound = 0;
@@ -156,6 +157,10 @@ internal class Day19 : Day
             error = string.Empty;
             return true;
         }
+        bounds = new()
+        {
+            { rangeScanned + 1, (lowerBoundX, upperBoundX) }
+        };
         // Scan the remaining rows.
         for (int y = rangeScanned + 2; y < range; y++)
         {
@@ -192,12 +197,8 @@ internal class Day19 : Day
                         upperBoundX = x - 1;
                         break;
                     }
-                    if (x >= range)
-                    {
-                        upperBoundX = range;
-                        break;
-                    }
                 }
+                bounds.Add(y, (lowerBoundX, upperBoundX));
             }
             // Count the points in this row.
             pointsAffected += Math.Min(range - 1, upperBoundX) - lowerBoundX + 1;
