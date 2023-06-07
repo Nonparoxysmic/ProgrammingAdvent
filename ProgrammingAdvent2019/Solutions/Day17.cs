@@ -233,6 +233,101 @@ internal class Day17 : Day
 
     private static List<int> PathToProgramInput(List<string> fullPath)
     {
+        if (fullPath.Count == 0)
+        {
+            throw new ArgumentException($"Day 17: Empty path passed to {nameof(PathToProgramInput)}().");
+        }
+        if (TrySimpleRoutines(fullPath, out List<int> simpleProgramInput))
+        {
+            return simpleProgramInput;
+        }
         return new List<int>() { 65, 10, 76, 10, 76, 10, 76, 10, 110, 10 }; // PLACEHOLDER
+    }
+
+    private static bool TrySimpleRoutines(List<string> fullPath, out List<int> programInput)
+    {
+        int fullPathLength = fullPath.Sum(s => s.Length) + fullPath.Count - 1;
+        if (fullPathLength > 62)
+        {
+            programInput = Array.Empty<int>().ToList();
+            return false;
+        }
+        List<string>[] functions = new List<string>[]
+        {
+            new List<string>(),
+            new List<string>(),
+            new List<string>()
+        };
+        int[] lengths = new int[] { -1, -1, -1 };
+        int current = 0;
+        for (int i = 0; i < fullPath.Count; i++)
+        {
+            if (lengths[current] + fullPath[i].Length + 1 <= 20)
+            {
+                functions[current].Add(fullPath[i]);
+                lengths[current] += fullPath[i].Length + 1;
+            }
+            else
+            {
+                current++;
+                if (current < 3)
+                {
+                    functions[current].Add(fullPath[i]);
+                    lengths[current] += fullPath[i].Length + 1;
+                }
+            }
+            if (current > 2)
+            {
+                programInput = Array.Empty<int>().ToList();
+                return false;
+            }
+        }
+        List<string> main = new();
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (lengths[i] < 0)
+            {
+                functions[i].Add("L");
+            }
+            else
+            {
+                string functionName = i switch
+                {
+                    0 => "A",
+                    1 => "B",
+                    2 => "C",
+                    _ => "X"
+                };
+                if (functionName != "X")
+                {
+                    main.Add(functionName);
+                }
+            }
+        }
+        if (main.Count == 0)
+        {
+            programInput = Array.Empty<int>().ToList();
+            return false;
+        }
+        string output = CombineLists(main, functions);
+        programInput = new();
+        foreach (char c in output)
+        {
+            programInput.Add(c);
+        }
+        return true;
+    }
+
+    private static string CombineLists(List<string> main, List<string>[] functions)
+    {
+        if (functions.Length != 3)
+        {
+            throw new ArgumentException($"Day 17: Invalid functions array passed to {nameof(CombineLists)}().");
+        }
+        string M = string.Join(',', main);
+        string A = string.Join(',', functions[0]);
+        string B = string.Join(',', functions[1]);
+        string C = string.Join(',', functions[2]);
+        return $"{M}\n{A}\n{B}\n{C}\nn\n";
     }
 }
