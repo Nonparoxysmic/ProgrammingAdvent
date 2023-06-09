@@ -68,7 +68,11 @@ internal class Day17 : Day
             return output.WriteAnswers(sumOfAlignmentParameters, "Error: Robot not found.");
         }
         List<string> fullPath = GetPath(map, robotStartX, robotStartY);
-        List<int> programInput = PathToProgramInput(fullPath);
+        if (!TryPathToProgramInputs(fullPath, out List<int>? programInput, out string pathError)
+            || programInput is null)
+        {
+            return output.WriteAnswers(sumOfAlignmentParameters, pathError);
+        }
         Day09.Day09Program program = new(inputLines[0]);
         program.WriteMemory(0, 2);
         foreach (int i in programInput)
@@ -231,17 +235,24 @@ internal class Day17 : Day
         return path;
     }
 
-    private static List<int> PathToProgramInput(List<string> fullPath)
+    private static bool TryPathToProgramInputs(List<string> fullPath, out List<int>? inputs, out string error)
     {
+        inputs = null;
         if (fullPath.Count == 0)
         {
-            throw new ArgumentException($"Day 17: Empty path passed to {nameof(PathToProgramInput)}().");
+            error = $"Error: Empty path passed to {nameof(TryPathToProgramInputs)}().";
+            return false;
         }
-        if (TrySimpleRoutines(fullPath, out List<int> simpleProgramInput))
+        if (TrySimpleRoutines(fullPath, out inputs))
         {
-            return simpleProgramInput;
+            error = string.Empty;
+            return true;
         }
-        return new List<int>() { 65, 10, 76, 10, 76, 10, 76, 10, 110, 10 }; // PLACEHOLDER
+
+        // TODO: Find the solution.
+
+        error = "No valid solution found.";
+        return false;
     }
 
     private static bool TrySimpleRoutines(List<string> fullPath, out List<int> programInput)
