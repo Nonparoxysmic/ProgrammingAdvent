@@ -249,8 +249,51 @@ internal class Day17 : Day
             return true;
         }
 
-        // TODO: Find the solution.
 
+        int maxTermsA = 0;
+        for (int i = 10; i > 0; i--)
+        {
+            int len = i - 1;
+            for (int j = 0; j < i; j++)
+            {
+                len += fullPath[j].Length;
+            }
+            if (len <= 20)
+            {
+                maxTermsA = i;
+                break;
+            }
+        }
+        int maxTermsC = 0;
+        for (int i = 10; i > 0; i--)
+        {
+            int len = i - 1;
+            for (int j = 1; j <= i; j++)
+            {
+                len += fullPath[^j].Length;
+            }
+            if (len <= 20)
+            {
+                maxTermsC = i;
+                break;
+            }
+        }
+        if (maxTermsA == 0 || maxTermsC == 0)
+        {
+            error = "Error: Invalid path.";
+            return false;
+        }
+        for (int A = maxTermsA; A > 0; A--)
+        {
+            for (int C = maxTermsC; C > 0; C--)
+            {
+                if (TryRoutines(fullPath, A, C, out inputs))
+                {
+                    error = string.Empty;
+                    return true;
+                }
+            }
+        }
         error = "No valid solution found.";
         return false;
     }
@@ -340,5 +383,14 @@ internal class Day17 : Day
         string B = string.Join(',', functions[1]);
         string C = string.Join(',', functions[2]);
         return $"{M}\n{A}\n{B}\n{C}\nn\n";
+    }
+
+    private static bool TryRoutines(List<string> fullPath, int lengthA, int lengthC, out List<int>? programInput)
+    {
+        programInput = null;
+
+        // TODO: Implement this.
+
+        return false;
     }
 }
