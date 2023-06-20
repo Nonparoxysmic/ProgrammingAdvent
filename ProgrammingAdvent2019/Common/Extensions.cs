@@ -109,6 +109,35 @@ internal static class Extensions
     }
 
     /// <summary>
+    /// Replaces subsequences of strings in a collection of strings.
+    /// </summary>
+    /// <param name="collection">The collection to be modified.</param>
+    /// <param name="pattern">The pattern to replace.</param>
+    /// <param name="replacement">The value with which to replace the pattern.</param>
+    public static void ReplaceSequence(this IList<string> collection, IList<string> pattern, string replacement)
+    {
+        if (collection.Count == 0 || pattern.Count == 0 || pattern.Count > collection.Count)
+        {
+            return;
+        }
+        for (int i = 0; i < collection.Count - pattern.Count + 1; i++)
+        {
+            bool patternMatch = true;
+            for (int j = 0; j < pattern.Count; j++)
+            {
+                patternMatch &= (collection[i + j] == pattern[j]);
+            }
+            if (patternMatch)
+            {
+                for (int j = 0; j < pattern.Count; j++)
+                {
+                    collection[i + j] = replacement;
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Randomly sorts the elements of an <seealso cref="IList{T}"/> collection.
     /// </summary>
     /// <remarks>
