@@ -249,7 +249,6 @@ internal class Day17 : Day
             return true;
         }
 
-
         int maxTermsA = 0;
         for (int i = 10; i > 0; i--)
         {
@@ -363,13 +362,19 @@ internal class Day17 : Day
             programInput = Array.Empty<int>().ToList();
             return false;
         }
-        string output = CombineLists(main, functions);
-        programInput = new();
-        foreach (char c in output)
-        {
-            programInput.Add(c);
-        }
+        programInput = CombineListsToProgramInput(main, functions);
         return true;
+    }
+
+    private static List<int> CombineListsToProgramInput(List<string> main, List<string>[] functions)
+    {
+        string combination = CombineLists(main, functions);
+        List<int> result = new();
+        foreach (char c in combination)
+        {
+            result.Add(c);
+        }
+        return result;
     }
 
     private static string CombineLists(List<string> main, List<string>[] functions)
