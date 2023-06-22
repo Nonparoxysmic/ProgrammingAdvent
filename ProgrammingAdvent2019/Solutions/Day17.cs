@@ -398,4 +398,26 @@ internal class Day17 : Day
 
         return false;
     }
+
+    private static List<string> MainRoutine(List<string> path, List<string>[] functions)
+    {
+        List<string> main = new();
+        int i = 0;
+        while (i < path.Count)
+        {
+            switch (path[i])
+            {
+                case "A":
+                case "B":
+                case "C":
+                    main.Add(path[i]);
+                    i += functions[path[i][0] - 65].Count;
+                    break;
+                default:
+                    i = int.MaxValue;
+                    break;
+            }
+        }
+        return main;
+    }
 }
