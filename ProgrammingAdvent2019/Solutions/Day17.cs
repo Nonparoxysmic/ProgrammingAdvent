@@ -383,6 +383,13 @@ internal class Day17 : Day
         {
             throw new ArgumentException($"Day 17: Invalid functions array passed to {nameof(CombineLists)}().");
         }
+        for (int i = 0; i < functions.Length; i++)
+        {
+            if (functions[i].Count == 0)
+            {
+                functions[i].Add("L");
+            }
+        }
         string M = string.Join(',', main);
         string A = string.Join(',', functions[0]);
         string B = string.Join(',', functions[1]);
