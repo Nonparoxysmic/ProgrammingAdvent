@@ -401,7 +401,31 @@ internal class Day17 : Day
     {
         programInput = null;
 
-        // TODO: Implement this.
+        List<string>[] functions = new List<string>[3];
+        functions[0] = new();
+        functions[1] = new();
+        functions[2] = new();
+        for (int i = 0; i < lengthA; i++)
+        {
+            functions[0].Add(fullPath[i]);
+        }
+        for (int i = fullPath.Count - lengthC; i < fullPath.Count; i++)
+        {
+            functions[2].Add(fullPath[i]);
+        }
+        List<string> path = new(fullPath);
+        path.ReplaceSequence(functions[0], "A");
+        path.ReplaceSequence(functions[2], "C");
+
+        int totalGaps = path.Count(x => x != "A" && x != "C");
+        if (totalGaps == 0)
+        {
+            List<string> main = MainRoutine(path, functions);
+            programInput = CombineListsToProgramInput(main, functions);
+            return true;
+        }
+
+        // TODO: Check if the remaining pattern is a valid function B.
 
         return false;
     }
