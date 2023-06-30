@@ -425,7 +425,12 @@ internal class Day17 : Day
             return true;
         }
 
-        // TODO: Check if the remaining pattern is a valid function B.
+        if (FindValidB(path, functions))
+        {
+            List<string> main = MainRoutine(path, functions);
+            programInput = CombineListsToProgramInput(main, functions);
+            return true;
+        }
 
         return false;
     }
@@ -450,5 +455,63 @@ internal class Day17 : Day
             }
         }
         return main;
+    }
+
+    private static bool FindValidB(List<string> path, List<string>[] functions)
+    {
+        List<(int position, int length)> gaps = IdentifyGaps(path);
+        foreach ((int position, _) in gaps)
+        {
+            if (path[position] != path[gaps[0].position])
+            {
+                return false;
+            }
+        }
+        List<string> B = new();
+        for (int i = 0; i < Math.Min(10, gaps[0].length); i++)
+        {
+            string nextTerm = path[gaps[0].position + i];
+            if (nextTerm == "A" || nextTerm == "C")
+            {
+                break;
+            }
+            B.Add(nextTerm);
+            List<string> testPath = new(path);
+            testPath.ReplaceSequence(B, "B");
+            int remaining = testPath.Count(x => x != "A" && x != "B" && x != "C");
+            if (remaining == 0)
+            {
+                int lengthB = B.Sum(x => x.ToString().Length) + B.Count - 1;
+                if (lengthB <= 20)
+                {
+                    functions[1] = B;
+                    path.ReplaceSequence(B, "B");
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static List<(int, int)> IdentifyGaps(List<string> path)
+    {
+        List<(int, int)> output = new();
+        int startOfGap = 0;
+        for (int i = 1; i < path.Count; i++)
+        {
+            if ((path[i - 1] == "A" || path[i - 1] == "C")
+                && path[i] != "A" && path[i] != "C")
+            {
+                startOfGap = i;
+                continue;
+            }
+            if ((path[i] == "A" || path[i] == "C")
+                && path[i - 1] != "A" && path[i - 1] != "C")
+            {
+                output.Add((startOfGap, i - startOfGap));
+            }
+        }
+        return output;
     }
 }

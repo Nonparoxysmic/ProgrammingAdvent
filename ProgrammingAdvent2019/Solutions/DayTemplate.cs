@@ -5,6 +5,7 @@
 
 using System.Collections.Concurrent;
 using System.Drawing;
+using System.Text;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;
 
