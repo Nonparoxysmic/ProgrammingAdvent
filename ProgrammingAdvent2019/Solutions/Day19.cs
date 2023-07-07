@@ -34,6 +34,10 @@ internal class Day19 : Day
         {
             return output.WriteError(error);
         }
+        if (bounds is null || bounds.Count < 2)
+        {
+            return output.WriteAnswers(partOneAnswer, "Failed to image the beam.");
+        }
         return output.WriteAnswers(partOneAnswer, null);
     }
 
