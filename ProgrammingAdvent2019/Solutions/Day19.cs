@@ -38,6 +38,7 @@ internal class Day19 : Day
         {
             return output.WriteAnswers(partOneAnswer, "Failed to image the beam.");
         }
+        BoundsFunction boundsFunction = new(bounds);
         return output.WriteAnswers(partOneAnswer, null);
     }
 
@@ -209,5 +210,115 @@ internal class Day19 : Day
         }
         error = string.Empty;
         return true;
+    }
+
+    private class BoundsFunction
+    {
+        private readonly int lowerX0;
+        private readonly int lowerY0;
+        private readonly int lowerLoopDeltaX;
+        private readonly int[] lowerLoopOffsets;
+        private readonly int upperX0;
+        private readonly int upperY0;
+        private readonly int upperLoopDeltaX;
+        private readonly int[] upperLoopOffsets;
+
+        public BoundsFunction(SortedDictionary<int, (int, int)> bounds)
+        {
+            (lowerX0, lowerY0, lowerLoopDeltaX, lowerLoopOffsets) = BoundsParamenters(bounds, 0);
+            (upperX0, upperY0, upperLoopDeltaX, upperLoopOffsets) = BoundsParamenters(bounds, 1);
+        }
+
+        public int LowerBound(int y)
+        {
+            if (y < lowerY0)
+            {
+                return -1;
+            }
+            return lowerX0 + (y - lowerY0) / lowerLoopOffsets.Length * lowerLoopDeltaX
+                + lowerLoopOffsets[(y - lowerY0) % lowerLoopOffsets.Length];
+        }
+
+        public int UpperBound(int y)
+        {
+            if (y < upperY0)
+            {
+                return -1;
+            }
+            return upperX0 + (y - upperY0) / upperLoopOffsets.Length * upperLoopDeltaX
+                + upperLoopOffsets[(y - upperY0) % upperLoopOffsets.Length];
+        }
+
+        private static (int, int, int, int[]) BoundsParamenters(SortedDictionary<int, (int, int)> bounds, int index)
+        {
+            int[] measuredX = new int[bounds.Count];
+            (int, int)[] values = bounds.Values.ToArray();
+            if (index <= 0)
+            {
+                for (int i = 0; i < bounds.Count; i++)
+                {
+                    measuredX[i] = values[i].Item1;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < bounds.Count; i++)
+                {
+                    measuredX[i] = values[i].Item2;
+                }
+            }
+
+            int[] differences = new int[measuredX.Length];
+            for (int i = 1; i < differences.Length; i++)
+            {
+                differences[i] = measuredX[i] - measuredX[i - 1];
+            }
+            int position = -1, length = -1;
+            for (int i = 2; i < differences.Length; i++)
+            {
+                if (differences[i] != differences[1])
+                {
+                    position = i;
+                    break;
+                }
+            }
+            if (position < 0)
+            {
+                position = 1;
+                length = differences.Length - 1;
+            }
+            else
+            {
+                bool foundNext = false;
+                for (int i = position; i < differences.Length; i++)
+                {
+                    if (differences[i] != differences[position])
+                    {
+                        foundNext = true;
+                    }
+                    if (foundNext && differences[i] == differences[position])
+                    {
+                        length = i - position;
+                        break;
+                    }
+                }
+                if (length < 0)
+                {
+                    length = differences.Length - position;
+                }
+            }
+
+            int outputX0 = measuredX[position];
+            int[] keys = bounds.Keys.ToArray();
+            int outputY0 = keys[position];
+            int loopDeltaX = measuredX[position + length] - outputX0;
+            int[] loopOffsets = new int[length];
+            for (int i = 0; i < loopOffsets.Length; i++)
+            {
+                loopOffsets[i] = measuredX[position + i] - measuredX[position];
+            }
+
+            return (outputX0, outputY0, loopDeltaX, loopOffsets);
+        }
     }
 }
