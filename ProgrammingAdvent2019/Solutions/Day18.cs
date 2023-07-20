@@ -91,6 +91,12 @@ internal class Day18 : Day
 
         MazeNode entranceNode = BuildGraph(map, entrance);
 
+        var importantNodes = MazeNode.AllNodes.Where(n => n.IsEntranceOrKey);
+        foreach (MazeNode node in importantNodes)
+        {
+            Dijkstra(node);
+        }
+
         return output.WriteAnswers(null, null);
     }
 
@@ -165,6 +171,7 @@ internal class Day18 : Day
     private static MazeNode BuildGraph(char[,] map, Vector2Int entrance)
     {
         MazeNode.AllNodes.Clear();
+        MazeNode.KeyNodes.Clear();
         MazeNode root = new(entrance.X, entrance.Y, '@');
 
         if (map[entrance.X - 1, entrance.Y - 1] == '.'
@@ -217,15 +224,60 @@ internal class Day18 : Day
         }
     }
 
+    private static void Dijkstra(MazeNode source)
+    {
+        source.KeyDistances.Clear();
+        MazeNode.DijkstraReset();
+        source.DijkstraDistance = 0;
+        List<MazeNode> unvisitedNodes = new(MazeNode.AllNodes);
+        int timeout = 0;
+        while (timeout++ < 1000)
+        {
+            MazeNode? current = unvisitedNodes.OrderBy(n => n.DijkstraDistance).FirstOrDefault();
+            if (current is null || current.DijkstraDistance == int.MaxValue)
+            {
+                break;
+            }
+            if (current.IsKey && current.DijkstraDistance > 0)
+            {
+                (int, List<char>) info = (current.DijkstraDistance, new List<char>(current.DijkstraDoors));
+                source.KeyDistances[current.Feature] = info;
+            }
+            IEnumerable<MazeNode> unvisitedNeighbors = current.Neighbors.Where(n => !n.DijkstraVisited);
+            foreach (MazeNode neighbor in unvisitedNeighbors)
+            {
+                int distance = current.DijkstraDistance + EdgeInfo.GetDistance(current, neighbor);
+                neighbor.DijkstraDistance = Math.Min(neighbor.DijkstraDistance, distance);
+                IEnumerable<char> doors = current.DijkstraDoors.Union(EdgeInfo.GetDoors(current, neighbor));
+                neighbor.DijkstraDoors = doors.ToList();
+            }
+            current.DijkstraVisited = true;
+            unvisitedNodes.Remove(current);
+        }
+    }
+
     private class MazeNode
     {
         public static List<MazeNode> AllNodes = new();
+        public static Dictionary<char, MazeNode> KeyNodes = new();
 
         public int X { get; private set; }
         public int Y { get; private set; }
         public char Feature { get; private set; }
+        public bool IsKey
+        {
+            get => 'a' <= Feature && Feature <= 'z';
+        }
+        public bool IsEntranceOrKey
+        {
+            get => Feature == '@' || ('a' <= Feature && Feature <= 'z');
+        }
+        public bool DijkstraVisited { get; set; }
+        public int DijkstraDistance { get; set; }
 
         public readonly HashSet<MazeNode> Neighbors = new();
+        public readonly Dictionary<char, (int, List<char>)> KeyDistances = new();
+        public List<char> DijkstraDoors = new();
 
         public MazeNode(int x, int y, char feature)
         {
@@ -233,6 +285,10 @@ internal class Day18 : Day
             Y = y;
             Feature = feature;
             AllNodes.Add(this);
+            if ('a' <= Feature && Feature <= 'z')
+            {
+                KeyNodes.Add(Feature, this);
+            }
         }
 
         public MazeNode CreateNeighbor(int x, int y, int distance, List<char> doors, char feature = '.')
@@ -261,6 +317,16 @@ internal class Day18 : Day
             ConnectNodes(NW, SW);
             ConnectNodes(NE, SE);
             ConnectNodes(SW, SE);
+        }
+
+        public static void DijkstraReset()
+        {
+            foreach (MazeNode node in AllNodes)
+            {
+                node.DijkstraVisited = false;
+                node.DijkstraDistance = int.MaxValue;
+                node.DijkstraDoors.Clear();
+            }
         }
     }
 
