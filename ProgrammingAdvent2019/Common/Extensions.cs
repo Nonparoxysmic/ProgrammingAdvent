@@ -214,4 +214,62 @@ internal static class Extensions
         return text.Split(_newlines, StringSplitOptions.None);
     }
     private static readonly string[] _newlines = new[] { "\r\n", "\n" };
+
+    /// <summary>
+    /// Converts a character to lowercase.
+    /// </summary>
+    /// <remarks>
+    /// If the character is an uppercase letter in the <b>Basic Latin</b> or 
+    /// <b>Latin-1 Supplement</b> Unicode blocks with a lowercase equivalent in the same block, 
+    /// this method returns the lowercase form. Otherwise, the original character is returned.
+    /// </remarks>
+    /// <returns>
+    /// The same character, converted to lowercase if possible.
+    /// </returns>
+    /// <param name="character">The character to be converted to lowercase.</param>
+    public static char ToLower(this char character)
+    {
+        if ('A' <= character && character <= 'Z')
+        {
+            return (char)(character + 32);
+        }
+        if ('\u00C0' <= character && character <= '\u00D6')
+        {
+            return (char)(character + 32);
+        }
+        if ('\u00D8' <= character && character <= '\u00DE')
+        {
+            return (char)(character + 32);
+        }
+        return character;
+    }
+
+    /// <summary>
+    /// Converts a character to uppercase.
+    /// </summary>
+    /// <remarks>
+    /// If the character is a lowercase letter in the <b>Basic Latin</b> or 
+    /// <b>Latin-1 Supplement</b> Unicode blocks with an uppercase equivalent in the same block, 
+    /// this method returns the uppercase form. Otherwise, the original character is returned.
+    /// </remarks>
+    /// <returns>
+    /// The same character, converted to uppercase if possible.
+    /// </returns>
+    /// <param name="character">The character to be converted to uppercase.</param>
+    public static char ToUpper(this char character)
+    {
+        if ('a' <= character && character <= 'z')
+        {
+            return (char)(character - 32);
+        }
+        if ('\u00E0' <= character && character <= '\u00F6')
+        {
+            return (char)(character - 32);
+        }
+        if ('\u00F8' <= character && character <= '\u00FE')
+        {
+            return (char)(character - 32);
+        }
+        return character;
+    }
 }
