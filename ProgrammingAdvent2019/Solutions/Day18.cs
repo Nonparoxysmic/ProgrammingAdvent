@@ -87,23 +87,25 @@ internal class Day18 : Day
     {
         PuzzleAnswers output = new();
 
-        (char[,] map, char[] keys, Vector2Int entrance) = ProcessInput(inputLines);
+        (char[,] map, HashSet<char> allKeys, Vector2Int entrance) = ProcessInput(inputLines);
 
         MazeNode entranceNode = BuildGraph(map, entrance);
 
-        var importantNodes = MazeNode.AllNodes.Where(n => n.IsEntranceOrKey);
-        foreach (MazeNode node in importantNodes)
+        HashSet<char> keysCollected = new();
+        Dictionary<string, int> cache = new();
+        int partOneAnswer = StepsToCollectAllKeys(entranceNode, keysCollected, allKeys, cache);
+        if (partOneAnswer == int.MaxValue)
         {
-            Dijkstra(node);
+            return output.WriteError("Unable to collect all keys.");
         }
 
-        return output.WriteAnswers(null, null);
+        return output.WriteAnswers(partOneAnswer, null);
     }
 
-    private static (char[,], char[], Vector2Int) ProcessInput(string[] input)
+    private static (char[,], HashSet<char>, Vector2Int) ProcessInput(string[] input)
     {
         char[,] map = new char[input[0].Length, input.Length];
-        List<char> keys = new();
+        HashSet<char> keys = new();
         int entranceX = -1;
         int entranceY = -1;
         for (int y = 0; y < input.Length; y++)
@@ -123,8 +125,7 @@ internal class Day18 : Day
             }
         }
         PruneDeadEnds(map);
-        keys.Sort();
-        return (map, keys.ToArray(), new Vector2Int(entranceX, entranceY));
+        return (map, keys, new Vector2Int(entranceX, entranceY));
     }
 
     private static void PruneDeadEnds(char[,] map)
@@ -238,22 +239,70 @@ internal class Day18 : Day
             {
                 break;
             }
-            if (current.IsKey && current.DijkstraDistance > 0)
+            if (current.HasKey)
             {
                 (int, List<char>) info = (current.DijkstraDistance, new List<char>(current.DijkstraDoors));
                 source.KeyDistances[current.Feature] = info;
             }
-            IEnumerable<MazeNode> unvisitedNeighbors = current.Neighbors.Where(n => !n.DijkstraVisited);
-            foreach (MazeNode neighbor in unvisitedNeighbors)
+            else
             {
-                int distance = current.DijkstraDistance + EdgeInfo.GetDistance(current, neighbor);
-                neighbor.DijkstraDistance = Math.Min(neighbor.DijkstraDistance, distance);
-                IEnumerable<char> doors = current.DijkstraDoors.Union(EdgeInfo.GetDoors(current, neighbor));
-                neighbor.DijkstraDoors = doors.ToList();
+                IEnumerable<MazeNode> unvisitedNeighbors = current.Neighbors.Where(n => !n.DijkstraVisited);
+                foreach (MazeNode neighbor in unvisitedNeighbors)
+                {
+                    int distance = current.DijkstraDistance + EdgeInfo.GetDistance(current, neighbor);
+                    neighbor.DijkstraDistance = Math.Min(neighbor.DijkstraDistance, distance);
+                    IEnumerable<char> doors = current.DijkstraDoors.Union(EdgeInfo.GetDoors(current, neighbor));
+                    neighbor.DijkstraDoors = doors.ToList();
+                }
             }
             current.DijkstraVisited = true;
             unvisitedNodes.Remove(current);
         }
+    }
+
+    private static int StepsToCollectAllKeys(MazeNode currentNode, HashSet<char> keysCollected, HashSet<char> allKeys, Dictionary<string, int> cache)
+    {
+        IEnumerable<char> uncollectedKeys = allKeys.Except(keysCollected);
+        if (!uncollectedKeys.Any())
+        {
+            return 0;
+        }
+
+        string state = $"{currentNode.Feature}->{string.Join(null, uncollectedKeys)}";
+        if (cache.ContainsKey(state))
+        {
+            return cache[state];
+        }
+
+        Dijkstra(currentNode);
+
+        int shortestPath = int.MaxValue;
+        foreach (char key in uncollectedKeys)
+        {
+            if (!currentNode.KeyDistances.ContainsKey(key))
+            {
+                continue;
+            }
+            (int distance, List<char> doors) = currentNode.KeyDistances[key];
+            bool canOpenDoors = doors.All(c => keysCollected.Contains(c.ToLower()));
+            if (canOpenDoors)
+            {
+                MazeNode nextNode = MazeNode.KeyNodes[key];
+                keysCollected.Add(nextNode.Feature);
+                nextNode.DijkstraKeyCollected = true;
+                int nextSteps = StepsToCollectAllKeys(nextNode, keysCollected, allKeys, cache);
+                keysCollected.Remove(nextNode.Feature);
+                nextNode.DijkstraKeyCollected = false;
+                if (nextSteps < int.MaxValue)
+                {
+                    shortestPath = Math.Min(shortestPath, distance + nextSteps);
+                }
+            }
+        }
+
+        cache[state] = shortestPath;
+
+        return shortestPath;
     }
 
     private class MazeNode
@@ -264,14 +313,15 @@ internal class Day18 : Day
         public int X { get; private set; }
         public int Y { get; private set; }
         public char Feature { get; private set; }
-        public bool IsKey
+        public bool HasKey
         {
-            get => 'a' <= Feature && Feature <= 'z';
+            get => ('a' <= Feature && Feature <= 'z') && !DijkstraKeyCollected;
         }
         public bool IsEntranceOrKey
         {
             get => Feature == '@' || ('a' <= Feature && Feature <= 'z');
         }
+        public bool DijkstraKeyCollected { get; set; }
         public bool DijkstraVisited { get; set; }
         public int DijkstraDistance { get; set; }
 
@@ -326,6 +376,14 @@ internal class Day18 : Day
                 node.DijkstraVisited = false;
                 node.DijkstraDistance = int.MaxValue;
                 node.DijkstraDoors.Clear();
+            }
+        }
+
+        public static void DijkstraKeyReset()
+        {
+            foreach (MazeNode node in AllNodes)
+            {
+                node.DijkstraKeyCollected = false;
             }
         }
     }
