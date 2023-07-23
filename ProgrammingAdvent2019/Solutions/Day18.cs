@@ -89,7 +89,7 @@ internal class Day18 : Day
 
         (char[,] map, HashSet<char> allKeys, Vector2Int entrance) = ProcessInput(inputLines);
 
-        MazeNode entranceNode = BuildGraph(map, entrance);
+        MazeNode entranceNode = BuildGraph(map, entrance, out bool partTwoAllowed);
 
         HashSet<char> keysCollected = new();
         Dictionary<string, int> cache = new();
@@ -97,6 +97,11 @@ internal class Day18 : Day
         if (partOneAnswer == int.MaxValue)
         {
             return output.WriteError("Unable to collect all keys.");
+        }
+
+        if (!partTwoAllowed)
+        {
+            return output.WriteAnswers(partOneAnswer, "Invalid input for Part Two");
         }
 
         return output.WriteAnswers(partOneAnswer, null);
@@ -169,7 +174,7 @@ internal class Day18 : Day
         }
     }
 
-    private static MazeNode BuildGraph(char[,] map, Vector2Int entrance)
+    private static MazeNode BuildGraph(char[,] map, Vector2Int entrance, out bool partTwoAllowed)
     {
         MazeNode.AllNodes.Clear();
         MazeNode.KeyNodes.Clear();
@@ -185,6 +190,7 @@ internal class Day18 : Day
             && map[entrance.X + 1, entrance.Y + 1] == '.')
         {
             // Actual input can be divided into four quadrants.
+            partTwoAllowed = true;
             map[entrance.X - 1, entrance.Y - 1] = '@';
             map[entrance.X, entrance.Y - 1] = '#';
             map[entrance.X + 1, entrance.Y - 1] = '@';
@@ -204,6 +210,7 @@ internal class Day18 : Day
         else
         {
             // Example inputs do not divide into quadrants.
+            partTwoAllowed = false;
             MapToNodes(map, root);
         }
 
