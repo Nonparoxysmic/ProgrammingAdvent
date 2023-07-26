@@ -27,11 +27,46 @@ internal class Day19 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] inputLines, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
+
         if (!ScanBeam(inputLines[0], 50, out ScanResult scanResult))
         {
             return output.WriteError(scanResult.ErrorMessage);
         }
-        return output.WriteAnswers(scanResult.PointsAffected, null);
+        if (!scanResult.FoundBounds)
+        {
+            return output.WriteAnswers(scanResult.PointsAffected, "ERROR: Beam not found.");
+        }
+
+        int upperRightX = scanResult.UpperX;
+        int lowerLeftX = scanResult.LowerX;
+        for (int i = 0; i < 98; i++)
+        {
+            if (!AdvanceBound(inputLines[0], lowerLeftX, scanResult.BoundsY + i, 1, out int newX))
+            {
+                return output.WriteAnswers(scanResult.PointsAffected, "ERROR: Unable to follow the beam.");
+            }
+            lowerLeftX = newX;
+        }
+
+        int currentY = scanResult.BoundsY;
+        int timeout = 0;
+        while (timeout++ < 10_000 && upperRightX < lowerLeftX + 100)
+        {
+            if (!AdvanceBound(inputLines[0], lowerLeftX, currentY + 99, 1, out int newLowerX))
+            {
+                return output.WriteAnswers(scanResult.PointsAffected, "ERROR: Unable to follow the beam.");
+            }
+            lowerLeftX = newLowerX;
+            if (!AdvanceBound(inputLines[0], upperRightX, currentY, 0, out int newUpperX))
+            {
+                return output.WriteAnswers(scanResult.PointsAffected, "ERROR: Unable to follow the beam.");
+            }
+            upperRightX = newUpperX;
+            currentY++;
+        }
+        int partTwoAnswer = 10_000 * lowerLeftX + currentY;
+
+        return output.WriteAnswers(scanResult.PointsAffected, partTwoAnswer);
     }
 
     private static bool TestPoint(int x, int y, string code, out int result, out string error)
@@ -201,6 +236,25 @@ internal class Day19 : Day
             scanResult.PointsAffected += Math.Min(range, upperBoundX) - lowerBoundX;
         }
         return true;
+    }
+
+    private static bool AdvanceBound(string code, int x, int y, int stop, out int newX)
+    {
+        for (int i = x; i < x + 1000; i++)
+        {
+            if (!TestPoint(i, y + 1, code, out int result, out _))
+            {
+                newX = -1;
+                return false;
+            }
+            if (result == stop)
+            {
+                newX = i;
+                return true;
+            }
+        }
+        newX = -1;
+        return false;
     }
 
     private class ScanResult
