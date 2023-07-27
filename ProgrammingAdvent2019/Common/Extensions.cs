@@ -177,6 +177,45 @@ internal static class Extensions
     }
 
     /// <summary>
+    /// Converts a one-dimensional string array into a two-dimensional character array.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If the <paramref name="width"/> parameter is less than zero, the width of the
+    /// output will default to the length of the first string in the string array.
+    /// </para>
+    /// <para>
+    /// If a line of the string array is longer than the width of the output array, 
+    /// the extra characters will be ignored. If it is shorter, the corresponding line 
+    /// in the output array will be padded with the <paramref name="defaultChar"/> character.
+    /// </para>
+    /// </remarks>
+    /// <returns>
+    /// A two-dimensional <seealso cref="char"/> array containing the characters from 
+    /// the original one-dimensional string array.
+    /// </returns>
+    /// <param name="strings">The array of strings to convert.</param>
+    /// <param name="width">The width of the output array.</param>
+    /// <param name="defaultChar">The default character of the output array.</param>
+    public static char[,] ToCharArray2D(this string[] strings, int width = -1, char defaultChar = '\0')
+    {
+        width = width < 0 ? strings[0].Length : width;
+        char[,] output = new char[width, strings.Length];
+        for (int y = 0; y < strings.Length; y++)
+        {
+            for (int x = 0; x < Math.Min(strings[y].Length, width); x++)
+            {
+                output[x, y] = strings[y][x];
+            }
+            for (int x = strings[y].Length; x < width; x++)
+            {
+                output[x, y] = defaultChar;
+            }
+        }
+        return output;
+    }
+
+    /// <summary>
     /// Splits a string into substrings based on line breaks.
     /// </summary>
     /// <remarks>
