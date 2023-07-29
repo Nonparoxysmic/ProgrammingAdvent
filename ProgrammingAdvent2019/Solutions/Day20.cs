@@ -15,6 +15,8 @@ internal class Day20 : Day
     private static readonly Regex _validOuterLabel = new(@"^([A-Z]{2}\.|  #)$");
     private static readonly Regex _validInnerLabel = new(@"^([A-Z]{2}\.|[A-Z ]{2}#)$");
 
+    private readonly Dictionary<int, int> _portals = new();
+
     public override bool ValidateInput(string[] inputLines, out string errorMessage)
     {
         // Check overall input.
@@ -302,6 +304,134 @@ internal class Day20 : Day
     {
         PuzzleAnswers output = new();
 
+        char[,] map = inputLines.ToCharArray2D();
+        FindPortals(map);
+        PruneDeadEnds(map);
+
         return output.WriteAnswers(null, null);
+    }
+
+    private void FindPortals(char[,] map)
+    {
+        _portals.Clear();
+        // Add the outer portals.
+        int ox = map.GetLength(0) - 3;
+        int oy = map.GetLength(1) - 3;
+        for (int y = 2; y < oy; y++)
+        {
+            if (map[2, y] == '.')
+            {
+                int coord = 2 << 16 | y;
+                int label = map[0, y] << 16 | map[1, y];
+                _portals.Add(coord, label);
+                map[2, y] = '*';
+            }
+            if (map[ox, y] == '.')
+            {
+                int coord = ox << 16 | y;
+                int label = map[ox + 1, y] << 16 | map[ox + 2, y];
+                _portals.Add(coord, label);
+                map[ox, y] = '*';
+            }
+        }
+        for (int x = 2; x < ox; x++)
+        {
+            if (map[x, 2] == '.')
+            {
+                int coord = x << 16 | 2;
+                int label = map[x, 0] << 16 | map[x, 1];
+                _portals.Add(coord, label);
+                map[x, 2] = '*';
+            }
+            if (map[x, oy] == '.')
+            {
+                int coord = x << 16 | oy;
+                int label = map[x, oy + 1] << 16 | map[x, oy + 2];
+                _portals.Add(coord, label);
+                map[x, oy] = '*';
+            }
+        }
+        // Add the inner portals.
+        Rectangle interior = InteriorSpace(map);
+        int ix = interior.X + interior.Width;
+        int iy = interior.Y + interior.Height;
+        for (int y = interior.Y; y < iy; y++)
+        {
+            if (map[interior.X - 1, y] == '.')
+            {
+                int coord = (interior.X - 1) << 16 | y;
+                int label = map[interior.X, y] << 16 | map[interior.X + 1, y];
+                _portals.Add(coord, label);
+                map[interior.X - 1, y] = '*';
+            }
+            if (map[ix, y] == '.')
+            {
+                int coord = ix << 16 | y;
+                int label = map[ix - 2, y] << 16 | map[ix - 1, y];
+                _portals.Add(coord, label);
+                map[ix, y] = '*';
+            }
+        }
+        for (int x = interior.X; x < ix; x++)
+        {
+            if (map[x, interior.Y - 1] == '.')
+            {
+                int coord = x << 16 | (interior.Y - 1);
+                int label = map[x, interior.Y] << 16 | map[x, interior.Y + 1];
+                _portals.Add(coord, label);
+                map[x, interior.Y - 1] = '*';
+            }
+            if (map[x, iy] == '.')
+            {
+                int coord = x << 16 | iy;
+                int label = map[x, iy - 2] << 16 | map[x, iy - 1];
+                _portals.Add(coord, label);
+                map[x, iy] = '*';
+            }
+        }
+    }
+
+    private static void PruneDeadEnds(char[,] map)
+    {
+        for (int y = 3; y < map.GetLength(1) - 3; y++)
+        {
+            for (int x = 3; x < map.GetLength(0) - 3; x++)
+            {
+                PruneDeadEnd(map, x, y);
+            }
+        }
+    }
+
+    private static void PruneDeadEnd(char[,] map, int x, int y)
+    {
+        if (map[x, y] != '.')
+        {
+            return;
+        }
+        int walls = 0;
+        int openX = -1;
+        int openY = -1;
+        foreach (Vector2Int step in _steps)
+        {
+            if (map[x + step.X, y + step.Y] == '#')
+            {
+                walls++;
+            }
+            else
+            {
+                openX = x + step.X;
+                openY = y + step.Y;
+            }
+        }
+        if (walls == 4)
+        {
+            map[x, y] = '#';
+            return;
+        }
+        if (walls == 3)
+        {
+            map[x, y] = '#';
+            PruneDeadEnd(map, openX, openY);
+        }
     }
 }
