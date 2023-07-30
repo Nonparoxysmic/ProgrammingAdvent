@@ -3,6 +3,7 @@
 // for Advent of Code 2019
 // https://adventofcode.com/2019
 
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;
@@ -14,6 +15,13 @@ internal class Day20 : Day
     private static readonly Regex _validCharacters = new("^[ #.A-Z]+$");
     private static readonly Regex _validOuterLabel = new(@"^([A-Z]{2}\.|  #)$");
     private static readonly Regex _validInnerLabel = new(@"^([A-Z]{2}\.|[A-Z ]{2}#)$");
+    private static readonly Vector2Int[] _steps = new Vector2Int[]
+    {
+        new Vector2Int(-1,  0),
+        new Vector2Int( 0, -1),
+        new Vector2Int( 1,  0),
+        new Vector2Int( 0,  1)
+    };
 
     private readonly Dictionary<int, int> _portals = new();
 
@@ -307,6 +315,7 @@ internal class Day20 : Day
         char[,] map = inputLines.ToCharArray2D();
         FindPortals(map);
         PruneDeadEnds(map);
+        MazeNode entrance = BuildGraph(map);
 
         return output.WriteAnswers(null, null);
     }
@@ -432,6 +441,154 @@ internal class Day20 : Day
         {
             map[x, y] = '#';
             PruneDeadEnd(map, openX, openY);
+        }
+    }
+
+    private MazeNode BuildGraph(char[,] map)
+    {
+        MazeNode.AllNodes.Clear();
+        int AA = 'A' << 16 | 'A';
+        int mazeStart = _portals.Where(kvp => kvp.Value == AA).First().Key;
+        MazeNode root = new(mazeStart >> 16, mazeStart & 0xFFFF, _portals[mazeStart]);
+        FindNeighbors(root, map);
+        return root;
+    }
+
+    private void FindNeighbors(MazeNode source, char[,] map)
+    {
+        int lookX, lookY;
+        foreach (Vector2Int step in _steps)
+        {
+            lookX = source.X + step.X;
+            lookY = source.Y + step.Y;
+            if (map[lookX, lookY] != '.' && map[lookX, lookY] != '*' && map[lookX, lookY] != '+')
+            {
+                continue;
+            }
+            (MazeNode neighbor, int distance) = FindNextNode(lookX, lookY, map, source);
+            if (source.Neighbors.ContainsKey(neighbor))
+            {
+                source.Neighbors[neighbor] = Math.Min(source.Neighbors[neighbor], distance);
+                neighbor.Neighbors[source] = Math.Min(neighbor.Neighbors[source], distance);
+            }
+            else
+            {
+                source.Neighbors.Add(neighbor, distance);
+                neighbor.Neighbors.Add(source, distance);
+                FindNeighbors(neighbor, map);
+            }
+        }
+        (int remoteX, int remoteY) = OtherPortalCoordinates(source);
+        if (remoteX >= 0 && remoteY >= 0)
+        {
+            if (MazeNode.FindNode(remoteX, remoteY, out MazeNode? remote))
+            {
+                if (!source.Neighbors.ContainsKey(remote))
+                {
+                    source.Neighbors.Add(remote, 1);
+                    remote.Neighbors.Add(source, 1);
+                    FindNeighbors(remote, map);
+                }
+            }
+            else
+            {
+                MazeNode newRemote = new(remoteX, remoteY, map[remoteX, remoteY]);
+                source.Neighbors.Add(newRemote, 1);
+                newRemote.Neighbors.Add(source, 1);
+                FindNeighbors(newRemote, map);
+            }
+        }
+    }
+
+    private (MazeNode, int) FindNextNode(int x, int y, char[,] map, MazeNode source)
+    {
+        if (map[x, y] == '*' || map[x, y] == '+')
+        {
+            if (MazeNode.FindNode(x, y, out MazeNode? node))
+            {
+                return (node, 1);
+            }
+            int label = map[x, y] == '+' ? 0 : _portals[x << 16 | y];
+            MazeNode next = new(x, y, label);
+            return (next, 1);
+        }
+
+        int openDirections = 0;
+        int openX = -1, openY = -1;
+        foreach (Vector2Int step in _steps)
+        {
+            int lookX = x + step.X;
+            int lookY = y + step.Y;
+            if (lookX == source.X && lookY == source.Y)
+            {
+                continue;
+            }
+            if (map[lookX, lookY] != '.' &&
+                map[lookX, lookY] != '*' &&
+                map[lookX, lookY] != '+')
+            {
+                continue;
+            }
+            openDirections++;
+            openX = x + step.X;
+            openY = y + step.Y;
+        }
+        if (openDirections == 1)
+        {
+            map[x, y] = 'X';
+            (MazeNode next, int distance) = FindNextNode(openX, openY, map, source);
+            return (next, distance + 1);
+        }
+        else if (openDirections > 1)
+        {
+            map[x, y] = '+';
+            if (MazeNode.FindNode(x, y, out MazeNode? node))
+            {
+                return (node, 1);
+            }
+            MazeNode next = new(x, y, 0);
+            return (next, 1);
+        }
+        else
+        {
+            // This should never happen because dead ends should have been removed.
+            throw new InvalidOperationException();
+        }
+    }
+
+    private (int, int) OtherPortalCoordinates(MazeNode local)
+    {
+        int originCoords = local.X << 16 | local.Y;
+        var matchingPortals = _portals.Where(kvp => kvp.Key != originCoords && kvp.Value == local.Label);
+        if (!matchingPortals.Any())
+        {
+            return (-1, -1);
+        }
+        int code = matchingPortals.First().Key;
+        return (code >> 16, code & 0xFFFF);
+    }
+
+    private class MazeNode
+    {
+        public static HashSet<MazeNode> AllNodes = new();
+
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int Label { get; private set; }
+        public Dictionary<MazeNode, int> Neighbors { get; private set; } = new();
+
+        public MazeNode(int x, int y, int label)
+        {
+            X = x;
+            Y = y;
+            Label = label;
+            AllNodes.Add(this);
+        }
+
+        public static bool FindNode(int x, int y, [NotNullWhen(true)] out MazeNode? node)
+        {
+            node = AllNodes.Where(n => n.X == x && n.Y == y).FirstOrDefault();
+            return node is not null;
         }
     }
 }
