@@ -316,8 +316,9 @@ internal class Day20 : Day
         FindPortals(map);
         PruneDeadEnds(map);
         MazeNode entrance = BuildGraph(map);
+        int partOneAnswer = ShortestPathLength(entrance, "ZZ");
 
-        return output.WriteAnswers(null, null);
+        return output.WriteAnswers(partOneAnswer, null);
     }
 
     private void FindPortals(char[,] map)
@@ -568,6 +569,35 @@ internal class Day20 : Day
         return (code >> 16, code & 0xFFFF);
     }
 
+    private static int ShortestPathLength(MazeNode entrance, string goal)
+    {
+        entrance.DijkstraDistance = 0;
+        List<MazeNode> unvisitedNodes = new(MazeNode.AllNodes);
+        int goalLabel = goal[0] << 16 | goal[1];
+        int timeout = 0;
+        while (timeout++ < 1000)
+        {
+            MazeNode? current = unvisitedNodes.OrderBy(n => n.DijkstraDistance).FirstOrDefault();
+            if (current is null || current.DijkstraDistance == int.MaxValue)
+            {
+                break;
+            }
+            if (current.Label == goalLabel)
+            {
+                return current.DijkstraDistance;
+            }
+            var unvisitedNeighbors = current.Neighbors.Where(n => !n.Key.DijkstraVisited);
+            foreach (var kvp in unvisitedNeighbors)
+            {
+                int distance = current.DijkstraDistance + kvp.Value;
+                kvp.Key.DijkstraDistance = Math.Min(kvp.Key.DijkstraDistance, distance);
+            }
+            current.DijkstraVisited = true;
+            unvisitedNodes.Remove(current);
+        }
+        return int.MaxValue;
+    }
+
     private class MazeNode
     {
         public static HashSet<MazeNode> AllNodes = new();
@@ -576,6 +606,9 @@ internal class Day20 : Day
         public int Y { get; private set; }
         public int Label { get; private set; }
         public Dictionary<MazeNode, int> Neighbors { get; private set; } = new();
+
+        public bool DijkstraVisited { get; set; } = false;
+        public int DijkstraDistance { get; set; } = int.MaxValue;
 
         public MazeNode(int x, int y, int label)
         {

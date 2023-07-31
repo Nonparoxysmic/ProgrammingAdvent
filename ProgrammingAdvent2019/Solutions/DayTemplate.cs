@@ -4,6 +4,7 @@
 // https://adventofcode.com/2019
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
