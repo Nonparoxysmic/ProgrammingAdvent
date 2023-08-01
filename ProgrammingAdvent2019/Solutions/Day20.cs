@@ -131,6 +131,26 @@ internal class Day20 : Day
                 labels.Add(bottom);
             }
         }
+        // Outer labels must contain AA and ZZ and no duplicates.
+        labels.Sort();
+        for (int i = 1; i < labels.Count; i++)
+        {
+            if (labels[i] == labels[i - 1])
+            {
+                errorMessage = "Duplicate outer labels.";
+                return false;
+            }
+        }
+        if (!labels.Contains("AA."))
+        {
+            errorMessage = "Input is missing label \"AA\".";
+            return false;
+        }
+        if (!labels.Contains("ZZ."))
+        {
+            errorMessage = "Input is missing label \"ZZ\".";
+            return false;
+        }
         // Check the inner labels.
         Rectangle interior = InteriorSpace(map);
         if (interior.Width < 5 || interior.Height < 5)
@@ -215,16 +235,6 @@ internal class Day20 : Day
         if (labels.Count % 2 == 1)
         {
             errorMessage = "Input contains an odd number of labels.";
-            return false;
-        }
-        if (!labels.Contains("AA."))
-        {
-            errorMessage = "Input is missing label \"AA\".";
-            return false;
-        }
-        if (!labels.Contains("ZZ."))
-        {
-            errorMessage = "Input is missing label \"ZZ\".";
             return false;
         }
         labels.Sort();
