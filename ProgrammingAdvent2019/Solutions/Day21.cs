@@ -28,7 +28,51 @@ internal class Day21 : Day
     {
         PuzzleAnswers output = new();
 
-        return output.WriteAnswers(null, null);
+        AutoComputer computer = new(inputLines[0]);
+        string walkScript = "NOT B J\nNOT C T\nOR T J\nAND D J\nNOT A T\nOR T J\nWALK\n";
+        computer.Run(walkScript);
+        if (computer.Result is null)
+        {
+            return output.WriteError("Script failed.");
+        }
+        long partOneAnswer = (long)computer.Result;
+
+        return output.WriteAnswers(partOneAnswer, null);
+    }
+
+    public class AutoComputer
+    {
+        public long? Result { get; private set; } = null;
+
+        readonly Day09.Day09Program _program;
+
+        public AutoComputer(string code)
+        {
+            _program = new(code);
+        }
+
+        public void Run(string script)
+        {
+            foreach (char c in script)
+            {
+                _program.EnqueueInput(c);
+            }
+            while (_program.Tick()) { }
+            if (_program.Status == Day09.Day09Program.ProgramStatus.Error ||
+                _program.Status == Day09.Day09Program.ProgramStatus.Waiting)
+            {
+                return;
+            }
+            while (_program.OutputCount > 1)
+            {
+                _program.DequeueOutput();
+            }
+            if (_program.OutputCount == 0)
+            {
+                return;
+            }
+            Result = _program.DequeueOutput();
+        }
     }
 
     public class UserComputer
