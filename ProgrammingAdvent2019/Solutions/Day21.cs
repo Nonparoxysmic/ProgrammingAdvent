@@ -37,18 +37,29 @@ internal class Day21 : Day
         }
         long partOneAnswer = (long)computer.Result;
 
-        return output.WriteAnswers(partOneAnswer, null);
+        computer.Reset();
+        string runScript = "NOT B J\nNOT C T\nOR T J\nAND D J\nNOT E T\nNOT T T\nOR H T\nAND T J\nNOT A T\nOR T J\nRUN\n";
+        computer.Run(runScript);
+        if (computer.Result is null)
+        {
+            return output.WriteAnswers(partOneAnswer, "ERROR: Script failed.");
+        }
+        long partTwoAnswer = (long)computer.Result;
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     public class AutoComputer
     {
         public long? Result { get; private set; } = null;
 
-        readonly Day09.Day09Program _program;
+        Day09.Day09Program _program;
+        readonly string _code;
 
         public AutoComputer(string code)
         {
-            _program = new(code);
+            _code = code;
+            _program = new(_code);
         }
 
         public void Run(string script)
@@ -73,6 +84,12 @@ internal class Day21 : Day
             }
             Result = _program.DequeueOutput();
         }
+
+        public void Reset()
+        {
+            Result = null;
+            _program = new(_code);
+        }
     }
 
     public class UserComputer
@@ -84,10 +101,19 @@ internal class Day21 : Day
             _program = new(code);
         }
 
-        public void Run(int timeout = 20)
+        public void Run(string script = "", int timeout = 20)
         {
             Console.WriteLine("Running program...");
             Console.ForegroundColor = ConsoleColor.Green;
+            if (script != "")
+            {
+                foreach (char c in script)
+                {
+                    _program.EnqueueInput(c);
+                    Console.Write(c);
+                }
+                Console.WriteLine();
+            }
             int i = 0;
             while (++i < timeout)
             {
