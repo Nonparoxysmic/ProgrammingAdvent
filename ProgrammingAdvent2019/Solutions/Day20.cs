@@ -170,7 +170,11 @@ internal class Day20 : Day
         Dictionary<(int, int), string> innerLabels = InnerLabels(map, interior);
         PruneDeadEnds(map);
 
-        return output.WriteAnswers(null, null);
+        MazeGraph graph = new(map, outerLabels, innerLabels);
+        int partOneAnswer = graph.ShortestPath(0);
+        int partTwoAnswer = graph.ShortestPath(1);
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static bool TryFindInteriorSpace(char[,] map, [NotNullWhen(true)] out Rectangle interior)
@@ -361,6 +365,329 @@ internal class Day20 : Day
         {
             map[x, y] = '#';
             PruneDeadEnd(map, openX, openY);
+        }
+    }
+
+    private class MazeGraph
+    {
+        private readonly Dictionary<(int, int), (int, int)> _innerPortalDestinations;
+        private readonly Dictionary<(int, int), (int, int)> _outerPortalDestinations;
+
+        private readonly Dictionary<int, MazeLayer> _layers = new();
+        private readonly MazeLayer _template;
+
+        private readonly Vector2Int _mazeStart;
+
+        public MazeGraph(char[,] map, Dictionary<(int, int), string> outerLabels, Dictionary<(int, int), string> innerLabels)
+        {
+            _innerPortalDestinations = new();
+            _outerPortalDestinations = new();
+            _mazeStart = Vector2Int.Zero;
+            foreach (var outerKVP in outerLabels)
+            {
+                foreach (var innerKVP in innerLabels)
+                {
+                    if (outerKVP.Value == innerKVP.Value)
+                    {
+                        _outerPortalDestinations.Add(outerKVP.Key, innerKVP.Key);
+                        _innerPortalDestinations.Add(innerKVP.Key, outerKVP.Key);
+                    }
+                }
+                if (outerKVP.Value == "AA")
+                {
+                    _mazeStart = new Vector2Int(outerKVP.Key.Item1, outerKVP.Key.Item2);
+                }
+            }
+            if (_mazeStart == Vector2Int.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(outerLabels));
+            }
+            _template = new(map, outerLabels, innerLabels);
+            _layers.Add(0, new MazeLayer(_template, 0));
+        }
+
+        public int ShortestPath(int recursion)
+        {
+            foreach (MazeLayer layer in _layers.Values)
+            {
+                layer.SearchReset();
+            }
+            MazeNode entrance = GetNode(_mazeStart.X, _mazeStart.Y, 0);
+            entrance.SearchDistance = 0;
+            HashSet<MazeNode> seenNodes = new() { entrance };
+            int timeout = 0;
+            while (++timeout < 32_768)
+            {
+                MazeNode? current = seenNodes.OrderBy(n => n.SearchDistance).FirstOrDefault();
+                if (current is null || current.SearchDistance == int.MaxValue)
+                {
+                    break;
+                }
+                if (current.Label == "ZZ" && current.Z == 0)
+                {
+                    return current.SearchDistance;
+                }
+                foreach (var kvp in current.NeighborDistances)
+                {
+                    MazeNode neighbor = GetNode(kvp.Key >> 16, kvp.Key & 0xFFFF, current.Z);
+                    if (neighbor.SearchVisited)
+                    {
+                        continue;
+                    }
+                    seenNodes.Add(neighbor);
+                    int newDistance = current.SearchDistance + kvp.Value;
+                    neighbor.SearchDistance = Math.Min(neighbor.SearchDistance, newDistance);
+                }
+                MazeNode? portalNeighbor = null;
+                if (_outerPortalDestinations.ContainsKey((current.X, current.Y)))
+                {
+                    int Z = current.Z - recursion;
+                    if (Z >= 0)
+                    {
+                        (int X, int Y) = _outerPortalDestinations[(current.X, current.Y)];
+                        portalNeighbor = GetNode(X, Y, Z);
+                    }
+                }
+                else if (_innerPortalDestinations.ContainsKey((current.X, current.Y)))
+                {
+                    int Z = current.Z + recursion;
+                    (int X, int Y) = _innerPortalDestinations[(current.X, current.Y)];
+                    portalNeighbor = GetNode(X, Y, Z);
+                }
+                if (portalNeighbor is not null && !portalNeighbor.SearchVisited)
+                {
+                    seenNodes.Add(portalNeighbor);
+                    int newDistance = current.SearchDistance + 1;
+                    portalNeighbor.SearchDistance = Math.Min(portalNeighbor.SearchDistance, newDistance);
+                }
+                current.SearchVisited = true;
+                seenNodes.Remove(current);
+            }
+            return int.MaxValue;
+        }
+
+        private MazeNode GetNode(int x, int y, int z)
+        {
+            if (!_layers.ContainsKey(z))
+            {
+                _layers.Add(z, new MazeLayer(_template, z));
+            }
+            return _layers[z].GetNode(x, y);
+        }
+    }
+
+    private class MazeLayer
+    {
+        public Dictionary<int, MazeNode> Nodes { get; private set; }
+
+        private readonly Dictionary<(int, int), string> _labels = new();
+
+        public MazeLayer(char[,] map, Dictionary<(int, int), string> outerLabels, Dictionary<(int, int), string> innerLabels)
+        {
+            Nodes = new();
+            _labels = new(outerLabels);
+            foreach (var kvp in innerLabels)
+            {
+                _labels.Add(kvp.Key, kvp.Value);
+            }
+            (int startX, int startY) = outerLabels.Where(kvp => kvp.Value == "AA").First().Key;
+            MazeNode entrance = new(startX, startY, "AA");
+            Nodes.Add(startX << 16 | startY, entrance);
+            FindNeighbors(entrance, map);
+            foreach ((int X, int Y) inner in innerLabels.Keys)
+            {
+                MazeNode innerPortal = GetNode(inner.X, inner.Y);
+                if (HasMatchingPortal(innerPortal, out (int X, int Y) outer))
+                {
+                    MazeNode outerPortal = GetNode(outer.X, outer.Y);
+                    innerPortal.NeighborDistances.Remove(outer.X << 16 | outer.Y);
+                    outerPortal.NeighborDistances.Remove(inner.X << 16 | inner.Y);
+                }
+            }
+        }
+
+        public MazeLayer(MazeLayer template, int depth)
+        {
+            Nodes = new();
+            foreach (var kvp in template.Nodes)
+            {
+                Nodes.Add(kvp.Key, new(kvp.Value, depth));
+            }
+        }
+
+        public void SearchReset()
+        {
+            foreach (MazeNode node in Nodes.Values)
+            {
+                node.SearchVisited = false;
+                node.SearchDistance = int.MaxValue;
+            }
+        }
+
+        public MazeNode GetNode(int x, int y)
+        {
+            int key = x << 16 | y;
+            return Nodes[key];
+        }
+
+        private void FindNeighbors(MazeNode source, char[,] map)
+        {
+            int sourcePosition = source.X << 16 | source.Y;
+            int lookX, lookY;
+            foreach (Vector2Int step in _directions)
+            {
+                lookX = source.X + step.X;
+                lookY = source.Y + step.Y;
+                if (map[lookX, lookY] != '.' && map[lookX, lookY] != '*' && map[lookX, lookY] != '+')
+                {
+                    continue;
+                }
+                (MazeNode neighbor, int distance) = FindNextNode(lookX, lookY, map, source);
+                int neighborPosition = neighbor.X << 16 | neighbor.Y;
+                if (source.NeighborDistances.ContainsKey(neighborPosition))
+                {
+                    source.NeighborDistances[neighborPosition] = Math.Min(source.NeighborDistances[neighborPosition], distance);
+                    neighbor.NeighborDistances[sourcePosition] = Math.Min(neighbor.NeighborDistances[sourcePosition], distance);
+                }
+                else
+                {
+                    source.NeighborDistances.Add(neighborPosition, distance);
+                    neighbor.NeighborDistances.Add(sourcePosition, distance);
+                    FindNeighbors(neighbor, map);
+                }
+            }
+
+            if (HasMatchingPortal(source, out (int X, int Y) remote))
+            {
+                int remotePosition = remote.X << 16 | remote.Y;
+                if (Nodes.ContainsKey(remotePosition))
+                {
+                    if (!source.NeighborDistances.ContainsKey(remotePosition))
+                    {
+                        MazeNode remoteNode = Nodes[remotePosition];
+                        source.NeighborDistances.Add(remotePosition, 1);
+                        remoteNode.NeighborDistances.Add(sourcePosition, 1);
+                        FindNeighbors(remoteNode, map);
+                    }
+                }
+                else
+                {
+                    MazeNode newRemote = new(remote.X, remote.Y, source.Label);
+                    Nodes.Add(remotePosition, newRemote);
+                    source.NeighborDistances.Add(remotePosition, 1);
+                    newRemote.NeighborDistances.Add(sourcePosition, 1);
+                    FindNeighbors(newRemote, map);
+                }
+            }
+        }
+
+        private bool HasMatchingPortal(MazeNode local, out (int, int) destination)
+        {
+            var matchingPortals = _labels.Where(kvp => kvp.Key != (local.X, local.Y) && kvp.Value == local.Label);
+            if (!matchingPortals.Any())
+            {
+                destination = (-1, -1);
+                return false;
+            }
+            destination = matchingPortals.First().Key;
+            return true;
+        }
+
+        private (MazeNode, int) FindNextNode(int x, int y, char[,] map, MazeNode source)
+        {
+            if (map[x, y] == '*' || map[x, y] == '+')
+            {
+                if (Nodes.ContainsKey(x << 16 | y))
+                {
+                    return (Nodes[x << 16 | y], 1);
+                }
+                string label = string.Empty;
+                if (map[x, y] == '*')
+                {
+                    label = _labels[(x, y)];
+                }
+                MazeNode next = new(x, y, label);
+                Nodes.Add(x << 16 | y, next);
+                return (next, 1);
+            }
+
+            int openDirections = 0;
+            int openX = -1, openY = -1;
+            foreach (Vector2Int step in _directions)
+            {
+                int lookX = x + step.X;
+                int lookY = y + step.Y;
+                if (lookX == source.X && lookY == source.Y)
+                {
+                    continue;
+                }
+                if (map[lookX, lookY] != '.' &&
+                    map[lookX, lookY] != '*' &&
+                    map[lookX, lookY] != '+')
+                {
+                    continue;
+                }
+                openDirections++;
+                openX = x + step.X;
+                openY = y + step.Y;
+            }
+            if (openDirections == 1)
+            {
+                map[x, y] = 'X';
+                (MazeNode next, int distance) = FindNextNode(openX, openY, map, source);
+                return (next, distance + 1);
+            }
+            else if (openDirections > 1)
+            {
+                map[x, y] = '+';
+                if (Nodes.ContainsKey(x << 16 | y))
+                {
+                    return (Nodes[x << 16 | y], 1);
+                }
+                MazeNode next = new(x, y, string.Empty);
+                Nodes.Add(x << 16 | y, next);
+                return (next, 1);
+            }
+            else
+            {
+                // This should never happen because dead ends should have been removed.
+                throw new InvalidOperationException();
+            }
+        }
+    }
+
+    private class MazeNode
+    {
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int Z { get; private set; }
+        public string Label { get; private set; }
+
+        public Dictionary<int, int> NeighborDistances { get; private set; }
+
+        public bool SearchVisited { get; set; } = false;
+        public int SearchDistance { get; set; } = int.MaxValue;
+
+        public MazeNode(int x, int y, string label)
+        {
+            X = x;
+            Y = y;
+            Z = 0;
+            Label = label;
+            NeighborDistances = new();
+        }
+
+        public MazeNode(MazeNode nodeToCopy, int depth)
+        {
+            X = nodeToCopy.X;
+            Y = nodeToCopy.Y;
+            Z = depth;
+            Label = nodeToCopy.Label;
+            NeighborDistances = new();
+            foreach (var kvp in nodeToCopy.NeighborDistances)
+            {
+                NeighborDistances.Add(kvp.Key, kvp.Value);
+            }
         }
     }
 }
