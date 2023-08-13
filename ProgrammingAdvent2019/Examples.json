@@ -332,5 +332,27 @@
       "Input": "             Z L X W       C                 \r\n             Z P Q B       K                 \r\n  ###########.#.#.#.#######.###############  \r\n  #...#.......#.#.......#.#.......#.#.#...#  \r\n  ###.#.#.#.#.#.#.#.###.#.#.#######.#.#.###  \r\n  #.#...#.#.#...#.#.#...#...#...#.#.......#  \r\n  #.###.#######.###.###.#.###.###.#.#######  \r\n  #...#.......#.#...#...#.............#...#  \r\n  #.#########.#######.#.#######.#######.###  \r\n  #...#.#    F       R I       Z    #.#.#.#  \r\n  #.###.#    D       E C       H    #.#.#.#  \r\n  #.#...#                           #...#.#  \r\n  #.###.#                           #.###.#  \r\n  #.#....OA                       WB..#.#..ZH\r\n  #.###.#                           #.#.#.#  \r\nCJ......#                           #.....#  \r\n  #######                           #######  \r\n  #.#....CK                         #......IC\r\n  #.###.#                           #.###.#  \r\n  #.....#                           #...#.#  \r\n  ###.###                           #.#.#.#  \r\nXF....#.#                         RF..#.#.#  \r\n  #####.#                           #######  \r\n  #......CJ                       NM..#...#  \r\n  ###.#.#                           #.###.#  \r\nRE....#.#                           #......RF\r\n  ###.###        X   X       L      #.#.#.#  \r\n  #.....#        F   Q       P      #.#.#.#  \r\n  ###.###########.###.#######.#########.###  \r\n  #.....#...#.....#.......#...#.....#.#...#  \r\n  #####.#.###.#######.#######.###.###.#.#.#  \r\n  #.......#.......#.#.#.#.#...#...#...#.#.#  \r\n  #####.###.#####.#.#.#.#.###.###.#.###.###  \r\n  #.......#.....#.#...#...............#...#  \r\n  #############.#.#.###.###################  \r\n               A O F   N                     \r\n               A A D   M                     ",
       "PartTwo": "396"
     }
+  },
+  "Day22": {
+    "Example01": {
+      "Input": "deal with increment 7\r\ndeal into new stack\r\ndeal into new stack",
+      "ExampleModifier": "TRUE",
+      "PartOne": "0 3 6 9 2 5 8 1 4 7"
+    },
+    "Example02": {
+      "Input": "cut 6\r\ndeal with increment 7\r\ndeal into new stack",
+      "ExampleModifier": "TRUE",
+      "PartOne": "3 0 7 4 1 8 5 2 9 6"
+    },
+    "Example03": {
+      "Input": "deal with increment 7\r\ndeal with increment 9\r\ncut -2",
+      "ExampleModifier": "TRUE",
+      "PartOne": "6 3 0 7 4 1 8 5 2 9"
+    },
+    "Example04": {
+      "Input": "deal into new stack\r\ncut -2\r\ndeal with increment 7\r\ncut 8\r\ncut -4\r\ndeal with increment 7\r\ncut 3\r\ndeal with increment 9\r\ndeal with increment 3\r\ncut -1",
+      "ExampleModifier": "TRUE",
+      "PartOne": "9 2 5 8 1 4 7 0 3 6"
+    }
   }
 }
