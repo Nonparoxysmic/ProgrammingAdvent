@@ -37,4 +37,36 @@ internal class Day22 : Day
 
         return output.WriteAnswers(null, null);
     }
+
+    private static int NewStack(int position, int deckSize)
+    {
+        return deckSize - position - 1;
+    }
+
+    private static int Cut(int position, int deckSize, int N)
+    {
+        if (N > 0)
+        {
+            if (position < N)
+            {
+                return deckSize - N + position;
+            }
+            else
+            {
+                return position - N;
+            }
+        }
+        else if (N < 0)
+        {
+            if (position < deckSize + N)
+            {
+                return position - N;
+            }
+            else
+            {
+                return position - deckSize - N;
+            }
+        }
+        else return position;
+    }
 }
