@@ -35,15 +35,51 @@ internal class Day22 : Day
     {
         PuzzleAnswers output = new();
 
-        return output.WriteAnswers(null, null);
+        (int, int)[] instructions = new(int, int)[inputLines.Length];
+        for (int i = 0; i < instructions.Length; i++)
+        {
+            string line = inputLines[i];
+            Match match = _validLine.Match(line);
+            if (match.Groups["increment"].Success)
+            {
+                int N = int.Parse(match.Groups["increment"].Value);
+                instructions[i] = (2, N);
+            }
+            else if (match.Groups["cut"].Success)
+            {
+                int N = int.Parse(match.Groups["cut"].Value);
+                instructions[i] = (1, N);
+            }
+            else
+            {
+                instructions[i] = (0, 0);
+            }
+        }
+
+        string partOneAnswer;
+        if (exampleModifier is null)
+        {
+            partOneAnswer = ShuffledPosition(2019, 10_007, instructions).ToString();
+        }
+        else
+        {
+            int[] results = new int[10];
+            for (int i = 0; i < 10; i++)
+            {
+                results[ShuffledPosition(i, 10, instructions)] = i;
+            }
+            partOneAnswer = string.Join(' ', results);
+        }
+
+        return output.WriteAnswers(partOneAnswer, null);
     }
 
-    private static int NewStack(int position, int deckSize)
+    private static long NewStack(long position, long deckSize)
     {
         return deckSize - position - 1;
     }
 
-    private static int Cut(int position, int deckSize, int N)
+    private static long Cut(long position, long deckSize, int N)
     {
         if (N > 0)
         {
@@ -68,5 +104,30 @@ internal class Day22 : Day
             }
         }
         else return position;
+    }
+
+    private static long Increment(long position, long deckSize, int N)
+    {
+        return (position * N) % deckSize;
+    }
+
+    private static long ApplyTechnique((int, int) technique, long position, long deckSize)
+    {
+        return technique.Item1 switch
+        {
+            2 => Increment(position, deckSize, technique.Item2),
+            1 => Cut(position, deckSize, technique.Item2),
+            _ => NewStack(position, deckSize),
+        };
+    }
+
+    private static long ShuffledPosition(long position, long deckSize, (int, int)[] instructions)
+    {
+        long pos = position;
+        foreach ((int, int) technique in instructions)
+        {
+            pos = ApplyTechnique(technique, pos, deckSize);
+        }
+        return pos;
     }
 }
