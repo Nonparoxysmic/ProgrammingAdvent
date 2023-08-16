@@ -6,6 +6,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;

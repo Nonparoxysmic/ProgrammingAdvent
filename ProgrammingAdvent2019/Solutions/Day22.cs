@@ -81,9 +81,9 @@ internal class Day22 : Day
         {
             result += deckSize * (-result / deckSize + 1);
         }
-        result = BigInteger.ModPow(result, 1, deckSize);
+        long partTwoAnswer = (long)BigInteger.ModPow(result, 1, deckSize);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static long NewStack(long position, long deckSize)
