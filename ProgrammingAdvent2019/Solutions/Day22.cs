@@ -3,6 +3,7 @@
 // for Advent of Code 2019
 // https://adventofcode.com/2019
 
+using System.Numerics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;
 
@@ -71,6 +72,17 @@ internal class Day22 : Day
             partOneAnswer = string.Join(' ', results);
         }
 
+        long deckSize = 119315717514047;
+        (long A, long B) = ReverseEquationCoefficients(deckSize, instructions);
+        long iterations = 101741582076661;
+        BigInteger A_pow_N = BigInteger.ModPow(A, iterations, deckSize);
+        BigInteger result = A_pow_N * 2020 + B * (A_pow_N - 1) * ModularInverse(A - 1, deckSize);
+        if (result < 0)
+        {
+            result += deckSize * (-result / deckSize + 1);
+        }
+        result = BigInteger.ModPow(result, 1, deckSize);
+
         return output.WriteAnswers(partOneAnswer, null);
     }
 
@@ -123,11 +135,78 @@ internal class Day22 : Day
 
     private static long ShuffledPosition(long position, long deckSize, (int, int)[] instructions)
     {
-        long pos = position;
-        foreach ((int, int) technique in instructions)
+        for (int i = 0; i < instructions.Length; i++)
         {
-            pos = ApplyTechnique(technique, pos, deckSize);
+            position = ApplyTechnique(instructions[i], position, deckSize);
         }
-        return pos;
+        return position;
+    }
+
+    private static long ReverseIncrement(long position, long deckSize, long N)
+    {
+        int wraps = 0;
+        while ((position + wraps * deckSize) % N != 0)
+        {
+            wraps++;
+        }
+        return (position + wraps * deckSize) / N;
+        // Could instead return Increment(position, deckSize, ModularInverse(N, deckSize))
+        // but that would require more work to avoid integer overflows.
+    }
+
+    private static long ReverseTechnique((int, int) technique, long position, long deckSize)
+    {
+        return technique.Item1 switch
+        {
+            2 => ReverseIncrement(position, deckSize, technique.Item2),
+            1 => Cut(position, deckSize, -technique.Item2),
+            _ => NewStack(position, deckSize),
+        };
+    }
+
+    private static long ReverseShuffledPosition(long position, long deckSize, (int, int)[] instructions)
+    {
+        for (int i = instructions.Length - 1; i >= 0; i--)
+        {
+            position = ReverseTechnique(instructions[i], position, deckSize);
+        }
+        return position;
+    }
+
+    private static (long, long) ReverseEquationCoefficients(long deckSize, (int, int)[] instructions)
+    {
+        long p0 = 2020;
+        long p1 = ReverseShuffledPosition(p0, deckSize, instructions);
+        long p2 = ReverseShuffledPosition(p1, deckSize, instructions);
+        BigInteger m1 = BigInteger.Multiply(p2 - p1, ModularInverse(p1 - p0, deckSize));
+        if (m1 < 0)
+        {
+            m1 += deckSize * (-m1 / deckSize + 1);
+        }
+        long A = (long)BigInteger.ModPow(m1, 1, deckSize);
+        long B = p1 - A * p0;
+        if (B < 0)
+        {
+            B += deckSize * (-B / deckSize + 1);
+        }
+        return (A, B);
+    }
+
+    // https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Modular_integers
+    private static long ModularInverse(long integer, long modulus)
+    {
+        long t = 0, newT = 1;
+        long r = modulus, newR = integer;
+        while (newR != 0)
+        {
+            long quotient = r / newR;
+            (t, newT) = (newT, t - quotient * newT);
+            (r, newR) = (newR, r - quotient * newR);
+        }
+        if (t < 0)
+        {
+            t += modulus;
+        }
+        return t;
     }
 }
