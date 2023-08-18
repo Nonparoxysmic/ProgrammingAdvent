@@ -29,16 +29,20 @@ internal class Day23 : Day
         PuzzleAnswers output = new();
 
         Network network = new(inputLines[0]);
-        long partOneAnswer = network.Run();
+        network.Run();
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(network.PartOneAnswer, network.PartTwoAnswer);
     }
 
     public class Network
     {
+        public long PartOneAnswer { get; private set; }
+        public long PartTwoAnswer { get; private set; }
         public Queue<Packet> PacketsToDeliver { get; private set; } = new();
 
         private readonly NetworkComputer[] _computers;
+        private long _lastNatYSent = long.MinValue;
+        private Packet? _NAT;
 
         public Network(string intcode)
         {
@@ -49,26 +53,48 @@ internal class Day23 : Day
             }
         }
 
-        public long Run()
+        public bool Run()
         {
             while (true)
             {
+                bool allIdle = true;
                 for (int i = 0; i < 50; i++)
                 {
                     _computers[i].Process();
+                    allIdle &= _computers[i].IsIdle;
                     while (PacketsToDeliver.Any())
                     {
+                        allIdle = false;
                         Packet packet = PacketsToDeliver.Dequeue();
                         if (packet.Address == 255)
                         {
-                            return packet.Y;
+                            if (_NAT is null)
+                            {
+                                PartOneAnswer = packet.Y;
+                            }
+                            _NAT = packet;
+                            break;
                         }
                         if (packet.Address < 0 || packet.Address >= 50)
                         {
-                            return 0;
+                            return false;
                         }
                         _computers[packet.Address].PacketsToProcess.Enqueue(packet);
                     }
+                }
+                if (allIdle)
+                {
+                    if (_NAT is null)
+                    {
+                        return false;
+                    }
+                    if (_NAT.Y == _lastNatYSent)
+                    {
+                        PartTwoAnswer = _NAT.Y;
+                        return true;
+                    }
+                    PacketsToDeliver.Enqueue(new Packet(0, _NAT.X, _NAT.Y));
+                    _lastNatYSent = _NAT.Y;
                 }
             }
         }
@@ -76,8 +102,11 @@ internal class Day23 : Day
 
     public class NetworkComputer
     {
+        public bool IsIdle { get => _currentIdle & _previousIdle; }
         public Queue<Packet> PacketsToProcess { get; private set; } = new();
 
+        private bool _currentIdle;
+        private bool _previousIdle;
         private readonly Network _network;
         private readonly Day09.Day09Program _program;
 
@@ -90,9 +119,12 @@ internal class Day23 : Day
 
         public void Process()
         {
+            _previousIdle = _currentIdle;
             if (_program.Status == Day09.Day09Program.ProgramStatus.Error ||
                 _program.Status == Day09.Day09Program.ProgramStatus.Halted)
             {
+                _currentIdle = true;
+                _previousIdle = true;
                 return;
             }
             int timeout = 0;
@@ -101,17 +133,22 @@ internal class Day23 : Day
             {
                 if (PacketsToProcess.Any())
                 {
+                    _currentIdle = false;
+                    _previousIdle = false;
                     Packet packet = PacketsToProcess.Dequeue();
                     _program.EnqueueInput(packet.X);
                     _program.EnqueueInput(packet.Y);
                 }
                 else
                 {
+                    _currentIdle = true;
                     _program.EnqueueInput(-1);
                 }
             }
             while (_program.OutputCount >= 3)
             {
+                _currentIdle = false;
+                _previousIdle = false;
                 long address = _program.DequeueOutput();
                 long x = _program.DequeueOutput();
                 long y = _program.DequeueOutput();
