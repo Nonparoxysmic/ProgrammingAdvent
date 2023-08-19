@@ -354,5 +354,11 @@
       "ExampleModifier": "TRUE",
       "PartOne": "9 2 5 8 1 4 7 0 3 6"
     }
+  },
+  "Day24": {
+    "Example01": {
+      "Input": "....#\r\n#..#.\r\n#..##\r\n..#..\r\n#....",
+      "PartOne": "2129920"
+    }
   }
 }
