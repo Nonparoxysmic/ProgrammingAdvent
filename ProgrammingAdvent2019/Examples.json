@@ -358,7 +358,9 @@
   "Day24": {
     "Example01": {
       "Input": "....#\r\n#..#.\r\n#..##\r\n..#..\r\n#....",
-      "PartOne": "2129920"
+      "ExampleModifier": "10",
+      "PartOne": "2129920",
+      "PartTwo": "99"
     }
   }
 }
