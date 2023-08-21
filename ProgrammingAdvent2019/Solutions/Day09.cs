@@ -128,6 +128,11 @@ internal class Day09 : Day
             return _outputs.Dequeue();
         }
 
+        public void ClearOutput()
+        {
+            _outputs.Clear();
+        }
+
         public long ReadMemory(long position)
         {
             if (position < 0 || position >= _program.Length)
