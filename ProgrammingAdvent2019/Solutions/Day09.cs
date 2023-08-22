@@ -82,6 +82,8 @@ internal class Day09 : Day
 
     public class Day09Program
     {
+        public int Ticks { get => _ticks; }
+
         private readonly string[] _program;
         private long _instructionPointer;
         private long _relativeBase;
@@ -158,7 +160,7 @@ internal class Day09 : Day
 
         public bool Tick()
         {
-            if (_ticks++ > 2_000_000)
+            if (_ticks++ > 20_000_000)
             {
                 Status = ProgramStatus.Error;
                 Error = "Program ran too long.";

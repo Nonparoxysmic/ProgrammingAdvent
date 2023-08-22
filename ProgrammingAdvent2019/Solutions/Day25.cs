@@ -4,6 +4,7 @@
 // https://adventofcode.com/2019
 
 using System.Text;
+using System.Text.RegularExpressions;
 using ProgrammingAdvent2019.Common;
 
 namespace ProgrammingAdvent2019.Solutions;
@@ -34,14 +35,22 @@ internal class Day25 : Day
         {
             return output.WriteError("Unable to find all items and reach security checkpoint.");
         }
+        if (!droid.PassThroughSecurityCheckpoint() || droid.Password is null)
+        {
+            return output.WriteError("No combination of items allowed passing through security sensor.");
+        }
 
-        return output.WriteAnswers(null, null);
+        return output.WriteAnswers(droid.Password, null);
     }
 
     private class Droid
     {
         public static string[] DoNotTake = new string[] { "photons", "escape pod", "molten lava", "infinite loop", "giant electromagnet" };
 
+        private static readonly Regex _sensorFailure = new("A loud, robotic voice says \"Alert! Droids on this ship are (?<targetWeight>heavier|lighter) than the detected value!\" and you are ejected back to the checkpoint.");
+        private static readonly Regex _sensorSuccess = new("\"Oh, hello! You should be able to get in by typing (?<password>[0-9]+) on the keypad at the main airlock.\"");
+
+        public string? Password { get; private set; } = null;
         public string CurrentLocation { get; private set; } = string.Empty;
         public List<string> DoorsHere { get; private set; } = new();
         public List<string> ItemsHere { get; private set; } = new();
@@ -69,6 +78,63 @@ internal class Day25 : Day
                 FindItems(door);
             }
             return GoToSecurityCheckpoint();
+        }
+
+        public bool PassThroughSecurityCheckpoint()
+        {
+            // Make a fixed list of all items and drop inventory.
+            List<string> allItems = new(Inventory);
+            foreach (string item in allItems)
+            {
+                DropItem(item);
+            }
+            // Try passing with no items.
+            if (TryPassSecuritySensor(out string _))
+            {
+                return true;
+            }
+            // Try passing with one item.
+            List<string> tooHeavy = new();
+            foreach (string item in allItems)
+            {
+                TakeItem(item);
+                if (TryPassSecuritySensor(out string targetWeight))
+                {
+                    return true;
+                }
+                else if (targetWeight == "lighter")
+                {
+                    tooHeavy.Add(item);
+                }
+                DropItem(item);
+            }
+            // Remove items that are too heavy on their own.
+            foreach (string item in tooHeavy)
+            {
+                allItems.Remove(item);
+            }
+            // Try all combinations of items.
+            for (int count = 2; count <= allItems.Count; count++)
+            {
+                Combinations combo = new(allItems.Count, count);
+                while (combo.Next())
+                {
+                    foreach (int i in combo.Combination)
+                    {
+                        TakeItem(allItems[i]);
+                    }
+                    if (TryPassSecuritySensor(out string _))
+                    {
+                        return true;
+                    }
+                    foreach (int i in combo.Combination)
+                    {
+                        DropItem(allItems[i]);
+                    }
+                }
+            }
+            // No combination of items succeeded.
+            return false;
         }
 
         private void UpdateLocation()
@@ -150,6 +216,18 @@ internal class Day25 : Day
             _currentPath.Pop();
         }
 
+        private static string ReverseDoor(string door)
+        {
+            return door switch
+            {
+                "north" => "south",
+                "south" => "north",
+                "east" => "west",
+                "west" => "east",
+                _ => string.Empty
+            };
+        }
+
         private bool GoToSecurityCheckpoint()
         {
             if (_securityCheckpointPath.Count == 0 || _sensorDirection is null)
@@ -171,18 +249,6 @@ internal class Day25 : Day
             UpdateLocation();
         }
 
-        private static string ReverseDoor(string door)
-        {
-            return door switch
-            {
-                "north" => "south",
-                "south" => "north",
-                "east" => "west",
-                "west" => "east",
-                _ => string.Empty
-            };
-        }
-
         private void TakeItem(string item)
         {
             InputCommand($"take {item}");
@@ -197,6 +263,109 @@ internal class Day25 : Day
             Inventory.Remove(item);
             while (_program.Tick()) { }
             _program.ClearOutput();
+        }
+
+        private bool TryPassSecuritySensor(out string target)
+        {
+            target = string.Empty;
+            if (_sensorDirection is null)
+            {
+                return false;
+            }
+            InputCommand(_sensorDirection);
+            while (_program.Tick()) { }
+            string[] output = ReadOutput();
+            if (output.Length == 0)
+            {
+                throw new InvalidOperationException();
+            }
+            foreach (string line in output)
+            {
+                Match failureMatch = _sensorFailure.Match(line);
+                if (failureMatch.Success)
+                {
+                    target = failureMatch.Groups["targetWeight"].Value;
+                    return false;
+                }
+            }
+            foreach (string line in output)
+            {
+                Match successMatch = _sensorSuccess.Match(line);
+                if (successMatch.Success)
+                {
+                    CurrentLocation = output[3][3..^3];
+                    DoorsHere.Clear();
+                    DoorsHere.Add(ReverseDoor(_sensorDirection));
+                    Password = successMatch.Groups["password"].Value;
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private class Combinations
+    {
+        public int Range { get; private set; }
+        public int[] Combination { get; private set; }
+
+        private bool _first = false;
+
+        public Combinations(int range, int size = -1)
+        {
+            Range = range;
+            if (size > 0)
+            {
+                Combination = new int[size];
+                for (int i = 0; i < size; i++)
+                {
+                    Combination[i] = i;
+                }
+            }
+            else
+            {
+                Combination = Array.Empty<int>();
+            }
+        }
+
+        public void Reset(int size)
+        {
+            Combination = new int[size];
+            for (int i = 0; i < size; i++)
+            {
+                Combination[i] = i;
+            }
+            _first = false;
+        }
+
+        public bool Next()
+        {
+            if (!_first)
+            {
+                _first = true;
+                return true;
+            }
+            if (Combination[0] + Combination.Length >= Range)
+            {
+                return false;
+            }
+            for (int i = Combination.Length - 1; i >= 0; i--)
+            {
+                if (Combination[i] < Range - 1)
+                {
+                    if (i < Combination.Length - 1 && Combination[i] + 1 >= Combination[i + 1])
+                    {
+                        continue;
+                    }
+                    Combination[i]++;
+                    for (int j = i + 1; j < Combination.Length; j++)
+                    {
+                        Combination[j] = Combination[i] + j - i;
+                    }
+                    break;
+                }
+            }
+            return true;
         }
     }
 }
