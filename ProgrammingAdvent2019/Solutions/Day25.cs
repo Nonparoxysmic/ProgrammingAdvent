@@ -40,7 +40,7 @@ internal class Day25 : Day
             return output.WriteError("No combination of items allowed passing through security sensor.");
         }
 
-        return output.WriteAnswers(droid.Password, null);
+        return output.WriteAnswers(droid.Password, "Align the Warp Drive");
     }
 
     private class Droid
