@@ -4,9 +4,11 @@
 // https://adventofcode.com/2020
 
 using ProgrammingAdvent2020.Commands;
+using ProgrammingAdvent2020.Common;
 
 Console.Title = "ProgrammingAdvent2020 by Nonparoxysmic";
 
+InputManager.Update();
 while (true)
 {
     Console.WriteLine();
