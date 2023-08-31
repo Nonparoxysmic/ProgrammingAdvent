@@ -16,7 +16,7 @@ internal abstract class Command
     public static readonly Command Test = new TestCommand();
     public static readonly Command Unrecognized = new UnrecognizedCommand();
 
-    protected static readonly Regex _numberRange = new("^(?<first>0[1-9]|1[0-9]|2[0-5])-(?<last>0[1-9]|1[0-9]|2[0-5])$");
+    protected static readonly Regex _numberRange = new("^(?<first>0?[1-9]|1[0-9]|2[0-5])-(?<last>0?[1-9]|1[0-9]|2[0-5])$");
 
     public static Command ParseCommand(string command)
     {

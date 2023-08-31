@@ -18,22 +18,57 @@ internal class SolveCommand : Command
             Console.WriteLine("No parameters provided. Use the help command for a guide.");
             return;
         }
-        if (int.TryParse(args[0], out int numArg))
+        if (args[0].ToLower() is "all" or "a" or @"/a")
         {
-            SolveDay(numArg);
+            SolveAll();
+            return;
+        }
+        if (int.TryParse(args[0], out int numArg0))
+        {
+            SolveDay(numArg0);
             return;
         }
         Match rangeMatch = _numberRange.Match(args[0]);
         if (rangeMatch.Success)
         {
             SolveRange(int.Parse(rangeMatch.Groups["first"].Value), int.Parse(rangeMatch.Groups["last"].Value));
+            return;
         }
-        // TODO: Implement more options
+        if (args.Length == 1 || args[0] is not ("day" or "range"))
+        {
+            Console.WriteLine("Invalid parameters provided. Use the help command for a guide.");
+            return;
+        }
+        if (int.TryParse(args[1], out int numArg1))
+        {
+            if (args[0] == "day")
+            {
+                SolveDay(numArg1);
+                return;
+            }
+            if (args.Length < 3 || !int.TryParse(args[2], out int numArg2))
+            {
+                Console.WriteLine("Invalid parameters provided. Use the help command for a guide.");
+                return;
+            }
+            SolveRange(numArg1, numArg2);
+            return;
+        }
+        rangeMatch = _numberRange.Match(args[1]);
+        if (rangeMatch.Success)
+        {
+            SolveRange(int.Parse(rangeMatch.Groups["first"].Value), int.Parse(rangeMatch.Groups["last"].Value));
+            return;
+        }
+        Console.WriteLine("Invalid parameters provided. Use the help command for a guide.");
     }
 
     public override void PrintHelp()
     {
         Console.WriteLine("Solves puzzles.");
+        Console.WriteLine("Usage: solve day <dayNumber>");
+        Console.WriteLine("Usage: solve range <firstDay>-<lastDay>");
+        Console.WriteLine("Usage: solve all");
         Console.WriteLine("Aliases: solve, s");
     }
 
@@ -64,6 +99,15 @@ internal class SolveCommand : Command
         for (int i = first; i <= last; i++)
         {
             SolveDay(i);
+        }
+    }
+
+    private static void SolveAll()
+    {
+        int[] dayNumbers = SolutionSource.AvailableSolutions();
+        for (int i = 0; i < dayNumbers.Length; i++)
+        {
+            SolveDay(dayNumbers[i]);
         }
     }
 }
