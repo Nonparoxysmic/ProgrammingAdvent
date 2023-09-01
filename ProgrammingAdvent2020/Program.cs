@@ -8,6 +8,7 @@ using ProgrammingAdvent2020.Common;
 
 Console.Title = "ProgrammingAdvent2020 by Nonparoxysmic";
 
+ExampleSource.Initialize();
 InputManager.Update();
 while (true)
 {
@@ -31,10 +32,10 @@ while (true)
     Command command = Command.ParseCommand(commandText);
     if (terms.Length > 1 && terms[1] is "help" or "h" or "?" or "\"help\"")
     {
-        command?.PrintHelp();
+        command.PrintHelp();
     }
     else
     {
-        command?.Execute(terms.TakeLast(terms.Length - 1).ToArray());
+        command.Execute(terms.TakeLast(terms.Length - 1).ToArray());
     }
 }
