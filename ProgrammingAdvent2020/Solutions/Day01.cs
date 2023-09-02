@@ -37,7 +37,12 @@ internal class Day01 : Day
         {
             return output.WriteError("No two entries sum to 2020.");
         }
-        return output.WriteAnswers(partOneAnswer, null);
+        int? partTwoAnswer = PartTwoAnswer(entries);
+        if (partTwoAnswer is null)
+        {
+            return output.WriteError("No three entries sum to 2020.");
+        }
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static int? PartOneAnswer(int[] entries)
@@ -53,6 +58,28 @@ internal class Day01 : Day
                 if (entries[i] + entries[j] == 2020)
                 {
                     return entries[i] * entries[j];
+                }
+            }
+        }
+        return null;
+    }
+
+    private static int? PartTwoAnswer(int[] entries)
+    {
+        if (entries.Length < 3)
+        {
+            return null;
+        }
+        for (int i = 0; i < entries.Length - 2; i++)
+        {
+            for (int j = i + 1; j < entries.Length - 1; j++)
+            {
+                for (int k = j + 1; k < entries.Length; k++)
+                {
+                    if (entries[i] + entries[j] + entries[k] == 2020)
+                    {
+                        return entries[i] * entries[j] * entries[k];
+                    }
                 }
             }
         }
