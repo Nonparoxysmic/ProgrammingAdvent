@@ -22,7 +22,16 @@ internal class Day02 : Day
         }
         foreach (string line in input)
         {
-            if (!_validLine.IsMatch(line))
+            Match match = _validLine.Match(line);
+            if (!match.Success)
+            {
+                errorMessage = $"Invalid line \"{line.Left(20, true)}\" in input.";
+                return false;
+            }
+            int min = int.Parse(match.Groups["min"].Value);
+            int max = int.Parse(match.Groups["max"].Value);
+            string password = match.Groups["password"].Value;
+            if (min >= max || min < 1 || max > password.Length)
             {
                 errorMessage = $"Invalid line \"{line.Left(20, true)}\" in input.";
                 return false;
@@ -35,7 +44,7 @@ internal class Day02 : Day
     protected override PuzzleAnswers CalculateAnswers(string[] input, string? exampleModifier = null)
     {
         PuzzleAnswers output = new();
-        int validPasswords = 0;
+        int partOneValidPasswords = 0, partTwoValidPasswords = 0;
         foreach (string line in input)
         {
             Match match = _validLine.Match(line);
@@ -55,10 +64,14 @@ internal class Day02 : Day
                 }
                 if (min <= count && count <= max)
                 {
-                    validPasswords++;
+                    partOneValidPasswords++;
+                }
+                if ((password[min - 1] == letter) ^ (password[max - 1] == letter))
+                {
+                    partTwoValidPasswords++;
                 }
             }
         }
-        return output.WriteAnswers(validPasswords, null);
+        return output.WriteAnswers(partOneValidPasswords, partTwoValidPasswords);
     }
 }
