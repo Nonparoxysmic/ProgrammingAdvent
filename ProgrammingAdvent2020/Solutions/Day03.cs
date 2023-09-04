@@ -11,6 +11,14 @@ namespace ProgrammingAdvent2020.Solutions;
 internal class Day03 : Day
 {
     private static readonly Regex _validLine = new("^[.#]{1,48}$");
+    private static readonly (int X, int Y)[] _slopes = new (int, int)[]
+    {
+        (1, 1),
+        (3, 1),
+        (5, 1),
+        (7, 1),
+        (1, 2)
+    };
 
     public override bool ValidateInput(string[] input, out string errorMessage)
     {
@@ -45,18 +53,35 @@ internal class Day03 : Day
     {
         PuzzleAnswers output = new();
         char[,] map = input.ToCharArray2D();
+        (long partOneAnswer, long partTwoAnswer) = CheckSlopes(map);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
+    }
+
+    private static (long, long) CheckSlopes(char[,] map)
+    {
+        long[] counts = new long[_slopes.Length];
+        for (int i = 0; i < _slopes.Length; i++)
+        {
+            counts[i] = CountTreesOnSlope(map, _slopes[i].X, _slopes[i].Y);
+        }
+        long product = counts.Aggregate(1L, (aggregated, element) => aggregated * element);
+        return (counts[1], product);
+    }
+
+    private static int CountTreesOnSlope(char[,] map, int dx, int dy)
+    {
         int width = map.GetLength(0);
         int height = map.GetLength(1);
         int treeCount = 0;
         int x = 0;
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < height; y += dy)
         {
             if (map[x % width, y] == '#')
             {
                 treeCount++;
             }
-            x += 3;
+            x += dx;
         }
-        return output.WriteAnswers(treeCount, null);
+        return treeCount;
     }
 }
