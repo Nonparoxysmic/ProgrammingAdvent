@@ -112,7 +112,8 @@ internal class PuzzleAnswers
         }
         else
         {
-            output = $"Day {DayNumber:00} Part One: {PartOneAnswer}{Environment.NewLine}Day {DayNumber:00} Part Two: {PartTwoAnswer}";
+            output = $"Day {DayNumber:00} Part One: {PartOneAnswer}{Environment.NewLine}"
+                + $"Day {DayNumber:00} Part Two: {PartTwoAnswer}";
         }
         if (ElapsedMilliseconds > 0)
         {
