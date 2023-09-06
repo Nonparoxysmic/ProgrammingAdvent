@@ -15,6 +15,11 @@ internal class Day04 : Day
 
     private static readonly Regex _validLine = new($"^{KEY}:{VALUE}( {KEY}:{VALUE}){{0,7}}$");
 
+    private static readonly Regex _validHeight = new("^(?<quantity>[0-9]{2,3})(?<unit>cm|in)$");
+    private static readonly Regex _validHairColor = new("^#[0-9a-f]{6}$");
+    private static readonly Regex _validEyeColor = new("^(amb|blu|brn|gry|grn|hzl|oth)$");
+    private static readonly Regex _validPassportID = new("^[0-9]{9}$");
+
     public override bool ValidateInput(string[] input, out string errorMessage)
     {
         if (input.Length == 0)
@@ -44,8 +49,9 @@ internal class Day04 : Day
 
         List<Passport> passports = ReadInput(input);
         int partOneAnswer = passports.Count(p => p.HasRequiredFields);
+        int partTwoAnswer = passports.Count(p => p.IsValid);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static List<Passport> ReadInput(string[] input)
@@ -92,7 +98,8 @@ internal class Day04 : Day
 
         public bool HasRequiredFields
         {
-            get {
+            get
+            {
                 return BirthYear is not null
                     && IssueYear is not null
                     && ExpirationYear is not null
@@ -102,6 +109,7 @@ internal class Day04 : Day
                     && PassportID is not null;
             }
         }
+        public bool IsValid => FieldsAreValid();
 
         public void SetField(string key, string value)
         {
@@ -132,6 +140,50 @@ internal class Day04 : Day
                     CountryID = value;
                     break;
             }
+        }
+
+        private bool FieldsAreValid()
+        {
+            if (!int.TryParse(BirthYear, out int byr) || byr < 1920 || byr > 2002)
+            {
+                return false;
+            }
+            if (!int.TryParse(IssueYear, out int iyr) || iyr < 2010 || iyr > 2020)
+            {
+                return false;
+            }
+            if (!int.TryParse(ExpirationYear, out int eyr) || eyr < 2020 || eyr > 2030)
+            {
+                return false;
+            }
+            if (Height is null || HairColor is null
+                || EyeColor is null || PassportID is null)
+            {
+                return false;
+            }
+            Match heightMatch = _validHeight.Match(Height);
+            if (!heightMatch.Success)
+            {
+                return false;
+            }
+            int quantity = int.Parse(heightMatch.Groups["quantity"].Value);
+            if (heightMatch.Groups["unit"].Value == "cm")
+            {
+                if (quantity < 150 || quantity > 193)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (quantity < 59 || quantity > 76)
+                {
+                    return false;
+                }
+            }
+            return _validHairColor.IsMatch(HairColor)
+                && _validEyeColor.IsMatch(EyeColor)
+                && _validPassportID.IsMatch(PassportID);
         }
     }
 }
