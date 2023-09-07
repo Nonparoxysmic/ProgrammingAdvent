@@ -25,5 +25,23 @@
       "Input": "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd\r\nbyr:1937 iyr:2017 cid:147 hgt:183cm\r\n\r\niyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884\r\nhcl:#cfa07d byr:1929\r\n\r\nhcl:#ae17e1 iyr:2013\r\neyr:2024\r\necl:brn pid:760753108 byr:1931\r\nhgt:179cm\r\n\r\nhcl:#cfa07d eyr:2025 pid:166559648\r\niyr:2011 ecl:brn hgt:59in",
       "PartOne": "2"
     }
+  },
+  "Day05": {
+    "Example01": {
+      "Input": "FBFBBFFRLR",
+      "PartOne": "357"
+    },
+    "Example02": {
+      "Input": "BFFFBBFRRR",
+      "PartOne": "567"
+    },
+    "Example03": {
+      "Input": "FFFBBBFRRR",
+      "PartOne": "119"
+    },
+    "Example04": {
+      "Input": "BBFFBBFRLL",
+      "PartOne": "820"
+    }
   }
 }
