@@ -35,16 +35,21 @@ internal class Day05 : Day
     {
         PuzzleAnswers output = new();
 
-        int maxSeatID = 0;
+        List<int> seatIDs = new();
         foreach (string pass in input)
         {
-            maxSeatID = Math.Max(maxSeatID, SeatID(BoardingPassRowAndColumn(pass)));
+            seatIDs.Add(SeatID(RowAndColumn(pass)));
+        }
+        int? yourSeatID = MissingPass(seatIDs);
+        if (yourSeatID is null)
+        {
+            return output.WriteAnswers(seatIDs.Max(), "No valid answer exists.");
         }
 
-        return output.WriteAnswers(maxSeatID, null);
+        return output.WriteAnswers(seatIDs.Max(), yourSeatID);
     }
 
-    private static (int, int) BoardingPassRowAndColumn(string boardingPass)
+    private static (int, int) RowAndColumn(string boardingPass)
     {
         int row = 0, col = 0;
         int power = 1;
@@ -73,5 +78,18 @@ internal class Day05 : Day
     private static int SeatID(int row, int column)
     {
         return row * 8 + column;
+    }
+
+    private static int? MissingPass(List<int> seatIDs)
+    {
+        seatIDs.Sort();
+        for (int i = 1; i < seatIDs.Count; i++)
+        {
+            if (seatIDs[i] != seatIDs[0] + i)
+            {
+                return seatIDs[0] + i;
+            }
+        }
+        return null;
     }
 }
