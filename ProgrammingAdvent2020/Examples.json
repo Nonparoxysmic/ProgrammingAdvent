@@ -43,5 +43,15 @@
       "Input": "BBFFBBFRLL",
       "PartOne": "820"
     }
+  },
+  "Day06": {
+    "Example01": {
+      "Input": "abcx\r\nabcy\r\nabcz",
+      "PartOne": "6"
+    },
+    "Example02": {
+      "Input": "abc\r\n\r\na\r\nb\r\nc\r\n\r\nab\r\nac\r\n\r\na\r\na\r\na\r\na\r\n\r\nb",
+      "PartOne": "11"
+    }
   }
 }
