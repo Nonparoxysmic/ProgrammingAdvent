@@ -40,9 +40,10 @@ internal class Day06 : Day
         PuzzleAnswers output = new();
 
         List<Group> groups = ReadInput(input);
-        int partOneAnswer = groups.Sum(g => g.YesQuestions.Count);
+        int partOneAnswer = groups.Sum(g => g.AnyoneAnsweredYes);
+        int partTwoAnswer = groups.Sum(g => g.EveryoneAnsweredYes);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static List<Group> ReadInput(string[] input)
@@ -61,10 +62,7 @@ internal class Day06 : Day
                 continue;
             }
             current ??= new();
-            foreach (char c in line)
-            {
-                current.YesQuestions.Add(c);
-            }
+            current.AddIndividualAnswers(line);
         }
         if (current is not null)
         {
@@ -75,6 +73,32 @@ internal class Day06 : Day
 
     private class Group
     {
-        public HashSet<char> YesQuestions = new();
+        public int AnyoneAnsweredYes => _anyoneAnsweredYes.Count;
+        public int EveryoneAnsweredYes
+        {
+            get
+            {
+                return _everyoneAnsweredYes is null ?  0 : _everyoneAnsweredYes.Count();
+            }
+        }
+
+        public HashSet<char> _anyoneAnsweredYes = new();
+        private IEnumerable<char>? _everyoneAnsweredYes = null;
+
+        public void AddIndividualAnswers(string answers)
+        {
+            foreach (char c in answers)
+            {
+                _anyoneAnsweredYes.Add(c);
+            }
+            if (_everyoneAnsweredYes is null)
+            {
+                _everyoneAnsweredYes = new List<char>(answers);
+            }
+            else
+            {
+                _everyoneAnsweredYes = _everyoneAnsweredYes.Intersect(answers);
+            }
+        }
     }
 }
