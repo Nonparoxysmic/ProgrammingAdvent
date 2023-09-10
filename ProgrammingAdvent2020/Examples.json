@@ -58,7 +58,12 @@
   "Day07": {
     "Example01": {
       "Input": "light red bags contain 1 bright white bag, 2 muted yellow bags.\r\ndark orange bags contain 3 bright white bags, 4 muted yellow bags.\r\nbright white bags contain 1 shiny gold bag.\r\nmuted yellow bags contain 2 shiny gold bags, 9 faded blue bags.\r\nshiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.\r\ndark olive bags contain 3 faded blue bags, 4 dotted black bags.\r\nvibrant plum bags contain 5 faded blue bags, 6 dotted black bags.\r\nfaded blue bags contain no other bags.\r\ndotted black bags contain no other bags.",
-      "PartOne": "4"
+      "PartOne": "4",
+      "PartTwo": "32"
+    },
+    "Example02": {
+      "Input": "shiny gold bags contain 2 dark red bags.\r\ndark red bags contain 2 dark orange bags.\r\ndark orange bags contain 2 dark yellow bags.\r\ndark yellow bags contain 2 dark green bags.\r\ndark green bags contain 2 dark blue bags.\r\ndark blue bags contain 2 dark violet bags.\r\ndark violet bags contain no other bags.",
+      "PartTwo": "126"
     }
   }
 }

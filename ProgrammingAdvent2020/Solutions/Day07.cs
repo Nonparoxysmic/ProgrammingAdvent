@@ -50,10 +50,10 @@ internal class Day07 : Day
         Dictionary<string, int> colors = GetColors(input);
         Dictionary<int, Rule> rules = GetRules(input, colors);
         int yourBag = colors["shiny gold"];
-        Dictionary<int, bool> containsYourBag = ContainsYourBag(rules, yourBag);
-        int partOneAnswer = containsYourBag.Count(r => r.Value);
+        int partOneAnswer = ContainsYourBag(rules, yourBag);
+        int partTwoAnswer = YourBagContains(rules, yourBag);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static Dictionary<string, int> GetColors(string[] input)
@@ -77,6 +77,11 @@ internal class Day07 : Day
             foreach (Match m in matchCollection.Cast<Match>())
             {
                 int quantity = int.Parse(m.Groups["quantity"].Value);
+                if (!colors.ContainsKey(m.Groups["color"].Value))
+                {
+                    rule.Add(-1, quantity);
+                    continue;
+                }
                 int color = colors[m.Groups["color"].Value];
                 rule.Add(color, quantity);
             }
@@ -85,7 +90,7 @@ internal class Day07 : Day
         return rules;
     }
 
-    private static Dictionary<int, bool> ContainsYourBag(Dictionary<int, Rule> rules, int yourBag)
+    private static int ContainsYourBag(Dictionary<int, Rule> rules, int yourBag)
     {
         Dictionary<int, bool> output = new()
         {
@@ -99,7 +104,7 @@ internal class Day07 : Day
             }
             output[i] = ContainsYourBag(i, rules, yourBag, output);
         }
-        return output;
+        return output.Count(r => r.Value);
     }
 
     private static bool ContainsYourBag
@@ -117,6 +122,10 @@ internal class Day07 : Day
         if (output.ContainsKey(bag))
         {
             return output[bag];
+        }
+        if (!rules.ContainsKey(bag))
+        {
+            return false;
         }
         int[] contents = rules[bag].ContentColors();
         foreach (int containedBag in contents)
@@ -136,11 +145,38 @@ internal class Day07 : Day
         return false;
     }
 
+    private int YourBagContains(Dictionary<int, Rule> rules, int yourBag)
+    {
+        if (!rules.ContainsKey(yourBag))
+        {
+            return 0;
+        }
+        int sum = 0;
+        foreach ((int color, int quantity) in rules[yourBag].ColorQuantities)
+        {
+            sum += quantity * (1 + BagContains_Recursive(color, rules, yourBag));
+        }
+        return sum;
+    }
+
+    private int BagContains_Recursive(int bag, Dictionary<int, Rule> rules, int yourBag)
+    {
+        if (bag == yourBag || !rules.ContainsKey(bag))
+        {
+            return 0;
+        }
+        int sum = 0;
+        foreach ((int color, int quantity) in rules[bag].ColorQuantities)
+        {
+            sum += quantity * (1 + BagContains_Recursive(color, rules, bag));
+        }
+        return sum;
+    }
+
     private class Rule
     {
         public int Color { get; private set; }
-
-        private readonly Dictionary<int, int> _colorQuantities = new();
+        public Dictionary<int, int> ColorQuantities { get; private set; } = new();
 
         public Rule(int color)
         {
@@ -149,12 +185,12 @@ internal class Day07 : Day
 
         public void Add(int color, int quantity)
         {
-            _colorQuantities[color] = quantity;
+            ColorQuantities[color] = quantity;
         }
 
         public int[] ContentColors()
         {
-            return _colorQuantities.Keys.ToArray();
+            return ColorQuantities.Keys.ToArray();
         }
     }
 }
