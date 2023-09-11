@@ -65,5 +65,162 @@
       "Input": "shiny gold bags contain 2 dark red bags.\r\ndark red bags contain 2 dark orange bags.\r\ndark orange bags contain 2 dark yellow bags.\r\ndark yellow bags contain 2 dark green bags.\r\ndark green bags contain 2 dark blue bags.\r\ndark blue bags contain 2 dark violet bags.\r\ndark violet bags contain no other bags.",
       "PartTwo": "126"
     }
+  },
+  "Day08": {
+    "Example01": {
+      "Input": "nop +0\r\nacc +1\r\njmp +4\r\nacc +3\r\njmp -3\r\nacc -99\r\nacc +1\r\njmp -4\r\nacc +6",
+      "PartOne": "5"
+    }
+  },
+  "Day09": {
+    "Example01": {
+      "Input": "35\r\n20\r\n15\r\n25\r\n47\r\n40\r\n62\r\n55\r\n65\r\n95\r\n102\r\n117\r\n150\r\n182\r\n127\r\n219\r\n299\r\n277\r\n309\r\n576",
+      "ExampleModifier": "TRUE",
+      "PartOne": "127"
+    }
+  },
+  "Day10": {
+    "Example01": {
+      "Input": "16\r\n10\r\n15\r\n5\r\n1\r\n11\r\n7\r\n19\r\n6\r\n12\r\n4",
+      "PartOne": "35"
+    },
+    "Example02": {
+      "Input": "28\r\n33\r\n18\r\n42\r\n31\r\n14\r\n46\r\n20\r\n48\r\n47\r\n24\r\n23\r\n49\r\n45\r\n19\r\n38\r\n39\r\n11\r\n1\r\n32\r\n25\r\n35\r\n8\r\n17\r\n7\r\n9\r\n4\r\n2\r\n34\r\n10\r\n3",
+      "PartOne": "220"
+    }
+  },
+  "Day11": {
+    "Example01": {
+      "Input": "L.LL.LL.LL\r\nLLLLLLL.LL\r\nL.L.L..L..\r\nLLLL.LL.LL\r\nL.LL.LL.LL\r\nL.LLLLL.LL\r\n..L.L.....\r\nLLLLLLLLLL\r\nL.LLLLLL.L\r\nL.LLLLL.LL",
+      "PartOne": "37"
+    }
+  },
+  "Day12": {
+    "Example01": {
+      "Input": "F10\r\nN3\r\nF7\r\nR90\r\nF11",
+      "PartOne": "25"
+    }
+  },
+  "Day13": {
+    "Example01": {
+      "Input": "939\r\n7,13,x,x,59,x,31,19",
+      "PartOne": "295"
+    }
+  },
+  "Day14": {
+    "Example01": {
+      "Input": "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X\r\nmem[8] = 11\r\nmem[7] = 101\r\nmem[8] = 0",
+      "PartOne": "165"
+    }
+  },
+  "Day15": {
+    "Example01": {
+      "Input": "0,3,6",
+      "PartOne": "436"
+    },
+    "Example02": {
+      "Input": "1,3,2",
+      "PartOne": "1"
+    },
+    "Example03": {
+      "Input": "2,1,3",
+      "PartOne": "10"
+    },
+    "Example04": {
+      "Input": "1,2,3",
+      "PartOne": "27"
+    },
+    "Example05": {
+      "Input": "2,3,1",
+      "PartOne": "78"
+    },
+    "Example06": {
+      "Input": "3,2,1",
+      "PartOne": "438"
+    },
+    "Example07": {
+      "Input": "3,1,2",
+      "PartOne": "1836"
+    }
+  },
+  "Day16": {
+    "Example01": {
+      "Input": "class: 1-3 or 5-7\r\nrow: 6-11 or 33-44\r\nseat: 13-40 or 45-50\r\n\r\nyour ticket:\r\n7,1,14\r\n\r\nnearby tickets:\r\n7,3,47\r\n40,4,50\r\n55,2,20\r\n38,6,12",
+      "PartOne": "71"
+    }
+  },
+  "Day17": {
+    "Example01": {
+      "Input": ".#.\r\n..#\r\n###",
+      "PartOne": "112"
+    }
+  },
+  "Day18": {
+    "Example01": {
+      "Input": "1 + 2 * 3 + 4 * 5 + 6",
+      "PartOne": "71"
+    },
+    "Example02": {
+      "Input": "1 + (2 * 3) + (4 * (5 + 6))",
+      "PartOne": "51"
+    },
+    "Example03": {
+      "Input": "2 * 3 + (4 * 5)",
+      "PartOne": "26"
+    },
+    "Example04": {
+      "Input": "5 + (8 * 3 + 9 + 3 * 4 * 3)",
+      "PartOne": "437"
+    },
+    "Example05": {
+      "Input": "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))",
+      "PartOne": "12240"
+    },
+    "Example06": {
+      "Input": "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2",
+      "PartOne": "13632"
+    }
+  },
+  "Day19": {
+    "Example01": {
+      "Input": "0: 4 1 5\r\n1: 2 3 | 3 2\r\n2: 4 4 | 5 5\r\n3: 4 5 | 5 4\r\n4: \"a\"\r\n5: \"b\"\r\n\r\nababbb\r\nbababa\r\nabbbab\r\naaabbb\r\naaaabbb",
+      "PartOne": "2"
+    }
+  },
+  "Day20": {
+    "Example01": {
+      "Input": "Tile 2311:\r\n..##.#..#.\r\n##..#.....\r\n#...##..#.\r\n####.#...#\r\n##.##.###.\r\n##...#.###\r\n.#.#.#..##\r\n..#....#..\r\n###...#.#.\r\n..###..###\r\n\r\nTile 1951:\r\n#.##...##.\r\n#.####...#\r\n.....#..##\r\n#...######\r\n.##.#....#\r\n.###.#####\r\n###.##.##.\r\n.###....#.\r\n..#.#..#.#\r\n#...##.#..\r\n\r\nTile 1171:\r\n####...##.\r\n#..##.#..#\r\n##.#..#.#.\r\n.###.####.\r\n..###.####\r\n.##....##.\r\n.#...####.\r\n#.##.####.\r\n####..#...\r\n.....##...\r\n\r\nTile 1427:\r\n###.##.#..\r\n.#..#.##..\r\n.#.##.#..#\r\n#.#.#.##.#\r\n....#...##\r\n...##..##.\r\n...#.#####\r\n.#.####.#.\r\n..#..###.#\r\n..##.#..#.\r\n\r\nTile 1489:\r\n##.#.#....\r\n..##...#..\r\n.##..##...\r\n..#...#...\r\n#####...#.\r\n#..#.#.#.#\r\n...#.#.#..\r\n##.#...##.\r\n..##.##.##\r\n###.##.#..\r\n\r\nTile 2473:\r\n#....####.\r\n#..#.##...\r\n#.##..#...\r\n######.#.#\r\n.#...#.#.#\r\n.#########\r\n.###.#..#.\r\n########.#\r\n##...##.#.\r\n..###.#.#.\r\n\r\nTile 2971:\r\n..#.#....#\r\n#...###...\r\n#.#.###...\r\n##.##..#..\r\n.#####..##\r\n.#..####.#\r\n#..#.#..#.\r\n..####.###\r\n..#.#.###.\r\n...#.#.#.#\r\n\r\nTile 2729:\r\n...#.#.#.#\r\n####.#....\r\n..#.#.....\r\n....#..#.#\r\n.##..##.#.\r\n.#.####...\r\n####.#.#..\r\n##.####...\r\n##..#.##..\r\n#.##...##.\r\n\r\nTile 3079:\r\n#.#.#####.\r\n.#..######\r\n..#.......\r\n######....\r\n####.#..#.\r\n.#...#.##.\r\n#.#####.##\r\n..#.###...\r\n..#.......\r\n..#.###...",
+      "PartOne": "20899048083289"
+    }
+  },
+  "Day21": {
+    "Example01": {
+      "Input": "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)\r\ntrh fvjkl sbzzf mxmxvkd (contains dairy)\r\nsqjhc fvjkl (contains soy)\r\nsqjhc mxmxvkd sbzzf (contains fish)",
+      "PartOne": "5"
+    }
+  },
+  "Day22": {
+    "Example01": {
+      "Input": "Player 1:\r\n9\r\n2\r\n6\r\n3\r\n1\r\n\r\nPlayer 2:\r\n5\r\n8\r\n4\r\n7\r\n10",
+      "PartOne": "306"
+    }
+  },
+  "Day23": {
+    "Example01": {
+      "Input": "389125467",
+      "PartOne": "67384529"
+    }
+  },
+  "Day24": {
+    "Example01": {
+      "Input": "sesenwnenenewseeswwswswwnenewsewsw\r\nneeenesenwnwwswnenewnwwsewnenwseswesw\r\nseswneswswsenwwnwse\r\nnwnwneseeswswnenewneswwnewseswneseene\r\nswweswneswnenwsewnwneneseenw\r\neesenwseswswnenwswnwnwsewwnwsene\r\nsewnenenenesenwsewnenwwwse\r\nwenwwweseeeweswwwnwwe\r\nwsweesenenewnwwnwsenewsenwwsesesenwne\r\nneeswseenwwswnwswswnw\r\nnenwswwsewswnenenewsenwsenwnesesenew\r\nenewnwewneswsewnwswenweswnenwsenwsw\r\nsweneswneswneneenwnewenewwneswswnese\r\nswwesenesewenwneswnwwneseswwne\r\nenesenwswwswneneswsenwnewswseenwsese\r\nwnwnesenesenenwwnenwsewesewsesesew\r\nnenewswnwewswnenesenwnesewesw\r\neneswnwswnwsenenwnwnwwseeswneewsenese\r\nneswnwewnwnwseenwseesewsenwsweewe\r\nwseweeenwnesenwwwswnew",
+      "PartOne": "10"
+    }
+  },
+  "Day25": {
+    "Example01": {
+      "Input": "5764801\r\n17807724",
+      "PartOne": "14897079"
+    }
   }
 }
