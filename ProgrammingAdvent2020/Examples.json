@@ -69,7 +69,8 @@
   "Day08": {
     "Example01": {
       "Input": "nop +0\r\nacc +1\r\njmp +4\r\nacc +3\r\njmp -3\r\nacc -99\r\nacc +1\r\njmp -4\r\nacc +6",
-      "PartOne": "5"
+      "PartOne": "5",
+      "PartTwo": "8"
     }
   },
   "Day09": {
