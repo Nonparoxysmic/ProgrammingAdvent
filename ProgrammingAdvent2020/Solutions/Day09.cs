@@ -44,24 +44,40 @@ internal class Day09 : Day
         }
 
         ulong[] numbers = input.Select(line => ulong.Parse(line)).ToArray();
-        ulong? partOneAnswer = FirstNumberNotSumOfPrevious(numbers, size);
+        ulong? partOneAnswer = FirstNumberNotSumOfPrevious(numbers, size, out int partOneIndex);
         if (partOneAnswer is null)
         {
             return output.WriteError($"No number is the sum of two of the previous {size}.");
         }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        ulong? partTwoAnswer = null;
+        for (int i = partOneIndex - 1; i > 0; i--)
+        {
+            if (HasContiguousSum(i, numbers, (ulong)partOneAnswer, out int start))
+            {
+                partTwoAnswer = PartTwoAnswer(start, i, numbers);
+                break;
+            }
+        }
+        if (partTwoAnswer is null)
+        {
+            return output.WriteError("No valid set of numbers found.");
+        }
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static ulong? FirstNumberNotSumOfPrevious(ulong[] numbers, int size)
+    private static ulong? FirstNumberNotSumOfPrevious(ulong[] numbers, int size, out int index)
     {
         for (int i = size; i < numbers.Length; i++)
         {
             if (!IsSumOfPrevious(i, numbers, size))
             {
+                index = i;
                 return numbers[i];
             }
         }
+        index = -1;
         return null;
     }
 
@@ -78,5 +94,36 @@ internal class Day09 : Day
             }
         }
         return false;
+    }
+
+    private static bool HasContiguousSum(int index, ulong[] numbers, ulong target, out int start)
+    {
+        ulong sum = 0;
+        for (int i = index; i >= 0; i--)
+        {
+            sum += numbers[i];
+            if (sum == target)
+            {
+                start = i;
+                return true;
+            }
+            if (sum > target)
+            {
+                break;
+            }
+        }
+        start = -1;
+        return false;
+    }
+
+    private static ulong PartTwoAnswer(int start, int end, ulong[] numbers)
+    {
+        ulong max = ulong.MinValue, min = ulong.MaxValue;
+        for (int i = start; i <= end; i++)
+        {
+            max = Math.Max(max, numbers[i]);
+            min = Math.Min(min, numbers[i]);
+        }
+        return max + min;
     }
 }

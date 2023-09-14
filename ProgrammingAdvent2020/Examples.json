@@ -77,7 +77,8 @@
     "Example01": {
       "Input": "35\r\n20\r\n15\r\n25\r\n47\r\n40\r\n62\r\n55\r\n65\r\n95\r\n102\r\n117\r\n150\r\n182\r\n127\r\n219\r\n299\r\n277\r\n309\r\n576",
       "ExampleModifier": "TRUE",
-      "PartOne": "127"
+      "PartOne": "127",
+      "PartTwo": "62"
     }
   },
   "Day10": {
