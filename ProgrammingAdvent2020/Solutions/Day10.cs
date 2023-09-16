@@ -35,8 +35,9 @@ internal class Day10 : Day
         List<int> adapters = input.Select(n => int.Parse(n)).ToList();
         adapters.Sort();
         int partOneAnswer = PartOneAnswer(adapters);
+        long partTwoAnswer = PartTwoAnswer(adapters);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static int PartOneAnswer(List<int> adapters)
@@ -63,5 +64,34 @@ internal class Day10 : Day
             }
         }
         return ones * threes;
+    }
+
+    private static long PartTwoAnswer(List<int> adapters)
+    {
+        int[] allSteps = adapters.Prepend(0).Append(adapters[^1] + 3).ToArray();
+        int run = -1;
+        long product = 1;
+        for (int i = 0; i < allSteps.Length - 1; i++)
+        {
+            int diff = allSteps[i + 1] - allSteps[i];
+            if (diff == 1)
+            {
+                run++;
+                continue;
+            }
+            if (run > 0)
+            {
+                product *= run switch
+                {
+                    1 => 2,
+                    2 => 4,
+                    3 => 7,
+                    4 => 13,
+                    _ => 0
+                };
+            }
+            run = -1;
+        }
+        return product;
     }
 }
