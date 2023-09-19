@@ -131,6 +131,35 @@ internal class Day11 : Day
             return sum;
         }
 
+        //public void PrintMap()
+        //{
+        //    for (int y = 1; y < _height - 1; y++)
+        //    {
+        //        for (int dy = 0; dy < 8; dy++)
+        //        {
+        //            for (int x = 1; x < _width - 1; x++)
+        //            {
+        //                for (int dx = 0; dx < 8; dx++)
+        //                {
+        //                    if (((_tiles[x, y].OccupiedSeats >> (dy * 8 + dx)) & 1UL) == 1)
+        //                    {
+        //                        Console.Write('#');
+        //                    }
+        //                    else if (((_tiles[x, y].Seats >> (dy * 8 + dx)) & 1UL) == 1)
+        //                    {
+        //                        Console.Write('L');
+        //                    }
+        //                    else
+        //                    {
+        //                        Console.Write('.');
+        //                    }
+        //                }
+        //            }
+        //            Console.WriteLine();
+        //        }
+        //    }
+        //}
+
         private class Tile
         {
             //   0  1  2  3  4  5  6  7
@@ -202,10 +231,10 @@ internal class Day11 : Day
                 ulong s12 = (s11 >> 8) | (n12 << 56);
                 ulong s01 = ((s11 & ~R) << 1) | (n01 >> 7);
                 ulong s21 = ((s11 & ~L) >> 1) | (n21 << 7);
-                ulong s00 = ((s11 & ~R) << 9) | (n10 >> 55) | (n01 <<  1) | (n00 >> 63);
                 ulong s20 = ((s11 & ~L) << 7) | (n10 >> 57) | (n21 << 15) | (n20 >> 49);
                 ulong s02 = ((s11 & ~R) >> 7) | (n12 << 57) | (n01 >> 15) | (n02 << 49);
-                ulong s22 = ((s11 & ~L) >> 9) | (n12 << 55) | (n21 >>  1) | (n22 << 63);
+                ulong s00 = ((s11 & ~R) << 9) | ((n10 & ~R) >> 55) | (n01 << 1) | (n00 >> 63);
+                ulong s22 = ((s11 & ~L) >> 9) | ((n12 & ~L) << 55) | (n21 >> 1) | (n22 << 63);
 
                 _neighbors0 = 0;
                 _neighbors1 = 0;
