@@ -46,10 +46,17 @@ internal class Day11 : Day
         while (waitingArea.Update()) { }
         if (!waitingArea.Stabilized)
         {
-            return output.WriteError("Seat states did not stabilize.");
+            return output.WriteError("Seat states did not stabilize in Part One.");
         }
 
-        return output.WriteAnswers(waitingArea.OccupiedSeatCount, null);
+        WaitingArea2 waitingArea2 = new(map);
+        while (waitingArea2.Update()) { }
+        if (!waitingArea2.Stabilized)
+        {
+            return output.WriteError("Seat states did not stabilize in Part Two.");
+        }
+
+        return output.WriteAnswers(waitingArea.OccupiedSeatCount, waitingArea2.OccupiedSeatCount);
     }
 
     private class WaitingArea
@@ -268,6 +275,143 @@ internal class Day11 : Day
                 _neighbors0 ^= seats;
                 _neighbors1 ^= carry0;
                 _neighbors2 |= carry1;
+            }
+        }
+    }
+
+    private class WaitingArea2
+    {
+        public bool Stabilized { get; private set; }
+        public int OccupiedSeatCount => CountOccupiedSeats();
+        public int Time { get; private set; }
+
+        private static readonly Vector2Int[] _directions = new Vector2Int[]
+        {
+            new Vector2Int(-1,  0),
+            new Vector2Int(-1,  1),
+            new Vector2Int( 0,  1),
+            new Vector2Int( 1,  1),
+            new Vector2Int( 1,  0),
+            new Vector2Int( 1, -1),
+            new Vector2Int( 0, -1),
+            new Vector2Int(-1, -1)
+        };
+
+        private readonly int _timeout;
+        private readonly Seat[] _seats;
+
+        public WaitingArea2(char[,] map, int timeout = 1024)
+        {
+            _timeout = timeout;
+            Dictionary<(int, int), Seat> seats = new();
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (map[x, y] == 'L')
+                    {
+                        seats.Add((x, y), new Seat());
+                    }
+                }
+            }
+            for (int y = 0; y < map.GetLength(1); y++)
+            {
+                for (int x = 0; x < map.GetLength(0); x++)
+                {
+                    if (map[x, y] == 'L')
+                    {
+                        Seat current = seats[(x, y)];
+                        foreach (Vector2Int direction in _directions)
+                        {
+                            (int LX, int LY) = FindL(map, direction, x, y);
+                            if (LX >= 0)
+                            {
+                                current.AddNeighbor(seats[(LX, LY)]);
+                            }
+                        }
+                    }
+                }
+            }
+            _seats = seats.Values.ToArray();
+        }
+
+        public bool Update()
+        {
+            if (Stabilized)
+            {
+                return false;
+            }
+            if (Time >= _timeout)
+            {
+                return false;
+            }
+            Time++;
+            foreach (Seat seat in _seats)
+            {
+                seat.CountNeighbors();
+            }
+            bool seatsChanged = false;
+            foreach (Seat seat in _seats)
+            {
+                seatsChanged |= seat.Update();
+            }
+            if (!seatsChanged)
+            {
+                Stabilized = true;
+            }
+            return seatsChanged;
+        }
+
+        private int CountOccupiedSeats()
+        {
+            return _seats.Count(s => s.IsOccupied);
+        }
+
+        private (int, int) FindL(char[,] map, Vector2Int direction, int x, int y)
+        {
+            int lookX = x + direction.X;
+            int lookY = y + direction.Y;
+            if (lookX < 0 || lookY < 0 || lookX >= map.GetLength(0) || lookY >= map.GetLength(1))
+            {
+                return (-1, -1);
+            }
+            if (map[lookX, lookY] == 'L')
+            {
+                return (lookX, lookY);
+            }
+            return FindL(map, direction, lookX, lookY);
+        }
+
+        private class Seat
+        {
+            public bool IsOccupied { get; private set; }
+
+            private int _occupiedNeighborCount;
+            private readonly List<Seat> _neighbors = new();
+
+            public void AddNeighbor(Seat neighbor)
+            {
+                _neighbors.Add(neighbor);
+            }
+
+            public void CountNeighbors()
+            {
+                _occupiedNeighborCount = _neighbors.Count(n => n.IsOccupied);
+            }
+
+            public bool Update()
+            {
+                if (!IsOccupied && _occupiedNeighborCount == 0)
+                {
+                    IsOccupied = true;
+                    return true;
+                }
+                if (IsOccupied && _occupiedNeighborCount >= 5)
+                {
+                    IsOccupied = false;
+                    return true;
+                }
+                return false;
             }
         }
     }

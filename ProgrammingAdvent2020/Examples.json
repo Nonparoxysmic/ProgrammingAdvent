@@ -96,7 +96,8 @@
   "Day11": {
     "Example01": {
       "Input": "L.LL.LL.LL\r\nLLLLLLL.LL\r\nL.L.L..L..\r\nLLLL.LL.LL\r\nL.LL.LL.LL\r\nL.LLLLL.LL\r\n..L.L.....\r\nLLLLLLLLLL\r\nL.LLLLLL.L\r\nL.LLLLL.LL",
-      "PartOne": "37"
+      "PartOne": "37",
+      "PartTwo": "26"
     }
   },
   "Day12": {
