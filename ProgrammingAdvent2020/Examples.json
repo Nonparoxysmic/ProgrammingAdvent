@@ -103,7 +103,8 @@
   "Day12": {
     "Example01": {
       "Input": "F10\r\nN3\r\nF7\r\nR90\r\nF11",
-      "PartOne": "25"
+      "PartOne": "25",
+      "PartTwo": "286"
     }
   },
   "Day13": {

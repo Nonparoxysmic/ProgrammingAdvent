@@ -13,10 +13,10 @@ internal class Day12 : Day
     private static readonly Regex _validLine = new("^([LR](?<degrees>90|180|270)|[NSEWF](?<units>[0-9]{1,3}))$");
     private static readonly Vector2Int[] _directions = new Vector2Int[]
     {
-        new Vector2Int(1, 0),
-        new Vector2Int(0, -1),
-        new Vector2Int(-1, 0),
-        new Vector2Int(0, 1)
+        new Vector2Int(1, 0),  // East
+        new Vector2Int(0, -1), // North
+        new Vector2Int(-1, 0), // West
+        new Vector2Int(0, 1)   // South
     };
 
     public override bool ValidateInput(string[] input, out string errorMessage)
@@ -44,8 +44,9 @@ internal class Day12 : Day
 
         Instruction[] instructions = ReadInput(input);
         int partOneAnswer = PartOneAnswer(instructions);
+        int partTwoAnswer = PartTwoAnswer(instructions);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static Instruction[] ReadInput(string[] input)
@@ -73,7 +74,20 @@ internal class Day12 : Day
         {
             position += instruction.MoveDistance * _directions[instruction.MoveDirection]
                 + instruction.Forward * _directions[direction % 4];
-            direction += instruction.Turn + 4;
+            direction += instruction.Turn;
+        }
+        return position.TaxicabMagnitude();
+    }
+
+    private static int PartTwoAnswer(Instruction[] instructions)
+    {
+        Vector2Int position = Vector2Int.Zero;
+        Vector2Int waypoint = new(10, -1);
+        foreach (Instruction instruction in instructions)
+        {
+            waypoint += instruction.MoveDistance * _directions[instruction.MoveDirection];
+            waypoint = instruction.RotateWaypoint(waypoint);
+            position += instruction.Forward * waypoint;
         }
         return position.TaxicabMagnitude();
     }
@@ -87,6 +101,8 @@ internal class Day12 : Day
         public int MoveDistance { get; private set; }
         public int MoveDirection { get; private set; }
 
+        private readonly int[,] _rotationMatrix;
+
         public Instruction(char action, int value)
         {
             Action = action;
@@ -99,7 +115,7 @@ internal class Day12 : Day
             Turn = Action switch
             {
                 'L' => Value / 90,
-                'R' => -Value / 90,
+                'R' => (360 - Value) / 90,
                 _ => 0
             };
             MoveDistance = Action switch
@@ -114,6 +130,20 @@ internal class Day12 : Day
                 'W' => 2,
                 _ => 3
             };
+            _rotationMatrix = Turn switch
+            {
+                3 => new int[,] { {  0,  1 }, { -1,  0 } },
+                2 => new int[,] { { -1,  0 }, {  0, -1 } },
+                1 => new int[,] { {  0, -1 }, {  1,  0 } },
+                _ => new int[,] { {  1,  0 }, {  0,  1 } }
+            };
+        }
+
+        public Vector2Int RotateWaypoint(Vector2Int waypoint)
+        {
+            int x = waypoint.X * _rotationMatrix[0, 0] + waypoint.Y * _rotationMatrix[1, 0];
+            int y = waypoint.X * _rotationMatrix[0, 1] + waypoint.Y * _rotationMatrix[1, 1];
+            return new Vector2Int(x, y);
         }
     }
 }
