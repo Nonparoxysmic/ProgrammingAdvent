@@ -110,7 +110,28 @@
   "Day13": {
     "Example01": {
       "Input": "939\r\n7,13,x,x,59,x,31,19",
-      "PartOne": "295"
+      "PartOne": "295",
+      "PartTwo": "1068781"
+    },
+    "Example02": {
+      "Input": "0\r\n17,x,13,19",
+      "PartTwo": "3417"
+    },
+    "Example03": {
+      "Input": "0\r\n67,7,59,61",
+      "PartTwo": "754018"
+    },
+    "Example04": {
+      "Input": "0\r\n67,x,7,59,61",
+      "PartTwo": "779210"
+    },
+    "Example05": {
+      "Input": "0\r\n67,7,x,59,61",
+      "PartTwo": "1261476"
+    },
+    "Example06": {
+      "Input": "0\r\n1789,37,47,1889",
+      "PartTwo": "1202161486"
     }
   },
   "Day14": {

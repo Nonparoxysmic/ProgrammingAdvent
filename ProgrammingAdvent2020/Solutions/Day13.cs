@@ -38,27 +38,32 @@ internal class Day13 : Day
         PuzzleAnswers output = new();
 
         int startTime = int.Parse(input[0]);
-        int[] busesInService = Buses(input[1]);
-        int partOneAnswer = PartOneAnswer(busesInService, startTime);
+        Bus[] buses = Buses(input[1]);
+        int partOneAnswer = PartOneAnswer(buses.Select(b => (int)b.ID), startTime);
+        ulong? partTwoAnswer = PartTwoAnswer(buses);
+        if (partTwoAnswer is null)
+        {
+            return output.WriteError("Did not find the answer.");
+        }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static int[] Buses(string busIDs)
+    private static Bus[] Buses(string busIDs)
     {
-        List<int> buses = new();
+        List<Bus> buses = new();
         string[] terms = busIDs.Split(',');
-        foreach (string term in terms)
+        for (ulong i = 0; i < (ulong)terms.Length; i++)
         {
-            if (int.TryParse(term, out int ID))
+            if (ulong.TryParse(terms[i], out ulong ID))
             {
-                buses.Add(ID);
+                buses.Add(new Bus(ID, i));
             }
         }
         return buses.ToArray();
     }
 
-    private static int PartOneAnswer(int[] busesInService, int startTime)
+    private static int PartOneAnswer(IEnumerable<int> busesInService, int startTime)
     {
         int nextBusID = 0;
         int nextBusTime = int.MaxValue;
@@ -72,5 +77,37 @@ internal class Day13 : Day
             }
         }
         return nextBusID * (nextBusTime - startTime);
+    }
+
+    private static ulong? PartTwoAnswer(Bus[] buses)
+    {
+        ulong current = 0;
+        ulong step = buses[0].ID;
+        for (int nextBus = 1; nextBus < buses.Length; nextBus++)
+        {
+            int timeout = 0;
+            while ((current + buses[nextBus].Index) % buses[nextBus].ID != 0)
+            {
+                current += step;
+                if (timeout++ > 2048)
+                {
+                    return null;
+                }
+            }
+            step *= buses[nextBus].ID;
+        }
+        return current;
+    }
+
+    private class Bus
+    {
+        public ulong ID { get; private set; }
+        public ulong Index { get; private set; }
+
+        public Bus(ulong id, ulong index)
+        {
+            ID = id;
+            Index = index;
+        }
     }
 }
