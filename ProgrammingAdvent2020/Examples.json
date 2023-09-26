@@ -137,7 +137,12 @@
   "Day14": {
     "Example01": {
       "Input": "mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X\r\nmem[8] = 11\r\nmem[7] = 101\r\nmem[8] = 0",
+      "ExampleModifier": "Part One Only",
       "PartOne": "165"
+    },
+    "Example02": {
+      "Input": "mask = 000000000000000000000000000000X1001X\r\nmem[42] = 100\r\nmask = 00000000000000000000000000000000X0XX\r\nmem[26] = 1",
+      "PartTwo": "208"
     }
   },
   "Day15": {

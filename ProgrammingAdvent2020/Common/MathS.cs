@@ -36,4 +36,38 @@ internal static class MathS
             _ => values.Aggregate((a, b) => a / GCD(a, b) * b)
         };
     }
+
+    /// <summary>
+    /// Returns a specified integer raised to the specified integer power.
+    /// </summary>
+    /// <remarks>
+    /// This method returns zero when the result would be fractional and 
+    /// returns 1 for the case of zero to the power of zero.
+    /// </remarks>
+    /// <returns>
+    /// The number x raised to the power y.
+    /// </returns>
+    /// <exception cref="DivideByZeroException"/>
+    /// <param name="x">An integer number to be raised to a power.</param>
+    /// <param name="y">An integer number that specifies a power.</param>
+    public static int PowInt(int x, int y)
+    {
+        return y switch
+        {
+            < 0 => x switch
+            {
+                0 => throw new DivideByZeroException(),
+                -1 => PowInt(x, -y),
+                1 => 1,
+                _ => 0
+            },
+            0 => 1,
+            1 => x,
+            2 => x * x,
+            3 => x * x * x,
+            4 => x * x * x * x,
+            5 => x * x * x * x * x,
+            _ => (int)Math.Pow(x, y)
+        };
+    }
 }

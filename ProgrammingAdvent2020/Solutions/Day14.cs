@@ -3,6 +3,7 @@
 // for Advent of Code 2020
 // https://adventofcode.com/2020
 
+using System.Numerics;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2020.Common;
 
@@ -38,15 +39,25 @@ internal class Day14 : Day
     {
         PuzzleAnswers output = new();
 
-        Instruction[] instructions = ReadInput(input);
+        bool partOneOnly = exampleModifier is not null;
+        Instruction[] instructions = ReadInput(input, partOneOnly);
+
         Program program = new(instructions);
         program.Execute();
         ulong partOneAnswer = program.SumMemory();
+        if (partOneOnly)
+        {
+            return output.WriteAnswers(partOneAnswer, "Part One only example");
+        }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        Program2 program2 = new(instructions);
+        program2.Execute();
+        ulong partTwoAnswer = program2.SumMemory();
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static Instruction[] ReadInput(string[] input)
+    private static Instruction[] ReadInput(string[] input, bool partOneOnly)
     {
         Instruction[] instructions = new Instruction[input.Length];
         for (int i = 0; i < input.Length; i++)
@@ -54,7 +65,7 @@ internal class Day14 : Day
             Match match = _validLine.Match(input[i]);
             if (input[i][1] == 'a')
             {
-                instructions[i] = new(match.Groups["bitmask"].Value);
+                instructions[i] = new(match.Groups["bitmask"].Value, partOneOnly);
                 continue;
             }
             ulong address = ulong.Parse(match.Groups["address"].Value);
@@ -71,8 +82,10 @@ internal class Day14 : Day
         public ulong MaskZeroes { get; private set; }
         public ulong Address { get; private set; }
         public ulong DataValue { get; private set; }
+        public ulong NonfloatingBits { get; private set; }
+        public ulong[] FloatingBitValues { get; private set; }
 
-        public Instruction(string bitmask)
+        public Instruction(string bitmask, bool partOneOnly)
         {
             SetBitmask = true;
             MaskOnes = 0;
@@ -89,12 +102,48 @@ internal class Day14 : Day
                     MaskZeroes &= ~(1UL << i);
                 }
             }
+
+            if (partOneOnly)
+            {
+                FloatingBitValues = Array.Empty<ulong>();
+                return;
+            }
+
+            ulong floatingBits = ~MaskOnes & MaskZeroes & 0xFFFFFFFFF;
+            NonfloatingBits = ~floatingBits;
+
+            List<int> floatingIndices = new();
+            for (int i = 0; i < 64; i++)
+            {
+                if (((floatingBits >> i) & 1) == 1)
+                {
+                    floatingIndices.Add(i);
+                }
+            }
+            int possibilityCount = MathS.PowInt(2, BitOperations.PopCount(floatingBits));
+            List<ulong> floatingBitValues = new(possibilityCount);
+            for (ulong i = 0; i < (ulong)possibilityCount; i++)
+            {
+                floatingBitValues.Add(PositionBits(i, floatingIndices));
+            }
+            FloatingBitValues = floatingBitValues.ToArray();
         }
 
         public Instruction(ulong address, ulong dataValue)
         {
             Address = address;
             DataValue = dataValue;
+            FloatingBitValues = Array.Empty<ulong>();
+        }
+
+        private static ulong PositionBits(ulong value, List<int> indices)
+        {
+            ulong result = 0;
+            for (int i = 0; i < indices.Count; i++)
+            {
+                result |= ((value >> i) & 1) << indices[i];
+            }
+            return result;
         }
     }
 
@@ -123,6 +172,52 @@ internal class Day14 : Day
                 }
                 ulong maskedData = (instruction.DataValue | _maskOnes) & _maskZeroes;
                 _memory[instruction.Address] = maskedData;
+            }
+        }
+
+        public ulong SumMemory()
+        {
+            ulong sum = 0;
+            foreach (ulong data in _memory.Values)
+            {
+                sum += data;
+            }
+            return sum;
+        }
+    }
+
+    private class Program2
+    {
+        private readonly Instruction[] _instructions;
+        private readonly Dictionary<ulong, ulong> _memory = new();
+
+        private ulong _maskOnes = 0;
+        private ulong _nonfloatingBits = ~0UL;
+        private ulong[] _floatingBitValues;
+
+        public Program2(Instruction[] instructions)
+        {
+            _instructions = instructions;
+            _floatingBitValues = Array.Empty<ulong>();
+        }
+
+        public void Execute()
+        {
+            foreach (Instruction instruction in _instructions)
+            {
+                if (instruction.SetBitmask)
+                {
+                    _maskOnes = instruction.MaskOnes;
+                    _nonfloatingBits = instruction.NonfloatingBits;
+                    _floatingBitValues = instruction.FloatingBitValues;
+                    continue;
+                }
+                foreach (ulong floatingValue in _floatingBitValues)
+                {
+                    ulong maskedAddress = (instruction.Address & _nonfloatingBits) 
+                        | floatingValue | _maskOnes;
+                    _memory[maskedAddress] = instruction.DataValue;
+                }
             }
         }
 
