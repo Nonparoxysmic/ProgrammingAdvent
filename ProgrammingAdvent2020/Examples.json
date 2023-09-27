@@ -148,31 +148,38 @@
   "Day15": {
     "Example01": {
       "Input": "0,3,6",
-      "PartOne": "436"
+      "PartOne": "436",
+      "PartTwo": "175594"
     },
     "Example02": {
       "Input": "1,3,2",
-      "PartOne": "1"
+      "PartOne": "1",
+      "PartTwo": "2578"
     },
     "Example03": {
       "Input": "2,1,3",
-      "PartOne": "10"
+      "PartOne": "10",
+      "PartTwo": "3544142"
     },
     "Example04": {
       "Input": "1,2,3",
-      "PartOne": "27"
+      "PartOne": "27",
+      "PartTwo": "261214"
     },
     "Example05": {
       "Input": "2,3,1",
-      "PartOne": "78"
+      "PartOne": "78",
+      "PartTwo": "6895259"
     },
     "Example06": {
       "Input": "3,2,1",
-      "PartOne": "438"
+      "PartOne": "438",
+      "PartTwo": "18"
     },
     "Example07": {
       "Input": "3,1,2",
-      "PartOne": "1836"
+      "PartOne": "1836",
+      "PartTwo": "362"
     }
   },
   "Day16": {

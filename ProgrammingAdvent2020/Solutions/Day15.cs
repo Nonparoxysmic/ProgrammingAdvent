@@ -39,25 +39,26 @@ internal class Day15 : Day
         PuzzleAnswers output = new();
 
         int[] startingNumbers = input[0].Split(',').Select(s => int.Parse(s)).ToArray();
-        int partOneAnswer = PartOneAnswer(startingNumbers);
+        int partOneAnswer = CalculateNumber(2020, startingNumbers);
+        int partTwoAnswer = CalculateNumber(30_000_000, startingNumbers);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static int PartOneAnswer(int[] startingNumbers)
+    private static int CalculateNumber(int position, int[] startingNumbers)
     {
-        Dictionary<int, int> memory = new();
+        int[] memory = new int[position];
         int lastNumberAge = 0;
         for (int turn = 1; turn <= startingNumbers.Length; turn++)
         {
             int numberSpoken = startingNumbers[turn - 1];
-            lastNumberAge = memory.ContainsKey(numberSpoken) ? turn - memory[numberSpoken] : 0;
+            lastNumberAge = memory[numberSpoken] == 0 ? 0 : turn - memory[numberSpoken];
             memory[numberSpoken] = turn;
         }
-        for (int turn = startingNumbers.Length + 1; turn < 2020; turn++)
+        for (int turn = startingNumbers.Length + 1; turn < position; turn++)
         {
             int numberSpoken = lastNumberAge;
-            lastNumberAge = memory.ContainsKey(numberSpoken) ? turn - memory[numberSpoken] : 0;
+            lastNumberAge = memory[numberSpoken] == 0 ? 0 : turn - memory[numberSpoken];
             memory[numberSpoken] = turn;
         }
         return lastNumberAge;
