@@ -43,7 +43,38 @@ internal class Day16 : Day
         }
         int partOneAnswer = TicketScanningErrorRate(inputParser.Rules, inputParser.NearbyTickets);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        IEnumerable<Ticket> validTickets = inputParser.NearbyTickets
+            .Where(t => t.IsValid).Append(inputParser.YourTicket);
+        List<string>[] possibleFieldNames = new List<string>[inputParser.Rules.Length];
+        for (int i = 0; i < possibleFieldNames.Length; i++)
+        {
+            possibleFieldNames[i] = new();
+        }
+        for (int i = 0; i < possibleFieldNames.Length; i++)
+        {
+            foreach (Rule rule in inputParser.Rules)
+            {
+                bool allTicketsMatchRule = validTickets.All(t => rule.ValueIsValid(t.FieldValues[i]));
+                if (allTicketsMatchRule)
+                {
+                    possibleFieldNames[i].Add(rule.Name);
+                }
+            }
+        }
+        if (!SolveFieldNames(possibleFieldNames))
+        {
+            return output.WriteAnswers(partOneAnswer, "Could not solve field names.");
+        }
+        long partTwoAnswer = 1;
+        for (int i = 0; i < possibleFieldNames.Length; i++)
+        {
+            if (possibleFieldNames[i].First().StartsWith("departure"))
+            {
+                partTwoAnswer *= inputParser.YourTicket.FieldValues[i];
+            }
+        }
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static int TicketScanningErrorRate(Rule[] rules, Ticket[] nearbyTickets)
@@ -51,16 +82,42 @@ internal class Day16 : Day
         int sum = 0;
         foreach (Ticket ticket in nearbyTickets)
         {
+            ticket.IsValid = true;
             foreach (int value in ticket.FieldValues)
             {
-                bool valueIsValid = rules.Aggregate(false, (acc, rule) => acc |= rule.ValueIsValid(value));
+                bool valueIsValid = rules.Any(r => r.ValueIsValid(value));
                 if (!valueIsValid)
                 {
                     sum += value;
+                    ticket.IsValid = false;
                 }
             }
         }
         return sum;
+    }
+
+    private static bool SolveFieldNames(List<string>[] possibleFieldNames)
+    {
+        int i = 0, len = possibleFieldNames.Length;
+        for (int timeout = len; timeout >= 0; timeout--)
+        {
+            if (possibleFieldNames[i % len].Count == 0)
+            {
+                return false;
+            }
+            if (possibleFieldNames[i % len].Count == 1)
+            {
+                for (int j = 1; j < len; j++)
+                {
+                    if (possibleFieldNames[(i + j) % len].Remove(possibleFieldNames[i % len][0]))
+                    {
+                        timeout = len;
+                    }
+                }
+            }
+            i++;
+        }
+        return possibleFieldNames.All(l => l.Count == 1);
     }
 
     private class InputParser
@@ -245,6 +302,7 @@ internal class Day16 : Day
     {
         public static readonly Ticket Empty = new(Array.Empty<int>());
 
+        public bool IsValid { get; set; }
         public int[] FieldValues { get; private set; }
 
         public Ticket(int[] fieldValues)
