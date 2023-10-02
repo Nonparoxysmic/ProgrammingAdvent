@@ -191,7 +191,8 @@
   "Day17": {
     "Example01": {
       "Input": ".#.\r\n..#\r\n###",
-      "PartOne": "112"
+      "PartOne": "112",
+      "PartTwo": "848"
     }
   },
   "Day18": {
