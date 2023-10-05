@@ -76,7 +76,7 @@ internal class Day18 : Day
         long partOneAnswer = 0;
         foreach (TokenizedExpression expression in expressions)
         {
-            Queue<Token> parsed = Parse(expression.Tokens);
+            Queue<Token> parsed = Parse(new Queue<Token>(expression.Tokens));
             if (!TryEvaluate(parsed, out long result))
             {
                 return output.WriteError($"Unable to evaluate \"{expression.Original.Left(20, true)}\".");
@@ -84,7 +84,18 @@ internal class Day18 : Day
             partOneAnswer += result;
         }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        long partTwoAnswer = 0;
+        foreach (TokenizedExpression expression in expressions)
+        {
+            Queue<Token> parsed = Parse(expression.Tokens, false);
+            if (!TryEvaluate(parsed, out long result))
+            {
+                return output.WriteError($"Unable to evaluate \"{expression.Original.Left(20, true)}\".");
+            }
+            partTwoAnswer += result;
+        }
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static Queue<Token> Tokenize(string expression)
@@ -99,7 +110,7 @@ internal class Day18 : Day
     }
 
     // https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-    private static Queue<Token> Parse(Queue<Token> tokens)
+    private static Queue<Token> Parse(Queue<Token> tokens, bool isPartOne = true)
     {
         Queue<Token> output = new();
         Stack<Token> operatorStack = new();
@@ -113,7 +124,9 @@ internal class Day18 : Day
                     break;
                 case TokenType.Addition:
                 case TokenType.Multiplication:
-                    while (operatorStack.Any() && operatorStack.Peek().Type != TokenType.LeftParenthesis)
+                    while (operatorStack.Any() && operatorStack.Peek().Type != TokenType.LeftParenthesis
+                        && ((operatorStack.Peek().Type == TokenType.Addition
+                        && current.Type == TokenType.Multiplication) || isPartOne))
                     {
                         output.Enqueue(operatorStack.Pop());
                     }

@@ -198,27 +198,33 @@
   "Day18": {
     "Example01": {
       "Input": "1 + 2 * 3 + 4 * 5 + 6",
-      "PartOne": "71"
+      "PartOne": "71",
+      "PartTwo": "231"
     },
     "Example02": {
       "Input": "1 + (2 * 3) + (4 * (5 + 6))",
-      "PartOne": "51"
+      "PartOne": "51",
+      "PartTwo": "51"
     },
     "Example03": {
       "Input": "2 * 3 + (4 * 5)",
-      "PartOne": "26"
+      "PartOne": "26",
+      "PartTwo": "46"
     },
     "Example04": {
       "Input": "5 + (8 * 3 + 9 + 3 * 4 * 3)",
-      "PartOne": "437"
+      "PartOne": "437",
+      "PartTwo": "1445"
     },
     "Example05": {
       "Input": "5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))",
-      "PartOne": "12240"
+      "PartOne": "12240",
+      "PartTwo": "669060"
     },
     "Example06": {
       "Input": "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2",
-      "PartOne": "13632"
+      "PartOne": "13632",
+      "PartTwo": "23340"
     }
   },
   "Day19": {
