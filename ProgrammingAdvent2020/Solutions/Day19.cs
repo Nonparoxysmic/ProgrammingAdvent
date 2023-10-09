@@ -111,7 +111,18 @@ internal class Day19 : Day
         Regex partOneRegex = new($"^{rule42}{rule42}{rule31}$");
         int partOneAnswer = messages.Count(m => partOneRegex.IsMatch(m));
 
-        return output.WriteAnswers(partOneAnswer, null);
+        Regex regex42 = new(rule42);
+        Regex regex31 = new(rule31);
+        int partTwoAnswer = 0;
+        foreach (string message in messages)
+        {
+            if (PartTwoMessageIsValid(message, regex42, regex31))
+            {
+                partTwoAnswer++;
+            }
+        }
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static string[] GetMessages(string[] input)
@@ -171,6 +182,39 @@ internal class Day19 : Day
     {
         IEnumerable<string> subpatterns = ruleNumbers.Select(n => ResolvePattern(n, rules));
         return string.Join(null, subpatterns);
+    }
+
+    private static bool PartTwoMessageIsValid(string message, Regex regex42, Regex regex31)
+    {
+        if (message.Length % 8 != 0)
+        {
+            return false;
+        }
+        int fortyTwos = 0, thirtyOnes = 0;
+        int i = 0;
+        for (; i < message.Length; i += 8)
+        {
+            if (regex42.IsMatch(message[i..(i + 8)]))
+            {
+                fortyTwos++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        for (; i < message.Length; i += 8)
+        {
+            if (regex31.IsMatch(message[i..(i + 8)]))
+            {
+                thirtyOnes++;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return fortyTwos > thirtyOnes && thirtyOnes > 0;
     }
 
     private class Rule
