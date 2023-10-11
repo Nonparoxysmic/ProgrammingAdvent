@@ -58,6 +58,34 @@ internal class Day20 : Day
     {
         PuzzleAnswers output = new();
 
+        List<Tile> tiles = ReadInput(input);
+        MatchEdges(tiles);
+
+        if (tiles.Any(tile => tile.AdjacentTiles < 2 || tile.AdjacentTiles > 4))
+        {
+            return output.WriteError("Found tiles with an invalid number of neighbors.");
+        }
+        int edgeTileCount = tiles.Count(t => t.AdjacentTiles == 3);
+        int expectedEdges = ((int)Math.Sqrt(tiles.Count) - 2) * 4;
+        if (edgeTileCount != expectedEdges)
+        {
+            return output.WriteError($"Did not find the correct number of edge pieces ({expectedEdges}).");
+        }
+
+        IEnumerable<Tile> cornerTiles = tiles.Where(t => t.AdjacentTiles == 2);
+        if (cornerTiles.Count() != 4)
+        {
+            return output.WriteError("Did not find four corner pieces.");
+        }
+        long partOneAnswer = cornerTiles.Aggregate(1L, (a, tile) => a * tile.ID);
+
+        char[,] image = AssembleImage(tiles);
+
+        return output.WriteAnswers(partOneAnswer, null);
+    }
+
+    private static List<Tile> ReadInput(string[] input)
+    {
         List<Tile> tiles = new();
         for (int i = 0; i < input.Length - 10; i += 12)
         {
@@ -70,7 +98,11 @@ internal class Day20 : Day
             }
             tiles.Add(new Tile(tileID, data));
         }
+        return tiles;
+    }
 
+    private static void MatchEdges(List<Tile> tiles)
+    {
         Dictionary<uint, int> edgeCounts = new();
         foreach (Tile tile in tiles)
         {
@@ -83,15 +115,94 @@ internal class Day20 : Day
         {
             tile.AdjacentTiles += edgeCounts[tile.T] + edgeCounts[tile.B]
                 + edgeCounts[tile.L] + edgeCounts[tile.R] - 4;
+            tile.T = edgeCounts[tile.T] == 1 ? 0 : tile.T;
+            tile.B = edgeCounts[tile.B] == 1 ? 0 : tile.B;
+            tile.L = edgeCounts[tile.L] == 1 ? 0 : tile.L;
+            tile.R = edgeCounts[tile.R] == 1 ? 0 : tile.R;
         }
-        IEnumerable<Tile> cornerTiles = tiles.Where(t => t.AdjacentTiles == 2);
-        if (cornerTiles.Count() != 4)
-        {
-            return output.WriteError("Did not find four corner pieces.");
-        }
-        long partOneAnswer = cornerTiles.Aggregate(1L, (a, tile) => a * tile.ID);
+    }
 
-        return output.WriteAnswers(partOneAnswer, null);
+    private static char[,] AssembleImage(List<Tile> tiles)
+    {
+        List<Tile> cornerTiles = tiles.Where(t => t.AdjacentTiles == 2).ToList();
+        List<Tile> edgeTiles = tiles.Where(t => t.AdjacentTiles == 3).ToList();
+        List<Tile> middleTiles = tiles.Where(t => t.AdjacentTiles == 4).ToList();
+
+        int size = (int)Math.Sqrt(tiles.Count);
+        Tile[,] map = new Tile[size, size];
+        Tile current;
+        uint top, left;
+
+        // Top row
+        current = cornerTiles.First();
+        map[0, 0] = current.Transform(0, 0);
+        cornerTiles.Remove(current);
+        for (int x = 1; x < size - 1; x++)
+        {
+            left = map[x - 1, 0].R;
+            current = edgeTiles.First(t => t.ContainsEdge(left));
+            map[x, 0] = current.Transform(0, left);
+            edgeTiles.Remove(current);
+        }
+        left = map[size - 2, 0].R;
+        current = cornerTiles.First(t => t.ContainsEdge(left));
+        map[size - 1, 0] = current.Transform(0, left);
+        cornerTiles.Remove(current);
+        // Middle rows
+        for (int y = 1; y < size - 1; y++)
+        {
+            top = map[0, y - 1].B;
+            current = edgeTiles.First(t => t.ContainsEdge(top));
+            map[0, y] = current.Transform(top, 0);
+            edgeTiles.Remove(current);
+            for (int x = 1; x < size - 1; x++)
+            {
+                top = map[x, y - 1].B;
+                left = map[x - 1, y].R;
+                current = middleTiles.First(t => t.ContainsEdge(top) && t.ContainsEdge(left));
+                map[x, y] = current.Transform(top, left);
+                middleTiles.Remove(current);
+            }
+            top = map[size - 1, y - 1].B;
+            left = map[size - 2, y].R;
+            current = edgeTiles.First(t => t.ContainsEdge(top) && t.ContainsEdge(left));
+            map[size - 1, y] = current.Transform(top, left);
+            edgeTiles.Remove(current);
+        }
+        // Bottom row
+        top = map[0, size - 2].B;
+        current = cornerTiles.First(t => t.ContainsEdge(top));
+        map[0, size - 1] = current.Transform(top, 0);
+        cornerTiles.Remove(current);
+        for (int x = 1; x < size - 1; x++)
+        {
+            top = map[x, size - 2].B;
+            left = map[x - 1, size - 1].R;
+            current = edgeTiles.First(t => t.ContainsEdge(top) && t.ContainsEdge(left));
+            map[x, size - 1] = current.Transform(top, left);
+            edgeTiles.Remove(current);
+        }
+        top = map[size - 1, size - 2].B;
+        left = map[size - 2, size - 1].R;
+        current = cornerTiles.First(t => t.ContainsEdge(top) && t.ContainsEdge(left));
+        map[size - 1, size - 1] = current.Transform(top, left);
+        cornerTiles.Remove(current);
+
+        char[,] output = new char[size * 8, size * 8];
+        for (int mapRow = 0; mapRow < size; mapRow++)
+        {
+            for (int mapCol = 0; mapCol < size; mapCol++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        output[mapRow * 8 + x, mapCol * 8 + y] = map[mapRow, mapCol].Pixels[x, y];
+                    }
+                }
+            }
+        }
+        return output;
     }
 
     private class Tile
@@ -99,10 +210,12 @@ internal class Day20 : Day
         public int ID { get; private set; }
         public int AdjacentTiles { get; set; }
 
-        public uint T { get; private set; }
-        public uint B { get; private set; }
-        public uint L { get; private set; }
-        public uint R { get; private set; }
+        public uint T { get; set; }
+        public uint B { get; set; }
+        public uint L { get; set; }
+        public uint R { get; set; }
+
+        public char[,] Pixels { get; set; }
 
         public Tile(int idNumber, string[] data)
         {
@@ -112,6 +225,102 @@ internal class Day20 : Day
             B = EncodeEdge(data[9].ToCharArray());
             L = EncodeEdge(data.Select(s => s[0]).ToArray());
             R = EncodeEdge(data.Select(s => s[9]).ToArray());
+
+            Pixels = new char[8, 8];
+            for (int y = 1; y < 9; y++)
+            {
+                for (int x = 1; x < 9; x++)
+                {
+                    Pixels[x - 1, y - 1] = data[y][x];
+                }
+            }
+        }
+
+        public Tile(Tile tileToCopy)
+        {
+            ID = tileToCopy.ID;
+            AdjacentTiles = tileToCopy.AdjacentTiles;
+            T = tileToCopy.T;
+            B = tileToCopy.B;
+            L = tileToCopy.L;
+            R = tileToCopy.R;
+            Pixels = new char[8, 8];
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    Pixels[x, y] = tileToCopy.Pixels[x, y];
+                }
+            }
+        }
+
+        public Tile Transform(uint top, uint left)
+        {
+            if (T == top && L == left)
+            {
+                return this;
+            }
+            Tile output = new(this);
+            Func<int, int, Vector2Int> transform;
+            if (T == top && R == left)
+            {
+                // Flip horizontally
+                transform = (x, y) => new Vector2Int(7 - x, y);
+                (output.L, output.R) = (R, L);
+            }
+            else if (B == top && L == left)
+            {
+                // Flip vertically
+                transform = (x, y) => new Vector2Int(x, 7 - y);
+                (output.T, output.B) = (B, T);
+            }
+            else if (B == top && R == left)
+            {
+                // Flip both
+                transform = (x, y) => new Vector2Int(7 - x, 7 - y);
+                (output.L, output.R) = (R, L);
+                (output.T, output.B) = (B, T);
+            }
+            else if (L == top && T == left)
+            {
+                // Swap x and y
+                transform = (x, y) => new Vector2Int(y, x);
+                (output.T, output.L) = (L, T);
+                (output.B, output.R) = (R, B);
+            }
+            else if (L == top && B == left)
+            {
+                // 90 degree rotation
+                transform = (x, y) => new Vector2Int(y, 7 - x);
+                (output.T, output.B, output.L, output.R) = (L, R, B, T);
+            }
+            else if (R == top && T == left)
+            {
+                // 90 degree rotation
+                transform = (x, y) => new Vector2Int(7 - y, x);
+                (output.T, output.B, output.L, output.R) = (R, L, T, B);
+
+            }
+            else // R == top && B == left
+            {
+                transform = (x, y) => new Vector2Int(7 - y, 7 - x);
+                (output.T, output.B, output.L, output.R) = (R, L, B, T);
+            }
+
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    Vector2Int source = transform(x, y);
+                    output.Pixels[x, y] = Pixels[source.X, source.Y];
+                }
+            }
+            return output;
+        }
+
+        public bool ContainsEdge(uint edge)
+        {
+            return edge == T || edge == B || edge == L || edge == R;
         }
 
         private static uint EncodeEdge(char[] edge)
