@@ -10,6 +10,7 @@ namespace ProgrammingAdvent2020.Solutions;
 
 internal class Day20 : Day
 {
+    private static readonly int[] _monsterPattern = new int[] { -1, 1, 6, 7, 12, 13 };
     private static readonly Regex _titleLine = new("^Tile (?<tileID>[0-9]{4}):$");
     private static readonly Regex _dataLine = new("^[.#]{10}$");
 
@@ -80,8 +81,28 @@ internal class Day20 : Day
         long partOneAnswer = cornerTiles.Aggregate(1L, (a, tile) => a * tile.ID);
 
         char[,] image = AssembleImage(tiles);
+        List<Vector2Int> potentialMonsters = GetPointsOfInterest(image);
+        Vector2Int orientation = CorrectOrientation(image, potentialMonsters);
+        if (orientation != Vector2Int.Zero)
+        {
+            foreach (Vector2Int point in potentialMonsters)
+            {
+                if (IsSeaMonster(point, image, orientation))
+                {
+                    DrawSeaMonster(point, image, orientation);
+                }
+            }
+        }
+        int partTwoAnswer = 0;
+        for (int y = 1; y < image.GetLength(1) - 1; y++)
+        {
+            for (int x = 1; x < image.GetLength(0) - 1; x++)
+            {
+                partTwoAnswer += image[x, y] == '#' ? 1 : 0;
+            }
+        }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private static List<Tile> ReadInput(string[] input)
@@ -188,7 +209,8 @@ internal class Day20 : Day
         map[size - 1, size - 1] = current.Transform(top, left);
         cornerTiles.Remove(current);
 
-        char[,] output = new char[size * 8, size * 8];
+        char[,] output = new char[size * 8 + 2, size * 8 + 2];
+        output.Fill('█');
         for (int mapRow = 0; mapRow < size; mapRow++)
         {
             for (int mapCol = 0; mapCol < size; mapCol++)
@@ -197,12 +219,115 @@ internal class Day20 : Day
                 {
                     for (int x = 0; x < 8; x++)
                     {
-                        output[mapRow * 8 + x, mapCol * 8 + y] = map[mapRow, mapCol].Pixels[x, y];
+                        output[mapRow * 8 + x + 1, mapCol * 8 + y + 1] = map[mapRow, mapCol].Pixels[x, y];
                     }
                 }
             }
         }
         return output;
+    }
+
+    private static List<Vector2Int> GetPointsOfInterest(char[,] image)
+    {
+        List<Vector2Int> poi = new();
+        for (int y = 2; y < image.GetLength(1) - 2; y++)
+        {
+            for (int x = 2; x < image.GetLength(0) - 2; x++)
+            {
+                if (image[x, y] == '.') { continue; }
+                int neighbors = 0;
+                if (image[x - 1, y] == '#') { neighbors++; }
+                if (image[x, y - 1] == '#') { neighbors++; }
+                if (image[x + 1, y] == '#') { neighbors++; }
+                if (image[x, y + 1] == '#') { neighbors++; }
+                if (neighbors > 2)
+                {
+                    poi.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+        return poi;
+    }
+
+    private static Vector2Int CorrectOrientation(char[,] image, List<Vector2Int> potentialMonsters)
+    {
+        Vector2Int[] possibleOrientations = new Vector2Int[]
+        {
+            new Vector2Int(-2, 1),
+            new Vector2Int(-1, 2),
+            new Vector2Int(1, 2),
+            new Vector2Int(2, 1),
+            new Vector2Int(2, -1),
+            new Vector2Int(1, -2),
+            new Vector2Int(-1, -2),
+            new Vector2Int(-2, -1),
+        };
+        foreach (Vector2Int point in potentialMonsters)
+        {
+            foreach (Vector2Int orientation in possibleOrientations)
+            {
+                if (IsSeaMonster(point, image, orientation))
+                {
+                    return orientation;
+                }
+            }
+        }
+        return Vector2Int.Zero;
+    }
+
+    private static bool IsSeaMonster(Vector2Int point, char[,] image, Vector2Int orientation)
+    {
+        Vector2Int tailDir = orientation / 2;
+        Vector2Int tail = point + 18 * tailDir;
+        if (tail.X < 1 || tail.X >= image.GetLength(0) - 1 ||
+            tail.Y < 1 || tail.Y >= image.GetLength(1) - 1)
+        {
+            return false;
+        }
+        if (image[tail.X, tail.Y] != '#')
+        {
+            return false;
+        }
+        foreach (int i in _monsterPattern)
+        {
+            if (image[point.X + i * tailDir.X, point.Y + i * tailDir.Y] != '#')
+            {
+                return false;
+            }
+        }
+        Vector2Int crown = point + 2 * tailDir - orientation;
+        if (image[crown.X, crown.Y] != '#')
+        {
+            return false;
+        }
+        for (int i = 0; i < 16; i += 3)
+        {
+            Vector2Int surface = point + orientation + i * tailDir;
+            if (image[surface.X, surface.Y] != '#')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void DrawSeaMonster(Vector2Int point, char[,] image, Vector2Int orientation)
+    {
+        Vector2Int tailDir = orientation / 2;
+        Vector2Int tail = point + 18 * tailDir;
+        image[tail.X, tail.Y] = 'O';
+        foreach (int i in _monsterPattern)
+        {
+            image[point.X + i * tailDir.X, point.Y + i * tailDir.Y] = 'O';
+        }
+        Vector2Int crown = point + 2 * tailDir - orientation;
+        image[crown.X, crown.Y] = 'O';
+        for (int i = 0; i < 16; i += 3)
+        {
+            Vector2Int surface = point + orientation + i * tailDir;
+            image[surface.X, surface.Y] = 'O';
+        }
+        image[point.X, point.Y] = 'O';
     }
 
     private class Tile
