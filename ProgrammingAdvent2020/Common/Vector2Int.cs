@@ -69,6 +69,11 @@ internal readonly struct Vector2Int
         return multi * vector;
     }
 
+    public static Vector2Int operator /(Vector2Int vector, int divisor)
+    {
+        return new Vector2Int(vector.X / divisor, vector.Y / divisor);
+    }
+
     public static bool operator ==(Vector2Int a, Vector2Int b)
     {
         return a.Equals(b);

@@ -74,6 +74,11 @@ internal readonly struct Vector3Int
         return multi * vector;
     }
 
+    public static Vector3Int operator /(Vector3Int vector, int divisor)
+    {
+        return new Vector3Int(vector.X / divisor, vector.Y / divisor, vector.Z / divisor);
+    }
+
     public static bool operator ==(Vector3Int a, Vector3Int b)
     {
         return a.Equals(b);
