@@ -243,7 +243,8 @@
   "Day21": {
     "Example01": {
       "Input": "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)\r\ntrh fvjkl sbzzf mxmxvkd (contains dairy)\r\nsqjhc fvjkl (contains soy)\r\nsqjhc mxmxvkd sbzzf (contains fish)",
-      "PartOne": "5"
+      "PartOne": "5",
+      "PartTwo": "mxmxvkd,sqjhc,fvjkl"
     }
   },
   "Day22": {

@@ -67,8 +67,13 @@ internal class Day21 : Day
 
         PossibleAllergens possibleAllergens = new(allergens, foods);
         int partOneAnswer = possibleAllergens.NonallergenCount();
+        string? partTwoAnswer = possibleAllergens.CanonicalDangerousIngredientList();
+        if (partTwoAnswer is null)
+        {
+            return output.WriteAnswers(partOneAnswer, "Unable to solve Part Two.");
+        }
 
-        return output.WriteAnswers(partOneAnswer, null);
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
     private class Food
@@ -86,13 +91,15 @@ internal class Day21 : Day
     private class PossibleAllergens
     {
         private readonly List<Food> _foods;
-        private readonly HashSet<string> _allergens;
+        private readonly List<string> _allergens;
         private readonly Dictionary<string, HashSet<string>> _possibilities;
 
         public PossibleAllergens(HashSet<string> allergens, List<Food> foods)
         {
             _foods = foods;
-            _allergens = allergens;
+            // Sort the allergens alphabetically for Part Two.
+            _allergens = allergens.ToList();
+            _allergens.Sort();
             // Initialize the dictionary of which ingredients could contain an allergen.
             _possibilities = new();
             // For each allergen...
@@ -126,6 +133,41 @@ internal class Day21 : Day
                 count += food.Ingredients.Except(possibleAllergenIngredients).Count();
             }
             return count;
+        }
+
+        public string? CanonicalDangerousIngredientList()
+        {
+            bool[] resolved = new bool[_allergens.Count];
+            int timeout = _allergens.Count;
+            while (timeout-- >= 0)
+            {
+                for (int i = 0; i < _allergens.Count; i++)
+                {
+                    if (resolved[i]) { continue; }
+                    switch (_possibilities[_allergens[i]].Count)
+                    {
+                        case 0:
+                            return null;
+                        case 1:
+                            string identified = _possibilities[_allergens[i]].First();
+                            for (int j = 0; j < _allergens.Count; j++)
+                            {
+                                if (j == i) { continue; }
+                                _possibilities[_allergens[j]].Remove(identified);
+                            }
+                            resolved[i] = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            if (!resolved.All(b => b))
+            {
+                return null;
+            }
+            IEnumerable<string> ingredients = _allergens.Select(a => _possibilities[a].First());
+            return string.Join(',', ingredients);
         }
     }
 }
