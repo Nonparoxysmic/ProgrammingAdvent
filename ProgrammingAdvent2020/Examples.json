@@ -250,7 +250,8 @@
   "Day22": {
     "Example01": {
       "Input": "Player 1:\r\n9\r\n2\r\n6\r\n3\r\n1\r\n\r\nPlayer 2:\r\n5\r\n8\r\n4\r\n7\r\n10",
-      "PartOne": "306"
+      "PartOne": "306",
+      "PartTwo": "291"
     }
   },
   "Day23": {
