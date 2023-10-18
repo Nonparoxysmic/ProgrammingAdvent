@@ -241,7 +241,7 @@ internal class Day22 : Day
             {
                 State(_player1Deck, _player2Deck)
             };
-            int timeout = 1000;
+            int timeout = 100_000;
             while (timeout-- > 0)
             {
                 int player1Card = _player1Deck.Draw();
@@ -257,10 +257,15 @@ internal class Day22 : Day
                         _player1Deck.Bury(player1Card);
                         _player1Deck.Bury(player2Card);
                     }
-                    else
+                    else if (game.Winner == 2)
                     {
                         _player2Deck.Bury(player2Card);
                         _player2Deck.Bury(player1Card);
+                    }
+                    else
+                    {
+                        // Recursive game not resolved.
+                        return;
                     }
                 }
                 else
