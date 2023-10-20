@@ -55,12 +55,16 @@ internal class Day23 : Day
         state = DoMoves(100, state);
         string partOneAnswer = CupOrderAfterOne(state);
 
-        return output.WriteAnswers(partOneAnswer, null);
+        int[] state2 = ReadInput(input[0], 1_000_000);
+        state2 = DoMoves(10_000_000, state2);
+        long partTwoAnswer = PartTwoAnswer(state2);
+
+        return output.WriteAnswers(partOneAnswer, partTwoAnswer);
     }
 
-    private static int[] ReadInput(string input)
+    private static int[] ReadInput(string input, int stateLength = 0)
     {
-        int[] state = new int[input.Length + 1];
+        int[] state = new int[Math.Max(input.Length, stateLength) + 1];
         // Index zero contains the label of the current cup.
         state[0] = input[0] - '0';
         for (int i = 0; i < input.Length; i++)
@@ -69,6 +73,16 @@ internal class Day23 : Day
             int nextCup = input[(i + 1) % input.Length] - '0';
             state[cup] = nextCup;
         }
+        if (stateLength < input.Length)
+        {
+            return state;
+        }
+        state[input[^1] - '0'] = input.Length + 1;
+        for (int cup = input.Length + 1; cup < state.Length - 1; cup++)
+        {
+            state[cup] = cup + 1;
+        }
+        state[^1] = input[0] - '0';
         return state;
     }
 
@@ -113,5 +127,12 @@ internal class Day23 : Day
             current = state[current];
         }
         return string.Join(null, output);
+    }
+
+    private static long PartTwoAnswer(int[] state)
+    {
+        long next = state[1];
+        long nextNext = state[next];
+        return next * nextNext;
     }
 }
