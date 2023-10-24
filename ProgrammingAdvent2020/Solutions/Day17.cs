@@ -63,6 +63,7 @@ internal class Day17 : Day
                 for (int x = 0; x < initialSlice.GetLength(0); x++)
                 {
                     _cubes.Add((x, y, 0), initialSlice[x, y] == '#');
+                    _neighbors.Add((x, y, 0), 0);
                 }
             }
         }
@@ -173,6 +174,7 @@ internal class Day17 : Day
                 for (int x = 0; x < initialSlice.GetLength(0); x++)
                 {
                     _cubes.Add((x, y, 0, 0), initialSlice[x, y] == '#');
+                    _neighbors.Add((x, y, 0, 0), 0);
                 }
             }
         }
