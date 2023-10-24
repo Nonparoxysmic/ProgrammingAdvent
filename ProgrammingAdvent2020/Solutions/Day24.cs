@@ -94,6 +94,113 @@ internal class Day24 : Day
             }
         }
 
-        return output.WriteAnswers(blackTiles.Count, null);
+        HexGrid grid = new(blackTiles);
+        grid.ExecuteProcess(100);
+        int partTwoAnswer = grid.CountBlackTiles();
+
+        return output.WriteAnswers(blackTiles.Count, partTwoAnswer);
+    }
+
+    private class HexGrid
+    {
+        private readonly Dictionary<(int, int), bool> _tiles = new();
+        private readonly Dictionary<(int, int), int> _neighbors = new();
+
+        public HexGrid(HashSet<Vector2Int> blackTiles)
+        {
+            foreach (Vector2Int tile in blackTiles)
+            {
+                _tiles.Add((tile.X, tile.Y), true);
+                _neighbors.Add((tile.X, tile.Y), 0);
+            }
+        }
+
+        public void ExecuteProcess(int iterations)
+        {
+            for (int i = 0; i < iterations; i++)
+            {
+                ExecuteCycle();
+            }
+        }
+
+        public int CountBlackTiles()
+        {
+            return _tiles.Values.Count(isBlack => isBlack);
+        }
+
+        private void ExecuteCycle()
+        {
+            ClearNeighbors();
+            CountNeighbors();
+            UpdateTiles();
+        }
+
+        private void ClearNeighbors()
+        {
+            foreach (var key in _neighbors.Keys)
+            {
+                _neighbors[key] = 0;
+            }
+        }
+
+        private void CountNeighbors()
+        {
+            foreach (var kvp in _tiles)
+            {
+                if (kvp.Value)
+                {
+                    AddNeighbors(kvp.Key);
+                }
+            }
+        }
+
+        private void AddNeighbors((int Q, int R) tile)
+        {
+            foreach (Vector2Int step in _directions.Values)
+            {
+                AddNeighbor((tile.Q + step.X, tile.R + step.Y));
+            }
+        }
+
+        private void AddNeighbor((int, int) position)
+        {
+            if (!_neighbors.ContainsKey(position))
+            {
+                _neighbors.Add(position, 1);
+            }
+            else
+            {
+                _neighbors[position]++;
+            }
+        }
+
+        private void UpdateTiles()
+        {
+            foreach (var kvp in _neighbors)
+            {
+                (int, int) position = kvp.Key;
+                int neighbors = kvp.Value;
+                if (!_tiles.ContainsKey(position))
+                {
+                    _tiles.Add(position, false);
+                }
+                if (_tiles[position])
+                {
+                    // Black Tile
+                    if (neighbors == 0 || neighbors > 2)
+                    {
+                        _tiles[position] = false;
+                    }
+                }
+                else
+                {
+                    // White Tile
+                    if (neighbors == 2)
+                    {
+                        _tiles[position] = true;
+                    }
+                }
+            }
+        }
     }
 }

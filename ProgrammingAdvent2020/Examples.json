@@ -264,7 +264,8 @@
   "Day24": {
     "Example01": {
       "Input": "sesenwnenenewseeswwswswwnenewsewsw\r\nneeenesenwnwwswnenewnwwsewnenwseswesw\r\nseswneswswsenwwnwse\r\nnwnwneseeswswnenewneswwnewseswneseene\r\nswweswneswnenwsewnwneneseenw\r\neesenwseswswnenwswnwnwsewwnwsene\r\nsewnenenenesenwsewnenwwwse\r\nwenwwweseeeweswwwnwwe\r\nwsweesenenewnwwnwsenewsenwwsesesenwne\r\nneeswseenwwswnwswswnw\r\nnenwswwsewswnenenewsenwsenwnesesenew\r\nenewnwewneswsewnwswenweswnenwsenwsw\r\nsweneswneswneneenwnewenewwneswswnese\r\nswwesenesewenwneswnwwneseswwne\r\nenesenwswwswneneswsenwnewswseenwsese\r\nwnwnesenesenenwwnenwsewesewsesesew\r\nnenewswnwewswnenesenwnesewesw\r\neneswnwswnwsenenwnwnwwseeswneewsenese\r\nneswnwewnwnwseenwseesewsenwsweewe\r\nwseweeenwnesenwwwswnew",
-      "PartOne": "10"
+      "PartOne": "10",
+      "PartTwo": "2208"
     }
   },
   "Day25": {
