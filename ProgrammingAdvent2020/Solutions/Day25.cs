@@ -71,7 +71,7 @@ internal class Day25 : Day
             return output.WriteError("No answer found.");
         }
 
-        return output.WriteAnswers(encryptionKey, null);
+        return output.WriteAnswers(encryptionKey, "Pay The Deposit");
     }
 
     private static ulong TransformNumber(ulong subjectNumber, int loopSize)

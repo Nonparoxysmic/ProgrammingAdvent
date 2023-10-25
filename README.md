@@ -9,7 +9,7 @@ My solutions for [Advent of Code](https://adventofcode.com/).
 | Advent of Code 2017 |  2021-12-26  |   2022-03-20   |     .NET Core 3.1 (C# 8)      |
 | Advent of Code 2018 |  2022-07-31  |   2022-11-28   |     .NET Core 3.1 (C# 8)      |
 | Advent of Code 2019 |  2023-03-25  |   2023-08-21   |        .NET 6 (C# 10)         |
-| Advent of Code 2020 |  2023-08-23  |                |        .NET 6 (C# 10)         |
+| Advent of Code 2020 |  2023-08-23  |   2023-10-24   |        .NET 6 (C# 10)         |
 
 <br><hr>
 
