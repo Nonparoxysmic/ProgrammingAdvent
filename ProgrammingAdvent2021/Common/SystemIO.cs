@@ -3,6 +3,9 @@
 // for Advent of Code 2021
 // https://adventofcode.com/2021
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
+
 namespace ProgrammingAdvent2021.Common;
 
 internal static class SystemIO
@@ -23,6 +26,27 @@ internal static class SystemIO
         catch
         {
             lines = [];
+            return false;
+        }
+    }
+
+    public static bool TryReadExampleFile([NotNullWhen(true)] out JsonDocument? jsonDocument)
+    {
+        string path = "Examples.json";
+        if (!File.Exists(path))
+        {
+            jsonDocument = null;
+            return false;
+        }
+        try
+        {
+            using StreamReader? streamReader = new(path);
+            jsonDocument = JsonDocument.Parse(streamReader.BaseStream);
+            return true;
+        }
+        catch
+        {
+            jsonDocument = null;
             return false;
         }
     }
