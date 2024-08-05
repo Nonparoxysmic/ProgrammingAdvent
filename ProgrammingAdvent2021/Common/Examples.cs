@@ -4,6 +4,8 @@
 // https://adventofcode.com/2021
 
 using System.Text.Json;
+using ProgrammingAdvent2021.Solutions;
+using ProgrammingAdvent2021.Utilities;
 
 namespace ProgrammingAdvent2021.Common;
 
@@ -64,7 +66,66 @@ internal static class Examples
 
     public static void TestExamples()
     {
-        // TODO: Test examples
-        Console.WriteLine("Example testing not yet implemented.");
+        for (int dayNumber = 1; dayNumber <= 25; dayNumber++)
+        {
+            if (!Reflection.DayTypes.ContainsKey(dayNumber))
+            {
+                Console.WriteLine($"Day {dayNumber:00}: No solution implemented.");
+                continue;
+            }
+            if (_examples.TryGetValue(dayNumber, out (string, string?, string?)[]? dayExamples)
+                && dayExamples.Length > 0)
+            {
+                if (Day.TryGetSolution(dayNumber, out Day? solution))
+                {
+                    foreach ((string input, string? partOne, string? partTwo) in dayExamples)
+                    {
+                        (string, string) result = solution.Test(input.ToLines());
+                        if (partOne is not null)
+                        {
+                            if (result.Item1 == partOne)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine($"Day {dayNumber:00} Part One: Success");
+                                Console.ResetColor();
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"Day {dayNumber:00} Part One: FAILURE");
+                                Console.WriteLine($"Expected \"{partOne}\", got \"{result.Item1}\"");
+                                Console.ResetColor();
+                            }
+                        }
+                        if (partTwo is not null)
+                        {
+                            if (result.Item2 == partTwo)
+                            {
+                                Console.WriteLine($"Day {dayNumber:00} Part Two: Success");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Day {dayNumber:00} Part Two: FAILURE");
+                                Console.WriteLine($"Expected \"{partTwo}\", got \"{result.Item2}\"");
+                            }
+                        }
+                        if (partOne is null && partTwo is null)
+                        {
+                            Console.WriteLine($"Day {dayNumber:00}: Example contained no outputs.");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Day {dayNumber:00}: Unknown error.");
+                    Console.ResetColor();
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Day {dayNumber:00}: No examples.");
+            }
+        }
     }
 }

@@ -4,6 +4,8 @@
 // https://adventofcode.com/2021
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using ProgrammingAdvent2021.Common;
 
 namespace ProgrammingAdvent2021.Solutions;
 
@@ -26,4 +28,18 @@ internal abstract class Day
     }
 
     protected abstract (string, string) CalculateAnswers(string[] input);
+
+    public static bool TryGetSolution(int dayNumber, [NotNullWhen(true)] out Day? solution)
+    {
+        if (Reflection.DayTypes.TryGetValue(dayNumber, out Type? dayType))
+        {
+            solution = (Day?)Activator.CreateInstance(dayType);
+            return solution is not null;
+        }
+        else
+        {
+            solution = null;
+            return false;
+        }
+    }
 }
