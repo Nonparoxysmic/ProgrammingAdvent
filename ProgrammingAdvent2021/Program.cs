@@ -4,6 +4,7 @@
 // https://adventofcode.com/2021
 
 using ProgrammingAdvent2021.Common;
+using ProgrammingAdvent2021.Solutions;
 using ProgrammingAdvent2021.Utilities;
 
 Console.Title = "ProgrammingAdvent2021 by Nonparoxysmic";
@@ -18,6 +19,22 @@ if (key.ToUpper() == 'E')
 }
 else
 {
-    // TODO: Solve puzzles
-    Console.WriteLine("Solving not yet implemented.");
+    for (int dayNumber = 1; dayNumber <= 25; dayNumber++)
+    {
+        if (Reflection.DayTypes.ContainsKey(dayNumber) && Day.TryGetSolution(dayNumber, out Day? solution))
+        {
+            if (SystemIO.TryReadInputFile(dayNumber, out string[]? lines))
+            {
+                solution.Solve(lines);
+            }
+            else
+            {
+                Console.WriteLine($"Day {dayNumber:00}: No input.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Day {dayNumber:00}: No solution implemented.");
+        }
+    }
 }

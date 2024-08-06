@@ -18,8 +18,9 @@ internal abstract class Day
         stopwatch.Stop();
 
         int dayNumber = int.Parse(GetType().ToString()[^2..^0]);
-        // TODO: Print results better
-        Console.WriteLine($"Day {dayNumber}: {answers} {stopwatch.ElapsedMilliseconds}");
+        Console.WriteLine($"Day {dayNumber:00} Part One: {answers.Item1}");
+        Console.WriteLine($"       Part Two: {answers.Item2}");
+        Console.WriteLine($"       Time: {stopwatch.ElapsedMilliseconds + 1} ms");
     }
 
     public (string, string) Test(string[] input)
