@@ -9,17 +9,26 @@ internal class Day01 : Day
 {
     protected override (string, string) CalculateAnswers(string[] input)
     {
-        IEnumerable<int> values = input.Select(str => int.Parse(str));
-        int previous = int.MaxValue;
-        int partOneAnswer = 0;
-        foreach (int value in values)
+        int[] values = input.Select(str => int.Parse(str)).ToArray();
+        int partOneAnswer = 0, partTwoAnswer = 0;
+        for (int i = 1; i < 3; i++)
         {
-            if (value > previous)
+            if (values[i] > values[i - 1])
             {
                 partOneAnswer++;
             }
-            previous = value;
         }
-        return ($"{partOneAnswer}", "n/a");
+        for (int i = 3; i < values.Length; i++)
+        {
+            if (values[i] > values[i - 1])
+            {
+                partOneAnswer++;
+            }
+            if (values[i] > values[i - 3])
+            {
+                partTwoAnswer++;
+            }
+        }
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 }

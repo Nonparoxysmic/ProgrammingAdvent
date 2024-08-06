@@ -2,7 +2,8 @@
   "Day01": {
     "Example01": {
       "Input": "199\r\n200\r\n208\r\n210\r\n200\r\n207\r\n240\r\n269\r\n260\r\n263",
-      "PartOne": "7"
+      "PartOne": "7",
+      "PartTwo": "5"
     }
   },
   "Day02": {

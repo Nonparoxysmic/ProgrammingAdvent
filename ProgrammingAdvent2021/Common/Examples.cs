@@ -101,17 +101,23 @@ internal static class Examples
                         {
                             if (result.Item2 == partTwo)
                             {
+                                Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine($"Day {dayNumber:00} Part Two: Success");
+                                Console.ResetColor();
                             }
                             else
                             {
+                                Console.ForegroundColor = ConsoleColor.Red;
                                 Console.WriteLine($"Day {dayNumber:00} Part Two: FAILURE");
                                 Console.WriteLine($"Expected \"{partTwo}\", got \"{result.Item2}\"");
+                                Console.ResetColor();
                             }
                         }
                         if (partOne is null && partTwo is null)
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"Day {dayNumber:00}: Example contained no outputs.");
+                            Console.ResetColor();
                         }
                     }
                 }
