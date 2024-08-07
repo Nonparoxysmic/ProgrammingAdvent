@@ -12,26 +12,29 @@ internal class Day02 : Day
 {
     protected override (string, string) CalculateAnswers(string[] input)
     {
-        int position = 0, depth = 0;
+        int position = 0, depth1 = 0, depth2 = 0, aim = 0;
         foreach (string line in input)
         {
             Match match = GeneratedRegex.ValidDay02InputLine.Match(line);
-            int distance = int.Parse(match.Groups["Magnitude"].Value);
+            int X = int.Parse(match.Groups["Magnitude"].Value);
             switch (line[0])
             {
                 case 'f':
-                    position += distance;
+                    position += X;
+                    depth2 += X * aim;
                     break;
                 case 'd':
-                    depth += distance;
+                    depth1 += X;
+                    aim += X;
                     break;
                 case 'u':
-                    depth -= distance;
+                    depth1 -= X;
+                    aim -= X;
                     break;
                 default:
                     break;
             }
         }
-        return ($"{position * depth}", "n/a");
+        return ($"{position * depth1}", $"{position * depth2}");
     }
 }
