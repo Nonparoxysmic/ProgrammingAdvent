@@ -15,28 +15,39 @@ internal class Day04 : Day
         {
             boards.Add(new BingoBoard(input[i-4], input[i-3], input[i-2], input[i-1], input[i]));
         }
-        BingoBoard? partOneWinner = PartOneWinner(numbers, boards);
-        if (partOneWinner is null)
+        (BingoBoard? firstWinner, BingoBoard? lastWinner) = FirstAndLastWinner(numbers, boards);
+        if (firstWinner is null)
         {
             return ("No winning board found.", "n/a");
         }
-        int partOneAnswer = partOneWinner.Score();
-        return ($"{partOneAnswer}", "n/a");
+        int partOneAnswer = firstWinner.Score();
+        if (lastWinner is null)
+        {
+            return ($"{partOneAnswer}", "Unknown error.");
+        }
+        int partTwoAnswer = lastWinner.Score();
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
-    private static BingoBoard? PartOneWinner(IEnumerable<int> numbers, List<BingoBoard> boards)
+    private static (BingoBoard?, BingoBoard?) FirstAndLastWinner(IEnumerable<int> numbers, List<BingoBoard> boards)
     {
+        List<BingoBoard> winners = [];
         foreach (int i in numbers)
         {
             foreach (BingoBoard board in boards)
             {
                 if (board.MarkBoard(i))
                 {
-                    return board;
+                    winners.Add(board);
                 }
             }
+            boards.RemoveAll(b => b.GameOver);
         }
-        return null;
+        if (winners.Count == 0)
+        {
+            return (null, null);
+        }
+        return (winners[0], winners[^1]);
     }
 
     private class BingoBoard
@@ -49,6 +60,8 @@ internal class Day04 : Day
         private ulong _marked;
         private int _previous;
         private readonly int[] _positions;
+
+        public bool GameOver;
 
         public BingoBoard(string line0, string line1, string line2, string line3, string line4)
         {
@@ -68,7 +81,8 @@ internal class Day04 : Day
                 _marked |= 1UL << position;
             }
             _previous = number;
-            return HasWon();
+            GameOver = HasWon();
+            return GameOver;
         }
 
         public int Score()
