@@ -18,4 +18,9 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^(forward |down |up )(?<Magnitude>[0-9]{1,2})$")]
     private static partial Regex Day02Regex();
+
+    public static readonly Regex ValidDay05InputLine = Day05Regex();
+
+    [GeneratedRegex("^(?<x1>[0-9]{1,3}),(?<y1>[0-9]{1,3}) -> (?<x2>[0-9]{1,3}),(?<y2>[0-9]{1,3})$")]
+    private static partial Regex Day05Regex();
 }
