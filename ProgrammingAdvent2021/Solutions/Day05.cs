@@ -34,6 +34,10 @@ internal class Day05 : Day
             }
             else
             {
+                if (x1 > x2)
+                {
+                    (x1, y1, x2, y2) = (x2, y2, x1, y1);
+                }
                 diagonalLines.Add(new VentLine(x1, y1, x2, y2));
             }
         }
@@ -83,7 +87,59 @@ internal class Day05 : Day
         }
         int partOneAnswer = intersections.Count;
 
-        return ($"{partOneAnswer}", "n/a");
+        // PART TWO
+        foreach (VentLine diagLine in diagonalLines)
+        {
+            foreach (VentLine horzLine in horizontalLines)
+            {
+                if (LinesIntersect(diagLine, horzLine))
+                {
+                    // TODO: Find intersection.
+                }
+            }
+            foreach (VentLine vertLine in verticalLines)
+            {
+                if (LinesIntersect(diagLine, vertLine))
+                {
+                    // TODO: Find intersection.
+                }
+            }
+        }
+        for (int i = 0; i < diagonalLines.Count - 1; i++)
+        {
+            for (int j = i + 1; j < diagonalLines.Count; j++)
+            {
+                if (diagonalLines[i].DiagonalUp && diagonalLines[j].DiagonalUp)
+                {
+                    // TODO: Check for overlap
+                }
+                else if (!diagonalLines[i].DiagonalUp && !diagonalLines[j].DiagonalUp)
+                {
+                    // TODO: Check for overlap
+                }
+                else if (LinesIntersect(diagonalLines[i], diagonalLines[j]))
+                {
+                    // TODO: Find intersection.
+                }
+            }
+        }
+        int partTwoAnswer = intersections.Count;
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
+    }
+
+    private static bool LinesIntersect(VentLine a, VentLine b)
+    {
+        int o1 = Orientation(a.X1, a.Y1, a.X2, a.Y2, b.X1, b.Y1);
+        int o2 = Orientation(a.X1, a.Y1, a.X2, a.Y2, b.X2, b.Y2);
+        int o3 = Orientation(b.X1, b.Y1, b.X2, b.Y2, a.X1, a.Y1);
+        int o4 = Orientation(b.X1, b.Y1, b.X2, b.Y2, a.X2, a.Y2);
+        return o1 != o2 && o3 != o4;
+    }
+
+    private static int Orientation(int x1, int y1, int x2, int y2, int x3, int y3)
+    {
+        return Math.Sign((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1));
     }
 
     private class VentLine(int x1, int y1, int x2, int y2)
@@ -92,5 +148,12 @@ internal class Day05 : Day
         public int Y1 { get; } = y1;
         public int X2 { get; } = x2;
         public int Y2 { get; } = y2;
+
+        public bool DiagonalUp { get; } = y2 > y1;
+
+        public override string ToString()
+        {
+            return $"{X1},{Y1} -> {X2},{Y2}";
+        }
     }
 }
