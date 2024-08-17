@@ -94,14 +94,14 @@ internal class Day05 : Day
             {
                 if (LinesIntersect(diagLine, horzLine))
                 {
-                    // TODO: Find intersection.
+                    intersections.Add(GetLineIntersection(diagLine, horzLine));
                 }
             }
             foreach (VentLine vertLine in verticalLines)
             {
                 if (LinesIntersect(diagLine, vertLine))
                 {
-                    // TODO: Find intersection.
+                    intersections.Add(GetLineIntersection(diagLine, vertLine));
                 }
             }
         }
@@ -119,7 +119,7 @@ internal class Day05 : Day
                 }
                 else if (LinesIntersect(diagonalLines[i], diagonalLines[j]))
                 {
-                    // TODO: Find intersection.
+                    intersections.Add(GetLineIntersection(diagonalLines[i], diagonalLines[j]));
                 }
             }
         }
@@ -140,6 +140,26 @@ internal class Day05 : Day
     private static int Orientation(int x1, int y1, int x2, int y2, int x3, int y3)
     {
         return Math.Sign((y2 - y1) * (x3 - x2) - (y3 - y2) * (x2 - x1));
+    }
+
+    private static (int, int) GetLineIntersection(VentLine a, VentLine b)
+    {
+        return GetLineIntersection(a.X1, a.Y1, a.X2, a.Y2, b.X1, b.Y1, b.X2, b.Y2);
+    }
+
+    private static (int, int) GetLineIntersection(int p0_x, int p0_y, int p1_x, int p1_y, 
+        int p2_x, int p2_y, int p3_x, int p3_y)
+    {
+        int s1_x = p1_x - p0_x;
+        int s1_y = p1_y - p0_y;
+        int s2_x = p3_x - p2_x;
+        int s2_y = p3_y - p2_y;
+
+        int t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+        int i_x = p0_x + (t * s1_x);
+        int i_y = p0_y + (t * s1_y);
+        return (i_x, i_y);
     }
 
     private class VentLine(int x1, int y1, int x2, int y2)
