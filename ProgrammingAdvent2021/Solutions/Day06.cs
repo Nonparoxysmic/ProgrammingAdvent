@@ -9,23 +9,37 @@ internal class Day06 : Day
 {
     protected override (string, string) CalculateAnswers(string[] input)
     {
-        List<int> fish = input[0].Split(',').Select(str => int.Parse(str)).ToList();
+        List<int> initialFish = input[0].Split(',').Select(int.Parse).ToList();
+        long[] populations = new long[10];
+        foreach (int fish in initialFish)
+        {
+            populations[fish]++;
+        }
+
         for (int day = 0; day < 80; day++)
         {
-            int len = fish.Count;
-            for (int i = 0; i < len; i++)
+            long finished = populations[0];
+            for (int i = 1; i < populations.Length; i++)
             {
-                if (fish[i] == 0)
-                {
-                    fish[i] = 6;
-                    fish.Add(8);
-                }
-                else
-                {
-                    fish[i]--;
-                }
+                populations[i - 1] = populations[i];
             }
+            populations[6] += finished;
+            populations[8] += finished;
         }
-        return ($"{fish.Count}", "n/a");
+        long partOneAnswer = populations.Sum();
+
+        for (int day = 80; day < 256; day++)
+        {
+            long finished = populations[0];
+            for (int i = 1; i < populations.Length; i++)
+            {
+                populations[i - 1] = populations[i];
+            }
+            populations[6] += finished;
+            populations[8] += finished;
+        }
+        long partTwoAnswer = populations.Sum();
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 }
