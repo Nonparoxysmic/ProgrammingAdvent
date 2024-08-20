@@ -44,7 +44,8 @@
   "Day07": {
     "Example01": {
       "Input": "16,1,2,0,4,2,7,1,2,14",
-      "PartOne": "37"
+      "PartOne": "37",
+      "PartTwo": "168"
     }
   },
   "Day08": {
