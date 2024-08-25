@@ -11,6 +11,7 @@ internal class Day09 : Day
     {
         int[,] map = InputToMap(input);
         int riskSum = 0;
+        List<(int, int)> lowPoints = [];
         for (int y = 1; y < map.GetLength(1) - 1; y++)
         {
             for (int x = 1; x < map.GetLength(0) - 1; x++)
@@ -19,10 +20,56 @@ internal class Day09 : Day
                     map[x, y] < map[x - 1, y] && map[x, y] < map[x, y - 1])
                 {
                     riskSum += map[x, y] + 1;
+                    lowPoints.Add((x, y));
                 }
             }
         }
-        return ($"{riskSum}", "n/a");
+        List<int> basinSizes = [];
+        foreach ((int x, int y) in lowPoints)
+        {
+            basinSizes.Add(BasinSize(x, y, map));
+        }
+        basinSizes.Sort();
+        int partTwoAnswer = basinSizes[^1] * basinSizes[^2] * basinSizes[^3];
+        return ($"{riskSum}", $"{partTwoAnswer}");
+    }
+
+    private static int BasinSize(int x, int y, int[,] map)
+    {
+        if (map[x, y] >= 9)
+        {
+            return -1;
+        }
+        Queue<(int, int)> pointsToConsider = [];
+        pointsToConsider.Enqueue((x, y));
+        int size = 0;
+        while (pointsToConsider.Count > 0)
+        {
+            (int currentX, int currentY) = pointsToConsider.Dequeue();
+            if (map[currentX, currentY] == 9)
+            {
+                continue;
+            }
+            size++;
+            map[currentX, currentY] = 9;
+            if (map[currentX + 1, currentY] < 9)
+            {
+                pointsToConsider.Enqueue((currentX + 1, currentY));
+            }
+            if (map[currentX, currentY + 1] < 9)
+            {
+                pointsToConsider.Enqueue((currentX, currentY + 1));
+            }
+            if (map[currentX - 1, currentY] < 9)
+            {
+                pointsToConsider.Enqueue((currentX - 1, currentY));
+            }
+            if (map[currentX, currentY - 1] < 9)
+            {
+                pointsToConsider.Enqueue((currentX, currentY - 1));
+            }
+        }
+        return size;
     }
 
     private static int[,] InputToMap(string[] input)
