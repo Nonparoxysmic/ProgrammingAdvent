@@ -9,11 +9,11 @@ internal class Day10 : Day
 {
     protected override (string, string) CalculateAnswers(string[] input)
     {
-        List<string> incompleteLines = new(input.Length);
+        List<long> incompleteLineScores = new(input.Length);
         int totalSyntaxErrorScore = 0;
         foreach (string line in input)
         {
-            char? error = FirstIncorrectClosingCharacter(line);
+            char? error = FirstIncorrectClosingCharacter(line, out Stack<char> openingCharacters);
             switch (error)
             {
                 case ')':
@@ -29,18 +29,21 @@ internal class Day10 : Day
                     totalSyntaxErrorScore += 25137;
                     break;
                 case null:
-                    incompleteLines.Add(line);
+                    incompleteLineScores.Add(ScoreCompletionString(openingCharacters));
                     break;
                 default:
                     break;
             }
         }
-        return ($"{totalSyntaxErrorScore}", "n/a");
+        incompleteLineScores.Sort();
+        long middleScore = incompleteLineScores[incompleteLineScores.Count / 2];
+        return ($"{totalSyntaxErrorScore}", $"{middleScore}");
     }
 
-    private static char? FirstIncorrectClosingCharacter(string line)
+    private static char? FirstIncorrectClosingCharacter(string line,
+        out Stack<char> openingCharacters)
     {
-        Stack<char> openingCharacters = [];
+        openingCharacters = [];
         foreach (char c in line)
         {
             switch (c)
@@ -78,5 +81,23 @@ internal class Day10 : Day
             }
         }
         return null;
+    }
+
+    private static long ScoreCompletionString(Stack<char> openingCharacters)
+    {
+        long score = 0;
+        while (openingCharacters.Count > 0)
+        {
+            score *= 5;
+            score += openingCharacters.Pop() switch
+            {
+                '(' => 1,
+                '[' => 2,
+                '{' => 3,
+                '<' => 4,
+                _ => 0
+            };
+        }
+        return score;
     }
 }
