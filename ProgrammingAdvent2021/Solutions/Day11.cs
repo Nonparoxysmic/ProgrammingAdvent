@@ -67,8 +67,8 @@ internal class Day11 : Day
                     map[x + 1, y - 1]++;
                     map[x + 1, y]++;
                     map[x + 1, y + 1]++;
-                    x--;
-                    y--;
+                    x = x > 1 ? x - 2 : 0;
+                    y = y > 1 ? y - 2 : 0;
                     flashCount++;
                 }
             }
