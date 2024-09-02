@@ -16,7 +16,21 @@ internal class Day11 : Day
             Step(map, out int flashes);
             totalFlashes += flashes;
         }
-        return ($"{totalFlashes}", "n/a");
+        int allFlashStep = -1;
+        for (int i = 100; i < 4096; i++)
+        {
+            Step(map, out int flashes);
+            if (flashes == 100)
+            {
+                allFlashStep = i + 1;
+                break;
+            }
+        }
+        if (allFlashStep < 0)
+        {
+            return ($"{totalFlashes}", "Error: didn't find answer.");
+        }
+        return ($"{totalFlashes}", $"{allFlashStep}");
     }
     private static int[,] InputToMap(string[] input)
     {
