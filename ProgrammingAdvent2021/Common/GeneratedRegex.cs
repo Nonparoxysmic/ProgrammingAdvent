@@ -23,4 +23,9 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^(?<x1>[0-9]{1,3}),(?<y1>[0-9]{1,3}) -> (?<x2>[0-9]{1,3}),(?<y2>[0-9]{1,3})$")]
     private static partial Regex Day05Regex();
+
+    public static readonly Regex ValidDay12InputLine = Day12Regex();
+
+    [GeneratedRegex("^(?<cave0>([a-z]{1,2}|[A-Z]{1,2}|start|end))-(?<cave1>([a-z]{1,2}|[A-Z]{1,2}|start|end))$")]
+    private static partial Regex Day12Regex();
 }
