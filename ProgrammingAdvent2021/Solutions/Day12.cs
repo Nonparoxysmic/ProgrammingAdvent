@@ -49,10 +49,30 @@ internal class Day12 : Day
             caves[cave0].Neighbors.Add(caves[cave1]);
             caves[cave1].Neighbors.Add(caves[cave0]);
         }
+        int pathCount = 0;
+        FindPathsToEnd(caves["start"], ref pathCount);
+        return ($"{pathCount}", "n/a");
+    }
 
-        // TODO: finish this.
-
-        return ("Solution not yet implemented", "n/a");
+    private static void FindPathsToEnd(Cave cave, ref int count)
+    {
+        if (cave.Name == "end")
+        {
+            count++;
+            return;
+        }
+        if (cave.IsSmallCave)
+        {
+            cave.Visited = true;
+        }
+        foreach (Cave neighbor in cave.Neighbors)
+        {
+            if (!neighbor.Visited)
+            {
+                FindPathsToEnd(neighbor, ref count);
+            }
+        }
+        cave.Visited = false;
     }
 
     private class Cave(string name)
@@ -62,5 +82,9 @@ internal class Day12 : Day
         public HashSet<Cave> Neighbors { get; } = [];
 
         public bool IsBigCave { get; } = char.IsUpper(name[0]);
+
+        public bool IsSmallCave { get => !IsBigCave; }
+
+        public bool Visited { get; set; }
     }
 }
