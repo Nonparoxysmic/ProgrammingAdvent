@@ -49,12 +49,16 @@ internal class Day12 : Day
             caves[cave0].Neighbors.Add(caves[cave1]);
             caves[cave1].Neighbors.Add(caves[cave0]);
         }
-        int pathCount = 0;
-        FindPathsToEnd(caves["start"], ref pathCount);
-        return ($"{pathCount}", "n/a");
+        int partOneAnswer = 0;
+        bool canDoubleVisit = false;
+        FindPathsToEnd(caves["start"], ref partOneAnswer, ref canDoubleVisit);
+        int partTwoAnswer = 0;
+        canDoubleVisit = true;
+        FindPathsToEnd(caves["start"], ref partTwoAnswer, ref canDoubleVisit);
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
-    private static void FindPathsToEnd(Cave cave, ref int count)
+    private static void FindPathsToEnd(Cave cave, ref int count, ref bool canDoubleVisit)
     {
         if (cave.Name == "end")
         {
@@ -63,16 +67,29 @@ internal class Day12 : Day
         }
         if (cave.IsSmallCave)
         {
-            cave.Visited = true;
+            cave.Visits++;
         }
         foreach (Cave neighbor in cave.Neighbors)
         {
-            if (!neighbor.Visited)
+            if (neighbor.Name == "start")
             {
-                FindPathsToEnd(neighbor, ref count);
+                continue;
+            }
+            if (neighbor.Visits == 0)
+            {
+                FindPathsToEnd(neighbor, ref count, ref canDoubleVisit);
+            }
+            else if (canDoubleVisit)
+            {
+                canDoubleVisit = false;
+                FindPathsToEnd(neighbor, ref count, ref canDoubleVisit);
+                canDoubleVisit = true;
             }
         }
-        cave.Visited = false;
+        if (cave.IsSmallCave)
+        {
+            cave.Visits--;
+        }
     }
 
     private class Cave(string name)
@@ -85,6 +102,6 @@ internal class Day12 : Day
 
         public bool IsSmallCave { get => !IsBigCave; }
 
-        public bool Visited { get; set; }
+        public int Visits { get; set; }
     }
 }

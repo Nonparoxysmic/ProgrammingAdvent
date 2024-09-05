@@ -79,15 +79,18 @@
   "Day12": {
     "Example01": {
       "Input": "start-A\r\nstart-b\r\nA-c\r\nA-b\r\nb-d\r\nA-end\r\nb-end",
-      "PartOne": "10"
+      "PartOne": "10",
+      "PartTwo": "36"
     },
     "Example02": {
       "Input": "dc-end\r\nHN-start\r\nstart-kj\r\ndc-start\r\ndc-HN\r\nLN-dc\r\nHN-end\r\nkj-sa\r\nkj-HN\r\nkj-dc",
-      "PartOne": "19"
+      "PartOne": "19",
+      "PartTwo": "103"
     },
     "Example03": {
       "Input": "fs-end\r\nhe-DX\r\nfs-he\r\nstart-DX\r\npj-DX\r\nend-zg\r\nzg-sl\r\nzg-pj\r\npj-he\r\nRW-he\r\nfs-DX\r\npj-RW\r\nzg-RW\r\nstart-pj\r\nhe-WI\r\nzg-he\r\npj-fs\r\nstart-RW",
-      "PartOne": "226"
+      "PartOne": "226",
+      "PartTwo": "3509"
     }
   },
   "Day13": {
