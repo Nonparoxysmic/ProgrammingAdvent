@@ -28,4 +28,14 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^(?<cave0>([a-z]{1,2}|[A-Z]{1,2}|start|end))-(?<cave1>([a-z]{1,2}|[A-Z]{1,2}|start|end))$")]
     private static partial Regex Day12Regex();
+
+    public static readonly Regex ValidDay13Coordinates = Day13CoordinateRegex();
+
+    [GeneratedRegex("^(?<x>[0-9]{1,4}),(?<y>[0-9]{1,4})$")]
+    private static partial Regex Day13CoordinateRegex();
+
+    public static readonly Regex ValidDay13Fold = Day13FoldRegex();
+
+    [GeneratedRegex("^fold along (?<axis>[xy])=(?<coordinate>[0-9]{1,4})$")]
+    private static partial Regex Day13FoldRegex();
 }
