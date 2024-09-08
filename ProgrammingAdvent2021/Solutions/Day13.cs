@@ -3,6 +3,7 @@
 // for Advent of Code 2021
 // https://adventofcode.com/2021
 
+using System.Text;
 using System.Text.RegularExpressions;
 using ProgrammingAdvent2021.Common;
 
@@ -55,7 +56,41 @@ internal class Day13 : Day
         Paper paper = new(dots, folds, xMax + 1, yMax + 1);
         paper.NextFold();
         int partOneAnswer = paper.DotCount();
-        return ($"{partOneAnswer}", "n/a");
+
+        while (paper.NextFold()) { }
+        if (!paper.TryRead(out string partTwoAnswer))
+        {
+            return ($"{partOneAnswer}", "Failed to solve");
+        }
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
+    }
+
+    public static bool TryGetLetter(string pixels, out char letter)
+    {
+        letter = pixels switch
+        {
+            ".##..#..#.#..#.####.#..#.#..#." => 'A',
+            "###..#..#.###..#..#.#..#.###.." => 'B',
+            ".##..#..#.#....#....#..#..##.." => 'C',
+            "####.#....###..#....#....####." => 'E',
+            "####.#....###..#....#....#...." => 'F',
+            ".##..#..#.#....#.##.#..#..###." => 'G',
+            "#..#.#..#.####.#..#.#..#.#..#." => 'H',
+            ".###...#....#....#....#...###." => 'I',
+            "..##....#....#....#.#..#..##.." => 'J',
+            "#..#.#.#..##...#.#..#.#..#..#." => 'K',
+            "#....#....#....#....#....####." => 'L',
+            ".##..#..#.#..#.#..#.#..#..##.." => 'O',
+            "###..#..#.#..#.###..#....#...." => 'P',
+            "###..#..#.#..#.###..#.#..#..#." => 'R',
+            ".###.#....#.....##.....#.###.." => 'S',
+            "#..#.#..#.#..#.#..#.#..#..##.." => 'U',
+            "#...##...#.#.#...#....#....#.." => 'Y',
+            "####....#...#...#...#....####." => 'Z',
+            _ => '?'
+        };
+        return letter != '?';
     }
 
     private class Paper
@@ -119,6 +154,34 @@ internal class Day13 : Day
                 }
                 Console.WriteLine();
             }
+        }
+
+        public bool TryRead(out string result)
+        {
+            result = string.Empty;
+            if (_height != 6 || _width != 40)
+            {
+                return false;
+            }
+            char[] letters = new char[8];
+            for (int i = 0; i < 8; i++)
+            {
+                StringBuilder sb = new();
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int x = i * 5; x < i * 5 + 5; x++)
+                    {
+                        sb.Append(_dots[x, y] ? '#' : '.');
+                    }
+                }
+                if (!TryGetLetter(sb.ToString(), out char letter))
+                {
+                    return false;
+                }
+                letters[i] = letter;
+            }
+            result = string.Join(null, letters);
+            return true;
         }
 
         private void FoldX(int coordinate)
