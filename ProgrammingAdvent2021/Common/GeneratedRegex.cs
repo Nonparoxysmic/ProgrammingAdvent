@@ -38,4 +38,14 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^fold along (?<axis>[xy])=(?<coordinate>[0-9]{1,4})$")]
     private static partial Regex Day13FoldRegex();
+
+    public static readonly Regex ValidDay14Template = Day14TemplateRegex();
+
+    [GeneratedRegex("^[A-Z]{2,32}$")]
+    private static partial Regex Day14TemplateRegex();
+
+    public static readonly Regex ValidDay14Rule = Day14RuleRegex();
+
+    [GeneratedRegex("^(?<pair>[A-Z]{2}) -> (?<insertion>[A-Z])$")]
+    private static partial Regex Day14RuleRegex();
 }
