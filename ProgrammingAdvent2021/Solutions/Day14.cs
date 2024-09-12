@@ -37,9 +37,16 @@ internal class Day14 : Day
             Update(pairQuantities, rules);
         }
         Counter<char> elementQuantities = Count(pairQuantities, template[0], template[^1]);
-        int partOneAnswer = elementQuantities.Values.Max() - elementQuantities.Values.Min();
+        long partOneAnswer = elementQuantities.Values.Max() - elementQuantities.Values.Min();
 
-        return ($"{partOneAnswer}", "n/a");
+        for (int i = 10; i < 40; i++)
+        {
+            Update(pairQuantities, rules);
+        }
+        elementQuantities = Count(pairQuantities, template[0], template[^1]);
+        long partTwoAnswer = elementQuantities.Values.Max() - elementQuantities.Values.Min();
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
     private static void Update(Counter<string> pairQuantities,
@@ -80,34 +87,35 @@ internal class Day14 : Day
 
     private class Counter<T> where T : notnull
     {
-        private readonly Dictionary<T, int> _counts = [];
+        private readonly Dictionary<T, long> _counts = [];
 
-        public Dictionary<T, int>.KeyCollection Keys { get => _counts.Keys; }
-        public Dictionary<T, int>.ValueCollection Values { get => _counts.Values; }
+        public Dictionary<T, long>.KeyCollection Keys { get => _counts.Keys; }
+        public Dictionary<T, long>.ValueCollection Values { get => _counts.Values; }
 
-        public void Add(T item, int quantity)
+        public void Add(T item, long quantity)
         {
             if (!_counts.TryAdd(item, quantity))
             {
                 _counts[item] += quantity;
             }
         }
-        public int this[T key]
+
+        public long this[T key]
         {
             get => Get(key);
             set => Set(key, value);
         }
 
-        private int Get(T key)
+        private long Get(T key)
         {
-            if (_counts.TryGetValue(key, out int result))
+            if (_counts.TryGetValue(key, out long result))
             {
                 return result;
             }
             return 0;
         }
 
-        private void Set(T key, int value)
+        private void Set(T key, long value)
         {
             if (!_counts.TryAdd(key, value))
             {
