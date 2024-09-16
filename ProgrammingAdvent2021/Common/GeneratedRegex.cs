@@ -14,6 +14,11 @@ internal static partial class GeneratedRegex
     [GeneratedRegex("^Day(?<DayNumber>0[1-9]|1[0-9]|2[0-5])$")]
     private static partial Regex ValidDayNameRegex();
 
+    public static readonly Regex ValidHexadecimal = ValidHexadecimalRegex();
+
+    [GeneratedRegex("^[0-9A-F]+$")]
+    private static partial Regex ValidHexadecimalRegex();
+
     public static readonly Regex ValidDay02InputLine = Day02Regex();
 
     [GeneratedRegex("^(forward |down |up )(?<Magnitude>[0-9]{1,2})$")]
