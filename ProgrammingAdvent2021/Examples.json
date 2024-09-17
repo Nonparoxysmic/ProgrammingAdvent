@@ -129,6 +129,38 @@
     "Example04": {
       "Input": "A0016C880162017C3686B18A3D4780",
       "PartOne": "31"
+    },
+    "Example05": {
+      "Input": "C200B40A82",
+      "PartTwo": "3"
+    },
+    "Example06": {
+      "Input": "04005AC33890",
+      "PartTwo": "54"
+    },
+    "Example07": {
+      "Input": "880086C3E88112",
+      "PartTwo": "7"
+    },
+    "Example08": {
+      "Input": "CE00C43D881120",
+      "PartTwo": "9"
+    },
+    "Example09": {
+      "Input": "D8005AC2A8F0",
+      "PartTwo": "1"
+    },
+    "Example10": {
+      "Input": "F600BC2D8F",
+      "PartTwo": "0"
+    },
+    "Example11": {
+      "Input": "9C005AC2F8F0",
+      "PartTwo": "0"
+    },
+    "Example12": {
+      "Input": "9C0141080250320F1802104A08",
+      "PartTwo": "1"
     }
   },
   "Day17": {

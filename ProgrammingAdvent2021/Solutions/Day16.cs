@@ -23,9 +23,10 @@ internal class Day16 : Day
         {
             return ($"{rootVersion}", "n/a");
         }
-        _ = OperatorPacket(rootVersion, rootTypeID, bitManager);
+        Packet root = OperatorPacket(rootVersion, rootTypeID, bitManager);
         int versionSum = Packet.AllPackets.Sum(packet => packet.Version);
-        return ($"{versionSum}", "n/a");
+        ulong expressionValue = root.Evaluate();
+        return ($"{versionSum}", $"{expressionValue}");
     }
 
     private static Packet OperatorPacket(ulong version, ulong typeID, BitManager bitManager)
@@ -166,6 +167,41 @@ internal class Day16 : Day
             Children = children;
             Bits = bits;
             AllPackets.Add(this);
+        }
+
+        public ulong Evaluate()
+        {
+            switch (TypeID)
+            {
+                case 0:
+                    ulong sum = (ulong)Children.Sum(c => (decimal)c.Evaluate());
+                    return sum;
+                case 1:
+                    var product = Children.Aggregate(1UL, (product, p) => product * p.Evaluate());
+                    return product;
+                case 2:
+                    ulong min = Children.Min(c => c.Evaluate());
+                    return min;
+                case 3:
+                    ulong max = Children.Max(c => c.Evaluate());
+                    return max;
+                case 4:
+                    if (Value is not null)
+                    {
+                        return (ulong)Value;
+                    }
+                    break;
+                case 5:
+                    ulong gt = Children[0].Evaluate() > Children[1].Evaluate() ? 1UL : 0;
+                    return gt;
+                case 6:
+                    ulong lt = Children[0].Evaluate() < Children[1].Evaluate() ? 1UL : 0;
+                    return lt;
+                case 7:
+                    ulong equals = Children[0].Evaluate() == Children[1].Evaluate() ? 1UL : 0;
+                    return equals;
+            }
+            throw new InvalidOperationException();
         }
     }
 }
