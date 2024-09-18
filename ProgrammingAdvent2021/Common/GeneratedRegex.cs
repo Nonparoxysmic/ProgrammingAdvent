@@ -53,4 +53,9 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^(?<pair>[A-Z]{2}) -> (?<insertion>[A-Z])$")]
     private static partial Regex Day14RuleRegex();
+
+    public static readonly Regex ValidDay17Input = Day17Regex();
+
+    [GeneratedRegex("^target area: x=(?<xMin>[0-9]{1,3})[.]{2}(?<xMax>[0-9]{1,3}), y=(?<yMin>-?[0-9]{1,3})[.]{2}(?<yMax>-?[0-9]{1,3})$")]
+    private static partial Regex Day17Regex();
 }
