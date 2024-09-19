@@ -166,7 +166,8 @@
   "Day17": {
     "Example01": {
       "Input": "target area: x=20..30, y=-10..-5",
-      "PartOne": "45"
+      "PartOne": "45",
+      "PartTwo": "112"
     }
   },
   "Day18": {

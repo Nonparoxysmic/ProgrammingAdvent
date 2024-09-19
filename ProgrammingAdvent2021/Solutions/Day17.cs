@@ -30,19 +30,65 @@ internal class Day17 : Day
             (yMin, yMax) = (yMax, yMin);
         }
         Target target = new(xMin, xMax, yMin, yMax);
-        if (target.Ymax >= 0)
+        if (target.Ymax >= 0 || target.Xmin <= 0)
         {
             return ("Not solved for this case.", "n/a");
         }
 
-        int y = 0;
+        int yPos = 0;
         for (int v = -target.Ymin - 1; v > 0; v--)
         {
-            y += v;
+            yPos += v;
         }
-        int partOneAnswer = y;
+        int partOneAnswer = yPos;
 
-        return ($"{partOneAnswer}", "n/a");
+        int xMaxVelocity = target.Xmax;
+        int yMinVelocity = target.Ymin;
+        int yMaxVelocity = -target.Ymin - 1;
+        int xMinVelocity = MininumForwardVelocity(target);
+        int goodVelocities = 0;
+        for (int y = yMinVelocity; y <= yMaxVelocity; y++)
+        {
+            for (int x = xMinVelocity; x <= xMaxVelocity; x++)
+            {
+                if (HitsTarget(x, y, target))
+                {
+                    goodVelocities++;
+                }
+            }
+        }
+        int partTwoAnswer = goodVelocities;
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
+    }
+
+    private static int MininumForwardVelocity(Target target)
+    {
+        int x = target.Xmin;
+        int velocity = 0;
+        while (x > 0)
+        {
+            velocity++;
+            x -= velocity;
+        }
+        return velocity;
+    }
+
+    private static bool HitsTarget(int xVelocity, int yVelocity, Target target)
+    {
+        int x = 0, y = 0;
+        while (x <= target.Xmax && y >= target.Ymin)
+        {
+            x += xVelocity;
+            y += yVelocity;
+            if (target.Contains(x, y))
+            {
+                return true;
+            }
+            xVelocity -= Math.Sign(xVelocity);
+            yVelocity--;
+        }
+        return false;
     }
 
     private readonly struct Target(int xMin, int xMax, int yMin, int yMax)
@@ -55,6 +101,11 @@ internal class Day17 : Day
         public override string ToString()
         {
             return $"target area: x={Xmin}..{Xmax}, y={Ymin}..{Ymax}";
+        }
+
+        public bool Contains(int x, int y)
+        {
+            return Xmin <= x && x <= Xmax && Ymin <= y && y <= Ymax;
         }
     }
 }
