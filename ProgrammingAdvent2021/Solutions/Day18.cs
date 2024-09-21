@@ -11,7 +11,8 @@ internal class Day18 : Day
     {
         List<Node> numbers = input.Select(line => CreateTree(line)).ToList();
         int finalSumMagnitude = numbers.Aggregate((sum, next) => sum + next).CalculateMagnitude();
-        return ($"{finalSumMagnitude}", "n/a");
+        int largestMagnitude = LargestMagnitude(numbers);
+        return ($"{finalSumMagnitude}", $"{largestMagnitude}");
     }
 
     private static Node CreateTree(string line)
@@ -70,6 +71,20 @@ internal class Day18 : Day
             throw new InvalidOperationException();
         }
         return current;
+    }
+
+    private static int LargestMagnitude(List<Node> numbers)
+    {
+        int largest = -1;
+        for (int i = 0; i < numbers.Count - 1; i++)
+        {
+            for (int j = i + 1; j < numbers.Count; j++)
+            {
+                largest = Math.Max(largest, (numbers[i] + numbers[j]).CalculateMagnitude());
+                largest = Math.Max(largest, (numbers[j] + numbers[i]).CalculateMagnitude());
+            }
+        }
+        return largest;
     }
 
     private class Node
