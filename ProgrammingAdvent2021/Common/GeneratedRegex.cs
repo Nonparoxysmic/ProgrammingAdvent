@@ -58,4 +58,14 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^target area: x=(?<xMin>[0-9]{1,3})[.]{2}(?<xMax>[0-9]{1,3}), y=(?<yMin>-?[0-9]{1,3})[.]{2}(?<yMax>-?[0-9]{1,3})$")]
     private static partial Regex Day17Regex();
+
+    public static readonly Regex ValidDay19Scanner = Day19ScannerRegex();
+
+    [GeneratedRegex("^--- scanner (?<scanner>[0-9]{1,2}) ---$")]
+    private static partial Regex Day19ScannerRegex();
+
+    public static readonly Regex ValidDay19Coordinates = Day19CoordinatesRegex();
+
+    [GeneratedRegex("^(?<x>-?[0-9]{1,3}),(?<y>-?[0-9]{1,3}),(?<z>-?[0-9]{1,3})$")]
+    private static partial Regex Day19CoordinatesRegex();
 }
