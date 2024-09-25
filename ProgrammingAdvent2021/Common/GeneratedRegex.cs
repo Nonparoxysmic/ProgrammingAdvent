@@ -68,4 +68,9 @@ internal static partial class GeneratedRegex
 
     [GeneratedRegex("^(?<x>-?[0-9]{1,3}),(?<y>-?[0-9]{1,3}),(?<z>-?[0-9]{1,3})$")]
     private static partial Regex Day19CoordinatesRegex();
+
+    public static readonly Regex ValidDay21InputLine = Day21Regex();
+
+    [GeneratedRegex("^Player (?<player>[12]) starting position: (?<start>[1-9]|10)$")]
+    private static partial Regex Day21Regex();
 }
