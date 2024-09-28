@@ -100,7 +100,17 @@ internal class Day19 : Day
             }
         }
         int partOneAnswer = beacons.Count;
-        return ($"{partOneAnswer}", "n/a");
+        int partTwoAnswer = 0;
+        for (int i = 0; i < scanners.Count - 1; i++)
+        {
+            for (int j = i + 1; j < scanners.Count; j++)
+            {
+                int distance = (scanners[i].GlobalPosition - scanners[j].GlobalPosition)
+                    .TaxicabMagnitude();
+                partTwoAnswer = Math.Max(partTwoAnswer, distance);
+            }
+        }
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
     private static int Distance(Beacon a, Beacon b)
