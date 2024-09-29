@@ -20,7 +20,13 @@ internal class Day20 : Day
         Enhance(initialImage, buffer, algorithm);
         Enhance(buffer, initialImage, algorithm, defaultPixel);
         int partOneAnswer = initialImage.PixelsLit();
-        return ($"{partOneAnswer}", "n/a");
+        for (int i = 2; i < 50; i += 2)
+        {
+            Enhance(initialImage, buffer, algorithm);
+            Enhance(buffer, initialImage, algorithm, defaultPixel);
+        }
+        int partTwoAnswer = initialImage.PixelsLit();
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
     private static void Enhance(Image input, Image output, bool[] algorithm, int dp = 0)
