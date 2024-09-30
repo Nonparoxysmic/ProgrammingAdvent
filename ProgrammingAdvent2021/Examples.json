@@ -218,7 +218,8 @@
   "Day21": {
     "Example01": {
       "Input": "Player 1 starting position: 4\r\nPlayer 2 starting position: 8",
-      "PartOne": "739785"
+      "PartOne": "739785",
+      "PartTwo": "444356092776315"
     }
   },
   "Day22": {
