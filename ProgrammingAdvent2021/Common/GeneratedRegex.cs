@@ -81,6 +81,6 @@ internal static partial class GeneratedRegex
 
     public static readonly Regex ValidDay22PartTwoLine = Day22PartTwoRegex();
 
-    [GeneratedRegex("^(?<toggle>on|off) x=(?<xMin>-?[0-9]{1,5})[.]{2}(?<xMax>-?[0-9]{1,5}),y=(?<yMin>-?[0-9]{1,5})[.]{2}(?<yMax>-?[0-9]{1,5}),z=(?<zMin>-?[0-9]{1,5})[.]{2}(?<zMax>-?[0-9]{1,5})$")]
+    [GeneratedRegex("^(?<toggle>on|off) x=(?<xMin>-?[0-9]{1,6})[.]{2}(?<xMax>-?[0-9]{1,6}),y=(?<yMin>-?[0-9]{1,6})[.]{2}(?<yMax>-?[0-9]{1,6}),z=(?<zMin>-?[0-9]{1,6})[.]{2}(?<zMax>-?[0-9]{1,6})$")]
     private static partial Regex Day22PartTwoRegex();
 }

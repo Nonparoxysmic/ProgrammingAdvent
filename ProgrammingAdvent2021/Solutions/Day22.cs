@@ -26,7 +26,9 @@ internal class Day22 : Day
                 int zMin = int.Parse(partOneMatch.Groups["zMin"].Value);
                 int zMax = int.Parse(partOneMatch.Groups["zMax"].Value);
                 int toggle = partOneMatch.Groups["toggle"].Value == "on" ? 1 : 0;
-                partOneSteps.Add(new Region(xMin, xMax, yMin, yMax, zMin, zMax, toggle));
+                Region region = new(xMin, xMax, yMin, yMax, zMin, zMax, toggle);
+                partOneSteps.Add(region);
+                partTwoSteps.Add(region);
                 continue;
             }
             Match partTwoMatch = GeneratedRegex.ValidDay22PartTwoLine.Match(line);
@@ -44,8 +46,16 @@ internal class Day22 : Day
             }
         }
 
+        long partOneAnswer = ExecuteSteps(partOneSteps);
+        long partTwoAnswer = ExecuteSteps(partTwoSteps);
+
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
+    }
+
+    private static long ExecuteSteps(List<Region> steps)
+    {
         List<Region> activeCubes = [];
-        foreach (Region step in partOneSteps)
+        foreach (Region step in steps)
         {
             List<Region> intersectingRegions = activeCubes.Where(r => r.Intersects(step)).ToList();
             foreach (Region intersection in intersectingRegions)
@@ -65,23 +75,21 @@ internal class Day22 : Day
                 activeCubes.Add(step);
             }
         }
-        int partOneAnswer = activeCubes.Sum(r => r.Volume());
-
-        return ($"{partOneAnswer}", "n/a");
+        return activeCubes.Sum(r => r.Volume());
     }
 
-    private readonly struct Region(int xMin, int xMax, int yMin, int yMax,
-        int zMin, int zMax, int state = 1)
+    private readonly struct Region(long xMin, long xMax, long yMin, long yMax,
+        long zMin, long zMax, long state = 1)
     {
-        public int XMin { get; } = xMin;
-        public int XMax { get; } = xMax;
-        public int YMin { get; } = yMin;
-        public int YMax { get; } = yMax;
-        public int ZMin { get; } = zMin;
-        public int ZMax { get; } = zMax;
-        public int State { get; } = state;
+        public long XMin { get; } = xMin;
+        public long XMax { get; } = xMax;
+        public long YMin { get; } = yMin;
+        public long YMax { get; } = yMax;
+        public long ZMin { get; } = zMin;
+        public long ZMax { get; } = zMax;
+        public long State { get; } = state;
 
-        public int Volume()
+        public long Volume()
         {
             return (XMax - XMin + 1) * (YMax - YMin + 1) * (ZMax - ZMin + 1);
         }
