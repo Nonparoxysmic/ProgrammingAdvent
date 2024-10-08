@@ -56,6 +56,22 @@ internal class Day24 : Day
             }
         }
 
-        return (string.Join(null, partOneAnswer), "n/a");
+        int[] partTwoAnswer = new int[14];
+        foreach ((int i, int j) in matchingIndices)
+        {
+            int diff = B[i] + A[j];
+            if (diff >= 0)
+            {
+                partTwoAnswer[j] = 1 + diff;
+                partTwoAnswer[i] = 1;
+            }
+            else
+            {
+                partTwoAnswer[i] = 1 - diff;
+                partTwoAnswer[j] = 1;
+            }
+        }
+
+        return (string.Join(null, partOneAnswer), string.Join(null, partTwoAnswer));
     }
 }
