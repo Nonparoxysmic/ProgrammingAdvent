@@ -88,7 +88,7 @@ internal static class Extensions
     /// <param name="collection">The collection with the two elements to be swapped.</param>
     /// <param name="indexA">The index of one of the elements to swap.</param>
     /// <param name="indexB">The index of the other element to swap.</param>
-    public static void Swap<T>(this IList<T?> collection, int indexA, int indexB)
+    public static void Swap<T>(this IList<T> collection, int indexA, int indexB)
     {
         (collection[indexA], collection[indexB]) = (collection[indexB], collection[indexA]);
     }

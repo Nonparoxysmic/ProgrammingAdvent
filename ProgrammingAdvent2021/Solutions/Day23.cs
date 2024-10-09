@@ -21,7 +21,11 @@ internal class Day23 : Day
         State initialState = new(input);
         ulong goal = initialState.GoalID();
         int partOneAnswer = LeastEnergyToGoal(initialState, goal);
-        return ($"{partOneAnswer}", "n/a");
+        State.ClearStates();
+        State fullInitialState = new(input, true);
+        ulong fullGoal = fullInitialState.GoalID();
+        int partTwoAnswer = LeastEnergyToGoal(fullInitialState, fullGoal);
+        return ($"{partOneAnswer}", $"{partTwoAnswer}");
     }
 
     private static int LeastEnergyToGoal(State initialState, ulong goal)
@@ -59,7 +63,9 @@ internal class Day23 : Day
 
     //public static void PrintState(ulong id)
     //{
-    //    int[] state = new int[15];
+    //    int part = (int)(id % 5);
+    //    id /= 5;
+    //    int[] state = part == 1 ? new int[15] : new int[23];
     //    for (int i = state.Length - 1; i >= 0; i--)
     //    {
     //        state[i] = (int)(id % 5);
@@ -89,7 +95,7 @@ internal class Day23 : Day
         private readonly bool[] _canMove;
         private readonly bool[] _canEnterRoom;
 
-        public State(string[] input) : this(InputToState(input))
+        public State(string[] input, bool partTwo = false) : this(InputToState(input, partTwo))
         {
             EnergyToReach = 0;
         }
@@ -242,17 +248,43 @@ internal class Day23 : Day
             }
         }
 
-        private static int[] InputToState(string[] input)
+        private static int[] InputToState(string[] input, bool partTwo)
         {
-            int[] state = new int[15];
-            state[7] = input[2][3] - 64;
-            state[8] = input[2][5] - 64;
-            state[9] = input[2][7] - 64;
-            state[10] = input[2][9] - 64;
-            state[11] = input[3][3] - 64;
-            state[12] = input[3][5] - 64;
-            state[13] = input[3][7] - 64;
-            state[14] = input[3][9] - 64;
+            int[] state;
+            if (partTwo)
+            {
+                state = new int[23];
+                state[7] = input[2][3] - 64;
+                state[8] = input[2][5] - 64;
+                state[9] = input[2][7] - 64;
+                state[10] = input[2][9] - 64;
+                
+                state[11] = 'D' - 64;
+                state[12] = 'C' - 64;
+                state[13] = 'B' - 64;
+                state[14] = 'A' - 64;
+                state[15] = 'D' - 64;
+                state[16] = 'B' - 64;
+                state[17] = 'A' - 64;
+                state[18] = 'C' - 64;
+
+                state[19] = input[3][3] - 64;
+                state[20] = input[3][5] - 64;
+                state[21] = input[3][7] - 64;
+                state[22] = input[3][9] - 64;
+            }
+            else
+            {
+                state = new int[15];
+                state[7] = input[2][3] - 64;
+                state[8] = input[2][5] - 64;
+                state[9] = input[2][7] - 64;
+                state[10] = input[2][9] - 64;
+                state[11] = input[3][3] - 64;
+                state[12] = input[3][5] - 64;
+                state[13] = input[3][7] - 64;
+                state[14] = input[3][9] - 64;
+            }
             return state;
         }
 
@@ -268,6 +300,8 @@ internal class Day23 : Day
                 result *= 5;
                 result += (ulong)i;
             }
+            result *= 5;
+            result += state.Length == 15 ? 1UL : 2UL;
             return result;
         }
 
