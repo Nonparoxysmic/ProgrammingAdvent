@@ -29,7 +29,7 @@ internal class Day25 : Day
             partOneAnswer++;
         }
 
-        return ($"{partOneAnswer}", "n/a");
+        return ($"{partOneAnswer}", "Remotely Start The Sleigh");
     }
 
     private static bool Update(char[,] map, int width, int height)
