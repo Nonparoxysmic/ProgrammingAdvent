@@ -34,8 +34,15 @@ internal class Day01 : Day
                 sum += int.Parse(line);
             }
         }
-        int mostTotalCalories = calorieTotals.Max();
+        if (sum > 0)
+        {
+            calorieTotals.Add(sum);
+        }
+        calorieTotals.Sort();
+        calorieTotals.Reverse();
+        int mostTotalCalories = calorieTotals.First();
+        int topThreeCalories = calorieTotals.Take(3).Sum();
 
-        return result.WriteAnswers(mostTotalCalories, null);
+        return result.WriteAnswers(mostTotalCalories, topThreeCalories);
     }
 }
