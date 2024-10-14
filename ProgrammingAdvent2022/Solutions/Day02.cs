@@ -38,6 +38,30 @@ internal partial class Day02 : Day
             totalScore += line[2] - 'W' + _outcomeScores[line[0] - 'A', line[2] - 'X'];
         }
 
-        return result.WriteAnswers(totalScore, null);
+        int correctTotalScore = 0;
+        foreach (string line in input)
+        {
+            char choice = Choice(line[0], line[2]);
+            correctTotalScore += choice - 'W' + _outcomeScores[line[0] - 'A', choice - 'X'];
+        }
+
+        return result.WriteAnswers(totalScore, correctTotalScore);
+    }
+
+    private static char Choice(char opponent, char code)
+    {
+        return (opponent, code) switch
+        {
+            ('A', 'X') => 'Z',
+            ('A', 'Y') => 'X',
+            ('A', 'Z') => 'Y',
+            ('B', 'X') => 'X',
+            ('B', 'Y') => 'Y',
+            ('B', 'Z') => 'Z',
+            ('C', 'X') => 'Y',
+            ('C', 'Y') => 'Z',
+            ('C', 'Z') => 'X',
+            _ => '\0'
+        };
     }
 }
