@@ -19,13 +19,25 @@ internal class Day03 : Day
             char sharedItem = SharedItem(line);
             sumOfPriorities += sharedItem switch
             {
-                < '[' => sharedItem - '&',
-                > '`' => sharedItem - '`',
+                <= 'Z' => sharedItem - '&',
+                >= 'a' => sharedItem - '`',
                 _ => -32768
             };
         }
 
-        return result.WriteAnswers(sumOfPriorities, null);
+        int sumOfBadgePriorities = 0;
+        for (int i = 0; i < input.Length - 2; i += 3)
+        {
+            char sharedItem = SharedItem(input[i], input[i + 1], input[i + 2]);
+            sumOfBadgePriorities += sharedItem switch
+            {
+                <= 'Z' => sharedItem - '&',
+                >= 'a' => sharedItem - '`',
+                _ => -32768
+            };
+        }
+
+        return result.WriteAnswers(sumOfPriorities, sumOfBadgePriorities);
     }
 
     private static char SharedItem(string items)
@@ -37,6 +49,24 @@ internal class Day03 : Day
                 if (items[i] == items[j])
                 {
                     return items[i];
+                }
+            }
+        }
+        return '^';
+    }
+
+    private static char SharedItem(string items1, string items2, string items3)
+    {
+        for (int i = 0; i < items1.Length; i++)
+        {
+            for (int j = 0; j < items2.Length; j++)
+            {
+                for (int k = 0; k < items3.Length; k++)
+                {
+                    if (items1[i] == items2[j] && items2[j] == items3[k])
+                    {
+                        return items1[i];
+                    }
                 }
             }
         }
