@@ -20,6 +20,7 @@ internal partial class Day04 : Day
         PuzzleAnswers result = new();
 
         int totalOverlaps = 0;
+        int partialOverlaps = 0;
         foreach (string line in input)
         {
             Match match = ValidInputLine.Match(line);
@@ -33,6 +34,11 @@ internal partial class Day04 : Day
                     (c <= a && a <= d && c <= b && b <= d))
                 {
                     totalOverlaps++;
+                    partialOverlaps++;
+                }
+                else if ((a <= c && c <= b) || (a <= d && d <= b))
+                {
+                    partialOverlaps++;
                 }
             }
             else
@@ -41,6 +47,6 @@ internal partial class Day04 : Day
             }
         }
 
-        return result.WriteAnswers(totalOverlaps, null);
+        return result.WriteAnswers(totalOverlaps, partialOverlaps);
     }
 }
