@@ -119,18 +119,34 @@ static void TestAllExamples()
             {
                 if (calculated.PartOneAnswer != examples[i].PartOne)
                 {
-                    fail++;
-                    messages.Add((ConsoleColor.Red, $"Day {day} Example {i + 1}:"));
-                    messages.Add((ConsoleColor.Red, $"    Should be \"{examples[i].PartOne}\", got \"{calculated.PartOneAnswer}\""));
+                    if (calculated.PartOneAnswer == "Solution not yet implemented.")
+                    {
+                        fail++;
+                        messages.Add((ConsoleColor.Red, $"Day {day} Example {i + 1} Part One not implemented"));
+                    }
+                    else
+                    {
+                        fail++;
+                        messages.Add((ConsoleColor.Red, $"Day {day} Example {i + 1} Part One:"));
+                        messages.Add((ConsoleColor.Red, $"    Should be \"{examples[i].PartOne}\", got \"{calculated.PartOneAnswer}\""));
+                    }
                 }
             }
             if (examples[i].PartTwo is not null)
             {
                 if (calculated.PartTwoAnswer != examples[i].PartTwo)
                 {
-                    fail++;
-                    messages.Add((ConsoleColor.Red, $"Day {day} Example {i + 1}:"));
-                    messages.Add((ConsoleColor.Red, $"    Should be \"{examples[i].PartTwo}\", got \"{calculated.PartTwoAnswer}\""));
+                    if (calculated.PartTwoAnswer == "Solution not yet implemented.")
+                    {
+                        fail++;
+                        messages.Add((ConsoleColor.Yellow, $"Day {day} Example {i + 1} Part Two not implemented"));
+                    }
+                    else
+                    {
+                        fail++;
+                        messages.Add((ConsoleColor.Red, $"Day {day} Example {i + 1} Part Two:"));
+                        messages.Add((ConsoleColor.Red, $"    Should be \"{examples[i].PartTwo}\", got \"{calculated.PartTwoAnswer}\""));
+                    }
                 }
             }
         }
