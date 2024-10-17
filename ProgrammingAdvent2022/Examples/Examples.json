@@ -2,53 +2,63 @@
   "Day01": {
     "Example01": {
       "Input": "1000\r\n2000\r\n3000\r\n\r\n4000\r\n\r\n5000\r\n6000\r\n\r\n7000\r\n8000\r\n9000\r\n\r\n10000",
-      "PartOne": "24000"
+      "PartOne": "24000",
+      "PartTwo": "45000"
     }
   },
   "Day02": {
     "Example01": {
       "Input": "A Y\r\nB X\r\nC Z",
-      "PartOne": "15"
+      "PartOne": "15",
+      "PartTwo": "12"
     }
   },
   "Day03": {
     "Example01": {
       "Input": "vJrwpWtwJgWrhcsFMMfFFhFp\r\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\r\nPmmdzqPrVvPwwTWBwg\r\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\r\nttgJtRGJQctTZtZT\r\nCrZsJsPPZsGzwwsLwLmpwMDw",
-      "PartOne": "157"
+      "PartOne": "157",
+      "PartTwo": "70"
     }
   },
   "Day04": {
     "Example01": {
       "Input": "2-4,6-8\r\n2-3,4-5\r\n5-7,7-9\r\n2-8,3-7\r\n6-6,4-6\r\n2-6,4-8",
-      "PartOne": "2"
+      "PartOne": "2",
+      "PartTwo": "4"
     }
   },
   "Day05": {
     "Example01": {
       "Input": "    [D]    \r\n[N] [C]    \r\n[Z] [M] [P]\r\n 1   2   3 \r\n\r\nmove 1 from 2 to 1\r\nmove 3 from 1 to 3\r\nmove 2 from 2 to 1\r\nmove 1 from 1 to 2",
-      "PartOne": "CMZ"
+      "PartOne": "CMZ",
+      "PartTwo": "MCD"
     }
   },
   "Day06": {
     "Example01": {
       "Input": "mjqjpqmgbljsphdztnvjfqwrcgsmlb",
-      "PartOne": "7"
+      "PartOne": "7",
+      "PartTwo": "19"
     },
     "Example02": {
       "Input": "bvwbjplbgvbhsrlpgdmjqwftvncz",
-      "PartOne": "5"
+      "PartOne": "5",
+      "PartTwo": "23"
     },
     "Example03": {
       "Input": "nppdvjthqldpwncqszvftbrmjlhg",
-      "PartOne": "6"
+      "PartOne": "6",
+      "PartTwo": "23"
     },
     "Example04": {
       "Input": "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg",
-      "PartOne": "10"
+      "PartOne": "10",
+      "PartTwo": "29"
     },
     "Example05": {
       "Input": "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw",
-      "PartOne": "11"
+      "PartOne": "11",
+      "PartTwo": "26"
     }
   },
   "Day07": {
