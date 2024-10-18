@@ -30,7 +30,22 @@ internal partial class Day05 : Day
         }
         char[] stackTops = stacks.Select(s => s.Peek()).ToArray();
 
-        return result.WriteAnswers(stackTops, null);
+        stacks = InputStacks(input);
+        Stack<char> temp = [];
+        foreach ((int quantity, int start, int end) in moves)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                temp.Push(stacks[start - 1].Pop());
+            }
+            for (int i = 0; i < quantity; i++)
+            {
+                stacks[end - 1].Push(temp.Pop());
+            }
+        }
+        char[] correctStackTops = stacks.Select(s => s.Peek()).ToArray();
+
+        return result.WriteAnswers(stackTops, correctStackTops);
     }
 
     private static List<Stack<char>> InputStacks(string[] input)
