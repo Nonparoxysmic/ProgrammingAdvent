@@ -81,6 +81,12 @@ internal readonly struct Vector2Int(int x, int y)
     public static explicit operator Vector2Int(Vector3Int vectorToCast)
         => new(vectorToCast.X, vectorToCast.Y);
 
+    public static implicit operator Vector2Int((int, int) tupleToCast)
+        => new(tupleToCast.Item1, tupleToCast.Item2);
+
+    public static explicit operator Vector2Int((int, int, int) tupleToCast)
+        => new(tupleToCast.Item1, tupleToCast.Item2);
+
     public override string ToString()
     {
         return $"({X}, {Y})";

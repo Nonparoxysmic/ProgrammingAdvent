@@ -85,6 +85,12 @@ internal readonly struct Vector3Int(int x, int y, int z)
     public static implicit operator Vector3Int(Vector2Int vectorToCast)
         => new(vectorToCast.X, vectorToCast.Y, 0);
 
+    public static implicit operator Vector3Int((int, int) tupleToCast)
+        => new(tupleToCast.Item1, tupleToCast.Item2, 0);
+
+    public static implicit operator Vector3Int((int, int, int) tupleToCast)
+        => new(tupleToCast.Item1, tupleToCast.Item2, tupleToCast.Item3);
+
     public override string ToString()
     {
         return $"({X}, {Y}, {Z})";

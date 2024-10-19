@@ -38,6 +38,16 @@ internal static class MoreMath
     }
 
     /// <summary>
+    /// Returns the largest of a number of 32-bit signed integers.
+    /// </summary>
+    /// <returns>The largest parameter.</returns>
+    /// <param name="values">The set of 32-bit signed integers to compare.</param>
+    public static int Max(params int[] values)
+    {
+        return values.Aggregate((a, b) => Math.Max(a, b));
+    }
+
+    /// <summary>
     /// Returns a specified integer raised to the specified integer power.
     /// </summary>
     /// <remarks>
