@@ -16,8 +16,11 @@ internal class Day07 : Day
         Directory root = BuildFilesystem(input);
         int sumOfSmallDirectories = Directory.AllDirectories
             .Where(d => d.Size <= 100_000).Sum(d => d.Size);
+        int spaceNeeded = 30_000_000 - (70_000_000 - root.Size);
+        int sizeToDelete = Directory.AllDirectories.Select(d => d.Size)
+            .Where(s => s >= spaceNeeded).Min();
 
-        return result.WriteAnswers(sumOfSmallDirectories, null);
+        return result.WriteAnswers(sumOfSmallDirectories, sizeToDelete);
     }
 
     private static Directory BuildFilesystem(string[] input)
