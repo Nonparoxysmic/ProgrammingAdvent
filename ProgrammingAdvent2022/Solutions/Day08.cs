@@ -16,8 +16,10 @@ internal class Day08 : Day
         int[,] map = InputToMap(input);
         bool[,] visible = VisibleTrees(map);
         int visibleTrees = visible.Cast<bool>().Count(b => b);
+        int[,] scenicScores = ScenicScores(map);
+        int bestScenicScore = scenicScores.Cast<int>().Max();
 
-        return result.WriteAnswers(visibleTrees, null);
+        return result.WriteAnswers(visibleTrees, bestScenicScore);
     }
 
     private static int[,] InputToMap(string[] input)
@@ -83,5 +85,83 @@ internal class Day08 : Day
             }
         }
         return visible;
+    }
+
+    private static int[,] ScenicScores(int[,] map)
+    {
+        int width = map.GetLength(0);
+        int height = map.GetLength(1);
+        int[,] scores = new int[width, height];
+        for (int y = 1; y < height - 1; y++)
+        {
+            for (int x = 1; x < width - 1; x++)
+            {
+                scores[x, y] = ScenicScore(x, y, map, width, height);
+            }
+        }
+        return scores;
+    }
+
+    private static int ScenicScore(int xPos, int yPos, int[,] map, int width, int height)
+    {
+        int score = 1;
+        int start = map[xPos, yPos];
+        int steps = 0;
+        for (int x = xPos - 1; x >= 0; x--)
+        {
+            if (map[x, yPos] < start)
+            {
+                steps++;
+            }
+            else
+            {
+                steps++;
+                break;
+            }
+        }
+        score *= steps;
+        steps = 0;
+        for (int x = xPos + 1; x < width; x++)
+        {
+            if (map[x, yPos] < start)
+            {
+                steps++;
+            }
+            else
+            {
+                steps++;
+                break;
+            }
+        }
+        score *= steps;
+        steps = 0;
+        for (int y = yPos - 1; y >= 0; y--)
+        {
+            if (map[xPos, y] < start)
+            {
+                steps++;
+            }
+            else
+            {
+                steps++;
+                break;
+            }
+        }
+        score *= steps;
+        steps = 0;
+        for (int y = yPos + 1; y < height; y++)
+        {
+            if (map[xPos, y] < start)
+            {
+                steps++;
+            }
+            else
+            {
+                steps++;
+                break;
+            }
+        }
+        score *= steps;
+        return score;
     }
 }
