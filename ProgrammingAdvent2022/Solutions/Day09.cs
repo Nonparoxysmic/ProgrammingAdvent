@@ -14,9 +14,10 @@ internal class Day09 : Day
         PuzzleAnswers result = new();
 
         (char, int)[] motions = Motions(input);
-        int tailPositions = TailPositions(motions);
+        int shortTailPositions = TailPositions(motions, 2);
+        int longTailPositions = TailPositions(motions, 10);
 
-        return result.WriteAnswers(tailPositions, null);
+        return result.WriteAnswers(shortTailPositions, longTailPositions);
     }
 
     private static (char, int)[] Motions(string[] input)
@@ -31,9 +32,10 @@ internal class Day09 : Day
         }
     }
 
-    private static int TailPositions((char, int)[] motions)
+    private static int TailPositions((char, int)[] motions, int size)
     {
-        int Hx = 0, Hy = 0, Tx = 0, Ty = 0;
+        int[] x = new int[size];
+        int[] y = new int[size];
         HashSet<(int, int)> positions = [];
         positions.Add((0, 0));
         foreach ((char direction, int steps) in motions)
@@ -43,26 +45,29 @@ internal class Day09 : Day
                 switch (direction)
                 {
                     case 'U':
-                        Hy++;
+                        y[0]++;
                         break;
                     case 'D':
-                        Hy--;
+                        y[0]--;
                         break;
                     case 'L':
-                        Hx--;
+                        x[0]--;
                         break;
                     case 'R':
-                        Hx++;
+                        x[0]++;
                         break;
                     default:
                         break;
                 }
-                if (Math.Abs(Tx - Hx) > 1 || Math.Abs(Ty - Hy) > 1)
+                for (int j = 1; j < size; j++)
                 {
-                    Tx += Math.Sign(Hx - Tx);
-                    Ty += Math.Sign(Hy - Ty);
-                    positions.Add((Tx, Ty));
+                    if (Math.Abs(x[j] - x[j - 1]) > 1 || Math.Abs(y[j] - y[j - 1]) > 1)
+                    {
+                        x[j] += Math.Sign(x[j - 1] - x[j]);
+                        y[j] += Math.Sign(y[j - 1] - y[j]);
+                    }
                 }
+                positions.Add((x[size - 1], y[size - 1]));
             }
         }
         return positions.Count;
