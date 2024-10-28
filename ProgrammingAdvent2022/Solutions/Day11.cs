@@ -15,17 +15,25 @@ internal class Day11 : Day
     {
         PuzzleAnswers result = new();
 
+        // Part One
         AllMonkeys = ParseMonkeys(input);
         ProcessRounds(20);
         int monkeyBusiness = AllMonkeys.OrderByDescending(m => m.Inspections)
             .Take(2).Aggregate(1, (product, monkey) => product * monkey.Inspections);
 
-        return result.WriteAnswers(monkeyBusiness, null);
+        // Part Two
+        AllMonkeys = ParseMonkeys(input);
+        ProcessRounds(10_000, false);
+        long ridiculousMonkeyBusiness = AllMonkeys.OrderByDescending(m => m.Inspections)
+            .Take(2).Aggregate(1L, (product, monkey) => product * monkey.Inspections);
+
+        return result.WriteAnswers(monkeyBusiness, ridiculousMonkeyBusiness);
     }
 
     private static Monkey[] ParseMonkeys(string[] input)
     {
         List<Monkey> monkeys = [];
+        Monkey.AllDivisors = 1;
         int current = 0;
         for (int i = 0; i < input.Length - 5; i += 7)
         {
@@ -46,7 +54,7 @@ internal class Day11 : Day
                 {
                     return [.. monkeys];
                 }
-                Func<int, int> operation;
+                Func<long, long> operation;
                 if (input[i + 2][23..] == "* old")
                 {
                     operation = x => x * x;
@@ -67,7 +75,8 @@ internal class Day11 : Day
                 {
                     return [.. monkeys];
                 }
-                bool Test(int x) => x % divisor == 0;
+                bool Test(long x) => x % divisor == 0;
+                Monkey.AllDivisors *= divisor;
                 if (input[i + 4].Length < 30 || !int.TryParse(input[i + 4][29..], out int truePass))
                 {
                     return [.. monkeys];
@@ -92,8 +101,19 @@ internal class Day11 : Day
         return [.. monkeys];
     }
 
-    private static void ProcessRounds(int rounds)
+    private static void ProcessRounds(int rounds, bool divideByThree = true)
     {
+        if (!divideByThree)
+        {
+            for (int i = 0; i < rounds; i++)
+            {
+                for (int j = 0; j < AllMonkeys.Length; j++)
+                {
+                    AllMonkeys[j].TakeManagedTurn();
+                }
+            }
+            return;
+        }
         for (int i = 0; i < rounds; i++)
         {
             for (int j = 0; j < AllMonkeys.Length; j++)
@@ -103,13 +123,15 @@ internal class Day11 : Day
         }
     }
 
-    private class Monkey(int id, Func<int, int> op, Predicate<int> test, int passT, int passF)
+    private class Monkey(int id, Func<long, long> op, Predicate<long> test, int passT, int passF)
     {
+        public static int AllDivisors { get; set; }
+
         public int ID { get; } = id;
         public int Inspections { get; private set; }
-        public Queue<int> Items { get; } = [];
-        public Func<int, int> Operation { get; } = op;
-        public Predicate<int> Test { get; } = test;
+        public Queue<long> Items { get; } = [];
+        public Func<long, long> Operation { get; } = op;
+        public Predicate<long> Test { get; } = test;
         public int TruePass { get; } = passT;
         public int FalsePass { get; } = passF;
 
@@ -117,10 +139,29 @@ internal class Day11 : Day
         {
             while (Items.Count > 0)
             {
-                int current = Items.Dequeue();
+                long current = Items.Dequeue();
                 Inspections++;
                 current = Operation(current);
                 current /= 3;
+                if (Test(current))
+                {
+                    AllMonkeys[TruePass].Items.Enqueue(current);
+                }
+                else
+                {
+                    AllMonkeys[FalsePass].Items.Enqueue(current);
+                }
+            }
+        }
+
+        public void TakeManagedTurn()
+        {
+            while (Items.Count > 0)
+            {
+                long current = Items.Dequeue();
+                Inspections++;
+                current = Operation(current);
+                current %= AllDivisors;
                 if (Test(current))
                 {
                     AllMonkeys[TruePass].Items.Enqueue(current);
