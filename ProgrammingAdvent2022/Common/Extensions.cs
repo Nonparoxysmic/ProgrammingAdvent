@@ -11,6 +11,19 @@ internal static class Extensions
     private static readonly string[] _newlines = ["\r\n", "\n"];
 
     /// <summary>
+    /// Increments the value associated with the key if there is one, otherwise 
+    /// adds the specified key with a value of 1.
+    /// </summary>
+    /// <typeparam name="T">The type of the keys in the dictionary</typeparam>
+    public static void AddOrIncrement<T>(this Dictionary<T, int> dictionary, T key) where T : notnull
+    {
+        if (!dictionary.TryAdd(key, 1))
+        {
+            dictionary[key] += 1;
+        }
+    }
+
+    /// <summary>
     /// Assigns the given value of type T to each element of the specified two-dimensional array.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the array.</typeparam>
