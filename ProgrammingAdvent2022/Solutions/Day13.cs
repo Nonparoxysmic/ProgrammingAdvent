@@ -13,32 +13,42 @@ internal class Day13 : Day
     {
         PuzzleAnswers result = new();
 
-        (Packet, Packet)[] packetPairs = ParseInput(input);
+        List<Packet> packets = ParseInput(input);
+
+        // Part One
         int sumOfCorrectIndices = 0;
-        for (int i = 1; i < packetPairs.Length; i++)
+        for (int i = 0; i < packets.Count / 2; i++)
         {
-            if (packetPairs[i].Item1 < packetPairs[i].Item2)
+            if (packets[2 * i] < packets[2 * i + 1])
             {
-                sumOfCorrectIndices += i;
+                sumOfCorrectIndices += i + 1;
             }
         }
 
-        return result.WriteAnswers(sumOfCorrectIndices, null);
+        // Part Two
+        Packet divider1 = new("[[2]]");
+        Packet divider2 = new("[[6]]");
+        packets.Add(divider1);
+        packets.Add(divider2);
+        packets.Sort();
+        int decoderKey = (packets.IndexOf(divider1) + 1) * (packets.IndexOf(divider2) + 1);
+
+        return result.WriteAnswers(sumOfCorrectIndices, decoderKey);
     }
 
-    private static (Packet, Packet)[] ParseInput(string[] input)
+    private static List<Packet> ParseInput(string[] input)
     {
-        List<(Packet, Packet)> packetPairs = [];
-        packetPairs.Add((new Packet(), new Packet()));
+        List<Packet> packets = [];
         for (int i = 0; i < input.Length - 1; i += 3)
         {
             if (string.IsNullOrEmpty(input[i]) || string.IsNullOrEmpty(input[i + 1]))
             {
                 break;
             }
-            packetPairs.Add((new Packet(input[i]), new Packet(input[i + 1])));
+            packets.Add(new Packet(input[i]));
+            packets.Add(new Packet(input[i + 1]));
         }
-        return [.. packetPairs];
+        return packets;
     }
 
     private static Node CreateTree(string line)
@@ -100,7 +110,7 @@ internal class Day13 : Day
         return current;
     }
 
-    private class Packet(string data = "")
+    private class Packet(string data = "") : IComparable
     {
         public Node RootNode { get; } = CreateTree(data);
 
@@ -112,6 +122,22 @@ internal class Day13 : Day
         public static bool operator >(Packet a, Packet b)
         {
             return a.RootNode > b.RootNode;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj is Packet other)
+            {
+                if (this < other)
+                {
+                    return -1;
+                }
+                if (this > other)
+                {
+                    return 1;
+                }
+            }
+            return 0;
         }
     }
 
