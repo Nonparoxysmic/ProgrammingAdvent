@@ -14,10 +14,10 @@ internal class Day12 : Day
         PuzzleAnswers result = new();
 
         char[,] map = InputToMap(input, out (int, int) start, out (int, int) end);
-        Position.Reset();
         int fewestSteps = FewestStepsInReverse(map, end, start);
+        int betterFewestSteps = FewestStepsDown(map, end);
 
-        return result.WriteAnswers(fewestSteps, null);
+        return result.WriteAnswers(fewestSteps, betterFewestSteps);
     }
 
     private static char[,] InputToMap(string[] input, out (int, int) start, out (int, int) end)
@@ -49,6 +49,7 @@ internal class Day12 : Day
 
     private static int FewestStepsInReverse(char[,] map, (int, int) end, (int, int) start)
     {
+        Position.Reset();
         MinHeap<Position> open = new();
         Position initial = new(end, map)
         {
@@ -77,6 +78,43 @@ internal class Day12 : Day
                     else
                     {
                         neighbor.EstimatedCostToGoal = Distance(neighbor.Coords, start);
+                        open.Insert(neighbor);
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    private static int FewestStepsDown(char[,] map, (int, int) end)
+    {
+        Position.Reset();
+        MinHeap<Position> open = new();
+        Position initial = new(end, map)
+        {
+            CostFromStart = 0,
+        };
+        open.Insert(initial);
+        while (open.Count > 0)
+        {
+            Position current = open.FindMin();
+            if (map[current.X, current.Y] == 'a')
+            {
+                return current.CostFromStart;
+            }
+            open.DeleteMin();
+            foreach ((Position neighbor, int cost) in current.NeighborsAndCosts())
+            {
+                int costToReachNeighbor = current.CostFromStart + cost;
+                if (costToReachNeighbor < neighbor.CostFromStart)
+                {
+                    neighbor.CostFromStart = costToReachNeighbor;
+                    if (neighbor.Open)
+                    {
+                        open.KeyDecreased(neighbor);
+                    }
+                    else
+                    {
                         open.Insert(neighbor);
                     }
                 }
