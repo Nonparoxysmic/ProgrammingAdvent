@@ -21,8 +21,9 @@ internal partial class Day14 : Day
 
         char[,] map = InputToMap(input, out int offset);
         int sandAtRest = SandAtRest(map, 500 - offset, 0);
+        int actualSandAtRest = MoreMath.PowInt(map.GetLength(1), 2) - map.Cast<char>().Count(c => c == '#');
 
-        return result.WriteAnswers(sandAtRest, null);
+        return result.WriteAnswers(sandAtRest, actualSandAtRest);
     }
 
     private static char[,] InputToMap(string[] input, out int offset)
@@ -52,6 +53,16 @@ internal partial class Day14 : Day
             DrawLine(map, x1, y1, x2, y2, offset);
         }
         map[500 - offset, 0] = '+';
+        for (int y = 0; y < map.GetLength(1) - 1; y++)
+        {
+            for (int x = 1; x < map.GetLength(0) - 1; x++)
+            {
+                if (map[x - 1, y] == '#' && map[x, y] == '#' && map[x + 1, y] == '#')
+                {
+                    map[x, y + 1] = '#';
+                }
+            }
+        }
         return map;
     }
 
