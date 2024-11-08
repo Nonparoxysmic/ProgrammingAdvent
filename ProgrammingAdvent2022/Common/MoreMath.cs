@@ -8,6 +8,17 @@ namespace ProgrammingAdvent2022.Common;
 internal static class MoreMath
 {
     /// <summary>
+    /// Computes the average of a sequence of int values.
+    /// </summary>
+    /// <returns>The average of the sequence of values.</returns>
+    /// <param name="numbers">The sequence of values to be averaged</param>
+    public static int Average(params int[] numbers)
+    {
+        decimal sum = numbers.Sum(n => (decimal)n);
+        return (int)(sum / numbers.Length);
+    }
+
+    /// <summary>
     /// Calculates the greatest common divisor of a pair of integers.
     /// </summary>
     public static int GCD(int a, int b)
