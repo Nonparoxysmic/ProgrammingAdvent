@@ -23,7 +23,9 @@ internal partial class Day16 : Day
 
         int mostPressureReleased = MostPressureReleased(30, distanceMatrix, flowRates);
 
-        return result.WriteAnswers(mostPressureReleased, null);
+        int mostPressureReleasedTogether = MostPressureReleased(26, distanceMatrix, flowRates, true);
+
+        return result.WriteAnswers(mostPressureReleased, mostPressureReleasedTogether);
     }
 
     private static int[,] ParseInput(string[] input, out int[] flowRates)
@@ -112,18 +114,16 @@ internal partial class Day16 : Day
         return result;
     }
 
-    private static int MostPressureReleased(int minutes, int[,] distanceMatrix, int[] flowRates)
+    private static int MostPressureReleased(int minutes, int[,] distanceMatrix, int[] flowRates,
+        bool elephant = false)
     {
-        Search search = new(minutes, distanceMatrix, flowRates);
-        for (int i = 0; i < search.ValveCount; i++)
+        Search search = new(minutes, distanceMatrix, flowRates, elephant);
+        for (int i = 1; i < search.ValveCount; i++)
         {
-            if (flowRates[i] > 0)
+            int timeToOpen = search.DistanceMatrix[0, i];
+            if (timeToOpen < search.Minutes)
             {
-                int timeToOpen = search.DistanceMatrix[0, i];
-                if (timeToOpen < search.Minutes)
-                {
-                    search.TryValve(i, timeToOpen);
-                }
+                search.TryValve(i, timeToOpen);
             }
         }
         return search.MostPressureReleased;
@@ -131,7 +131,7 @@ internal partial class Day16 : Day
 
     private class Search
     {
-        public int Minutes { get; }
+        public int Minutes { get; private set; }
         public int[,] DistanceMatrix { get; }
         public int[] FlowRates { get; }
         public int ValveCount { get; }
@@ -142,7 +142,7 @@ internal partial class Day16 : Day
         private readonly Stack<int> valveOpenOrder;
         private readonly bool[] valvesOpened;
 
-        public Search(int minutes, int[,] distanceMatrix, int[] flowRates)
+        public Search(int minutes, int[,] distanceMatrix, int[] flowRates, bool elephant)
         {
             Minutes = minutes;
             DistanceMatrix = distanceMatrix;
@@ -153,7 +153,7 @@ internal partial class Day16 : Day
             pressureReleased = 0;
             valveOpenOrder = [];
             valvesOpened = new bool[flowRates.Length];
-            valvesOpened[0] = true;
+            valvesOpened[0] = !elephant;
         }
 
         public void TryValve(int valveIndex, int time)
@@ -162,14 +162,17 @@ internal partial class Day16 : Day
 
             MostPressureReleased = Math.Max(MostPressureReleased, pressureReleased);
 
-            for (int i = 0; i < ValveCount; i++)
+            if (BestCaseScenario() > MostPressureReleased)
             {
-                if (!valvesOpened[i])
+                for (int i = 0; i < ValveCount; i++)
                 {
-                    int timeToOpen = DistanceMatrix[valveIndex, i];
-                    if (minutesPassed + timeToOpen < Minutes)
+                    if (!valvesOpened[i])
                     {
-                        TryValve(i, timeToOpen);
+                        int timeToOpen = DistanceMatrix[valveIndex, i];
+                        if (minutesPassed + timeToOpen < Minutes || i == 0)
+                        {
+                            TryValve(i, timeToOpen);
+                        }
                     }
                 }
             }
@@ -180,6 +183,10 @@ internal partial class Day16 : Day
         private void OpenValve(int valveIndex, int time)
         {
             minutesPassed += time;
+            if (valveIndex == 0)
+            {
+                Minutes = minutesPassed + 26;
+            }
             pressureReleased += FlowRates[valveIndex] * (Minutes - minutesPassed);
             valveOpenOrder.Push(valveIndex);
             valvesOpened[valveIndex] = true;
@@ -190,7 +197,25 @@ internal partial class Day16 : Day
             valvesOpened[valveIndex] = false;
             valveOpenOrder.Pop();
             pressureReleased -= FlowRates[valveIndex] * (Minutes - minutesPassed);
+            if (valveIndex == 0)
+            {
+                Minutes = 26;
+            }
             minutesPassed -= time;
+        }
+
+        private int BestCaseScenario()
+        {
+            int minutesRemaining = valvesOpened[0] ? Minutes - minutesPassed : 26;
+            int sum = pressureReleased;
+            for (int i = 1; i < ValveCount; i++)
+            {
+                if (!valvesOpened[i])
+                {
+                    sum += FlowRates[i] * minutesRemaining;
+                }
+            }
+            return sum;
         }
     }
 }
