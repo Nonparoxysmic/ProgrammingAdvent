@@ -21,8 +21,13 @@ internal partial class Day19 : Day
 
         Blueprint[] blueprints = ParseInput(input);
         int sumOfQualityLevels = blueprints.Aggregate(0, (sum, current) => sum + QualityLevel(current));
+        int productOfGeodesOpened = 1;
+        for (int i = 0; i < Math.Min(3, blueprints.Length); i++)
+        {
+            productOfGeodesOpened *= MostGeodesOpenedInMinutes(32, blueprints[i]);
+        }
 
-        return result.WriteAnswers(sumOfQualityLevels, null);
+        return result.WriteAnswers(sumOfQualityLevels, productOfGeodesOpened);
     }
 
     private static Blueprint[] ParseInput(string[] input)
