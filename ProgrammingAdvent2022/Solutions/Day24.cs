@@ -13,13 +13,19 @@ internal class Day24 : Day
     {
         PuzzleAnswers result = new();
 
+        // Initialization
         char[,] map = InputToMap(input);
         (int, int) start = (0, -1);
         (int, int) goal = (map.GetLength(0) - 1, map.GetLength(1));
         Position.Reset();
+        // Part One
         int fewestMinutesAcrossValley = FewestMinutes(start, goal, map);
+        // Part Two
+        int fewestMinutesThereAndBackAgain = fewestMinutesAcrossValley
+            + FewestMinutes(goal, start, map, fewestMinutesAcrossValley);
+        fewestMinutesThereAndBackAgain += FewestMinutes(start, goal, map, fewestMinutesThereAndBackAgain);
 
-        return result.WriteAnswers(fewestMinutesAcrossValley, null);
+        return result.WriteAnswers(fewestMinutesAcrossValley, fewestMinutesThereAndBackAgain);
     }
 
     private static char[,] InputToMap(string[] input)
@@ -54,10 +60,10 @@ internal class Day24 : Day
         return true;
     }
 
-    private static int FewestMinutes((int, int) start, (int, int) goal, char[,] map)
+    private static int FewestMinutes((int, int) start, (int, int) goal, char[,] map, int startTime = 0)
     {
         MinHeap<Position> open = new();
-        Position initial = new(start.Item1, start.Item2, 0, map)
+        Position initial = new(start.Item1, start.Item2, startTime, map)
         {
             CostFromStart = 0,
             EstimatedCostToGoal = Distance(start, goal)
