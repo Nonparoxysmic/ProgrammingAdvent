@@ -16,8 +16,10 @@ internal class Day17 : Day
 
         JetPattern jets = new(input[0]);
         int towerHeight = TowerHeight(2022, jets);
+        jets.Reset();
+        long tallTowerHeight = TallTowerHeight(1_000_000_000_000, jets);
 
-        return result.WriteAnswers(towerHeight, null);
+        return result.WriteAnswers(towerHeight, tallTowerHeight);
     }
 
     private static int TowerHeight(int numberOfRocks, JetPattern jets)
@@ -26,31 +28,72 @@ internal class Day17 : Day
         int height = 0;
         for (int i = 0; i < numberOfRocks; i++)
         {
-            Rock nextRock = new(Rock.Types[i % 5], new Vector2Int(2, height + 3));
-            while (true)
-            {
-                char jetPush = jets.Next();
-                if (jetPush == '<')
-                {
-                    Push(nextRock, -1, rocks);
-                }
-                if (jetPush == '>')
-                {
-                    Push(nextRock, 1, rocks);
-                }
-                if (!TryFall(nextRock, rocks))
-                {
-                    break;
-                }
-            }
-            height = Math.Max(height, nextRock.Position.Y + nextRock.BoundingBoxSize.Y);
-            rocks.Enqueue(nextRock);
-            if (rocks.Count >= 30)
-            {
-                rocks.Dequeue();
-            }
+            ProcessRock(i % 5, rocks, jets, ref height);
         }
         return height;
+    }
+
+    private static void ProcessRock(int index, Queue<Rock> rocks, JetPattern jets, ref int height)
+    {
+        Rock nextRock = new(Rock.Types[index], new Vector2Int(2, height + 3));
+        while (true)
+        {
+            char jetPush = jets.Next();
+            if (jetPush == '<')
+            {
+                Push(nextRock, -1, rocks);
+            }
+            if (jetPush == '>')
+            {
+                Push(nextRock, 1, rocks);
+            }
+            if (!TryFall(nextRock, rocks))
+            {
+                break;
+            }
+        }
+        height = Math.Max(height, nextRock.Position.Y + nextRock.BoundingBoxSize.Y);
+        rocks.Enqueue(nextRock);
+        if (rocks.Count >= 30)
+        {
+            rocks.Dequeue();
+        }
+    }
+
+    private static long TallTowerHeight(long numberOfRocks, JetPattern jets)
+    {
+        Queue<Rock> rocks = [];
+        int height = 0;
+        long i = 0;
+        for (; i < jets.Length; i++)
+        {
+            ProcessRock((int)(i % 5), rocks, jets, ref height);
+        }
+        Dictionary<(int, int), (long, int)> seenIndices = [];
+        long heightSkipped = 0;
+        for (; i < 400_000; i++)
+        {
+            int currentRockIndex = (int)(i % 5);
+            int currentJetIndex = jets.CurrentIndex;
+            if (!seenIndices.TryAdd((currentRockIndex, currentJetIndex), (i, height)))
+            {
+                (long iOld, int heightOld) = seenIndices[(currentRockIndex, currentJetIndex)];
+                long cyclesSkipped = (numberOfRocks - i) / (i - iOld);
+                heightSkipped = cyclesSkipped * (height - heightOld);
+                i += cyclesSkipped * (i - iOld);
+                break;
+            }
+            ProcessRock((int)(i % 5), rocks, jets, ref height);
+        }
+        if (i == 400_000 - 1)
+        {
+            return -1;
+        }
+        for (; i < numberOfRocks; i++)
+        {
+            ProcessRock((int)(i % 5), rocks, jets, ref height);
+        }
+        return height + heightSkipped;
     }
 
     private static void Push(Rock rock, int direction, Queue<Rock> rocks)
@@ -88,10 +131,15 @@ internal class Day17 : Day
 
     private class JetPattern(string pattern)
     {
-        private readonly string _pattern = pattern;
-        private int current = 0;
+        public int CurrentIndex => _current % _pattern.Length;
+        public int Length => _pattern.Length;
 
-        public char Next() => _pattern[current++ % _pattern.Length];
+        private readonly string _pattern = pattern;
+        private int _current = 0;
+
+        public char Next() => _pattern[_current++ % _pattern.Length];
+
+        public void Reset() => _current = 0;
     }
 
     private class Rock
