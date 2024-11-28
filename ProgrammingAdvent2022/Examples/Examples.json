@@ -149,7 +149,8 @@
     },
     "Example02": {
       "Input": "2,2,2\r\n1,2,2\r\n3,2,2\r\n2,1,2\r\n2,3,2\r\n2,2,1\r\n2,2,3\r\n2,2,4\r\n2,2,6\r\n1,2,5\r\n3,2,5\r\n2,1,5\r\n2,3,5",
-      "PartOne": "64"
+      "PartOne": "64",
+      "PartTwo": "58"
     }
   },
   "Day19": {
@@ -162,25 +163,29 @@
   "Day20": {
     "Example01": {
       "Input": "1\r\n2\r\n-3\r\n3\r\n-2\r\n0\r\n4",
-      "PartOne": "3"
+      "PartOne": "3",
+      "PartTwo": "1623178306"
     }
   },
   "Day21": {
     "Example01": {
       "Input": "root: pppw + sjmn\r\ndbpl: 5\r\ncczh: sllz + lgvd\r\nzczc: 2\r\nptdq: humn - dvpt\r\ndvpt: 3\r\nlfqf: 4\r\nhumn: 5\r\nljgn: 2\r\nsjmn: drzm * dbpl\r\nsllz: 4\r\npppw: cczh / lfqf\r\nlgvd: ljgn * ptdq\r\ndrzm: hmdt - zczc\r\nhmdt: 32",
-      "PartOne": "152"
+      "PartOne": "152",
+      "PartTwo": "301"
     }
   },
   "Day22": {
     "Example01": {
       "Input": "        ...#\r\n        .#..\r\n        #...\r\n        ....\r\n...#.......#\r\n........#...\r\n..#....#....\r\n..........#.\r\n        ...#....\r\n        .....#..\r\n        .#......\r\n        ......#.\r\n\r\n10R5L5R10L4R5L5",
-      "PartOne": "6032"
+      "PartOne": "6032",
+      "PartTwo": "5031"
     }
   },
   "Day23": {
     "Example01": {
       "Input": "....#..\r\n..###.#\r\n#...#.#\r\n.#...##\r\n#.###..\r\n##.#.##\r\n.#..#..",
-      "PartOne": "110"
+      "PartOne": "110",
+      "PartTwo": "20"
     }
   },
   "Day24": {
