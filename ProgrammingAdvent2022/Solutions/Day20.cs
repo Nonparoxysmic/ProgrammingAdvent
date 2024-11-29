@@ -13,17 +13,25 @@ internal class Day20 : Day
     {
         PuzzleAnswers result = new();
 
+        // Part One
         ParseInput(input);
         Number.MixNumbers();
-        Vector3Int coordinates = Number.GetCoordinates();
-        int sumOfCoordinates = coordinates.X + coordinates.Y + coordinates.Z;
+        long sumOfCoordinates = Number.SumOfCoordinates();
 
-        return result.WriteAnswers(sumOfCoordinates, null);
+        // Part Two
+        ParseInput(input, 811_589_153);
+        for (int i = 0; i < 10; i++)
+        {
+            Number.MixNumbers();
+        }
+        long actualSumOfCoordinates = Number.SumOfCoordinates();
+
+        return result.WriteAnswers(sumOfCoordinates, actualSumOfCoordinates);
     }
 
-    private static void ParseInput(string[] input)
+    private static void ParseInput(string[] input, long decryptionKey = 1)
     {
-        Number[] numbers = input.Select(line => new Number(int.Parse(line))).ToArray();
+        Number[] numbers = input.Select(line => new Number(long.Parse(line) * decryptionKey)).ToArray();
         for (int i = 1; i < input.Length - 1; i++)
         {
             numbers[i].Previous = numbers[i - 1];
@@ -44,16 +52,16 @@ internal class Day20 : Day
     private class Number
     {
         public static int Count { get; set; }
-        public static Number Start { get; set; } = new(int.MinValue);
-        public static Number Zero { get; set; } = new(int.MinValue);
+        public static Number Start { get; set; } = new(long.MinValue);
+        public static Number Zero { get; set; } = new(long.MinValue);
 
-        public int Value;
+        public long Value;
         public Number Previous;
         public Number Next;
 
         public Number? NextMove;
 
-        public Number(int value)
+        public Number(long value)
         {
             Value = value;
             Next = this;
@@ -89,27 +97,21 @@ internal class Day20 : Day
             }
         }
 
-        public static Vector3Int GetCoordinates()
+        public static long SumOfCoordinates()
         {
+            long sum = 0;
             Number current = Advance(1000, Zero);
-            int x = current.Value;
+            sum += current.Value;
             current = Advance(1000, current);
-            int y = current.Value;
+            sum += current.Value;
             current = Advance(1000, current);
-            int z = current.Value;
-            return new Vector3Int(x, y, z);
+            sum += current.Value;
+            return sum;
         }
 
-        private static Number Advance(int steps, Number position)
+        private static Number Advance(long steps, Number position)
         {
-            while (steps < -Count / 2)
-            {
-                steps += Count;
-            }
-            while (steps > Count / 2)
-            {
-                steps -= Count;
-            }
+            steps = (steps + Count / 2) % Count - Count / 2;
             Number current = position;
             if (steps < 0)
             {
