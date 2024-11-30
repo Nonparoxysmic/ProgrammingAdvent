@@ -20,7 +20,15 @@ internal class Day23 : Day
         }
         int round10GroundReached = elves.BoundingArea() - elves.Count;
 
-        return result.WriteAnswers(round10GroundReached, null);
+        for (int i = 10; i < 2_000; i++)
+        {
+            if (!elves.Move())
+            {
+                return result.WriteAnswers(round10GroundReached, i + 1);
+            }
+        }
+
+        return result.WriteAnswers(round10GroundReached, "Answer not found.");
     }
 
     private class ElfCollection
@@ -54,8 +62,9 @@ internal class Day23 : Day
             Round = 1;
         }
 
-        public void Move()
+        public bool Move()
         {
+            bool elvesMoved = false;
             List<Vector2Int> stationaryElves = [];
             for (int e = 0; e < Count; e++)
             {
@@ -67,6 +76,7 @@ internal class Day23 : Day
                 }
                 else
                 {
+                    elvesMoved = true;
                     foreach (int direction in _directions)
                     {
                         if (_adjacency[direction] == 0)
@@ -103,6 +113,7 @@ internal class Day23 : Day
             }
             RotateDirectionPriority();
             Round++;
+            return elvesMoved;
         }
 
         public int BoundingArea()
