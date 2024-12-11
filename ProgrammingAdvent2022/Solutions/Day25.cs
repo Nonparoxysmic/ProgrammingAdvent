@@ -16,7 +16,7 @@ internal class Day25 : Day
 
         string sum = DecimalToSnafu(input.Select(s => SnafuToDecimal(s)).Sum());
 
-        return result.WriteAnswers(sum, null);
+        return result.WriteAnswers(sum, "Start The Blender");
     }
 
     private static decimal SnafuToDecimal(string snafu)
