@@ -21,9 +21,13 @@ internal partial class Day21 : Day
 
         ParseInput(input);
 
-        long rootMonkeyNumber = Monkey.AllMonkeys["root"].YelledNumber();
+        decimal rootMonkeyNumber = Monkey.AllMonkeys["root"].YelledNumber();
 
-        return result.WriteAnswers(rootMonkeyNumber, null);
+        Monkey.UpdateRootJob();
+
+        decimal yourNumber = FindYourNumber();
+
+        return result.WriteAnswers(rootMonkeyNumber, yourNumber);
     }
 
     private static void ParseInput(string[] input)
@@ -39,13 +43,54 @@ internal partial class Day21 : Day
         }
     }
 
+    private static ulong FindYourNumber()
+    {
+        Monkey humn = Monkey.AllMonkeys["humn"];
+        Monkey rootA = Monkey.AllMonkeys["root"].GetMonkeyA();
+        Monkey rootB = Monkey.AllMonkeys["root"].GetMonkeyB();
+        (decimal target, Monkey test) = Parameters(humn, rootA, rootB);
+        humn.Number = 0;
+        decimal prevNum = 0;
+        decimal prevResult = test.YelledNumber();
+        decimal result;
+        humn.Number = 100;
+        while (true)
+        {
+            result = test.YelledNumber();
+            if (result == target)
+            {
+                return (ulong)humn.Number;
+            }
+            humn.Number += (target - result) / (result - prevResult) * (humn.Number - prevNum);
+        }
+    }
+
+    private static (decimal, Monkey) Parameters(Monkey humn, Monkey rootA, Monkey rootB)
+    {
+        humn.Number = 151;
+        decimal a1 = rootA.YelledNumber();
+        decimal b1 = rootB.YelledNumber();
+        humn.Number = 0;
+        decimal a2 = rootA.YelledNumber();
+        decimal b2 = rootB.YelledNumber();
+        if (a1 == a2 && b1 != b2)
+        {
+            return (a1, rootB);
+        }
+        if (b1 == b2 && a1 != a2)
+        {
+            return (b1, rootA);
+        }
+        throw new NotImplementedException();
+    }
+
     private class Monkey
     {
         public static Dictionary<string, Monkey> AllMonkeys = [];
 
         public string Name { get; }
-        public long? Number { get; }
-        public Func<string, string, long> Job { get; }
+        public decimal? Number { get; set; }
+        public Func<string, string, decimal> Job { get; private set; }
         public string? MonkeyA { get; }
         public string? MonkeyB { get; }
 
@@ -67,23 +112,49 @@ internal partial class Day21 : Day
                     '-' => (a, b) => AllMonkeys[a].YelledNumber() - AllMonkeys[b].YelledNumber(),
                     '*' => (a, b) => AllMonkeys[a].YelledNumber() * AllMonkeys[b].YelledNumber(),
                     '/' => (a, b) => AllMonkeys[a].YelledNumber() / AllMonkeys[b].YelledNumber(),
-                    _ => (a, b) => -1
+                    _ => throw new InvalidOperationException(),
                 };
             }
             AllMonkeys.Add(Name, this);
         }
 
-        public long YelledNumber()
+        public static void UpdateRootJob()
+        {
+            AllMonkeys["root"].Job = (a, b) =>
+            {
+                return AllMonkeys[a].YelledNumber() == AllMonkeys[b].YelledNumber() ? 1 : 0;
+            };
+        }
+
+        public decimal YelledNumber()
         {
             if (Number is not null)
             {
-                return (long)Number;
+                return (decimal)Number;
             }
             if (MonkeyA is not null && MonkeyB is not null)
             {
                 return Job(MonkeyA, MonkeyB);
             }
-            return -1;
+            throw new InvalidOperationException();
+        }
+
+        public Monkey GetMonkeyA()
+        {
+            if (MonkeyA is not null)
+            {
+                return AllMonkeys[MonkeyA];
+            }
+            throw new InvalidOperationException();
+        }
+
+        public Monkey GetMonkeyB()
+        {
+            if (MonkeyB is not null)
+            {
+                return AllMonkeys[MonkeyB];
+            }
+            throw new InvalidOperationException();
         }
     }
 }
