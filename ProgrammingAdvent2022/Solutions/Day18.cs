@@ -25,26 +25,26 @@ internal partial class Day18 : Day
     {
         PuzzleAnswers result = new();
 
-        Vector3Int[] cubes = input.Select(line => ParseInputLine(line)).ToArray();
-
-        Dictionary<Vector3Int, int> cubeSides = [];
-        foreach (Vector3Int cube in cubes)
-        {
-            cubeSides[cube] = 6;
-        }
-        foreach (Vector3Int cube in cubes)
-        {
-            foreach (Vector3Int direction in _directions)
-            {
-                if (cubeSides.ContainsKey(cube + direction))
-                {
-                    cubeSides[cube]--;
-                }
-            }
-        }
-        int surfaceArea = cubeSides.Values.Sum();
+        int[,,] map = ParseInput(input);
+        int surfaceArea = AllSurfaces(map);
 
         return result.WriteAnswers(surfaceArea, null);
+    }
+
+    private static int[,,] ParseInput(string[] input)
+    {
+        IEnumerable<Vector3Int> cubePositions = input.Select(line => ParseInputLine(line));
+        int maxCoord = 1;
+        foreach (Vector3Int cube in cubePositions)
+        {
+            maxCoord = MoreMath.Max(maxCoord, cube.X, cube.Y, cube.Z);
+        }
+        int[,,] map = new int[maxCoord + 3, maxCoord + 3, maxCoord + 3];
+        foreach (Vector3Int cube in cubePositions)
+        {
+            map[cube.X + 1, cube.Y + 1, cube.Z + 1] = 1;
+        }
+        return map;
     }
 
     private static Vector3Int ParseInputLine(string line)
@@ -58,5 +58,42 @@ internal partial class Day18 : Day
         int y = int.Parse(match.Groups["y"].Value);
         int z = int.Parse(match.Groups["z"].Value);
         return new Vector3Int(x, y, z);
+    }
+
+    private static int AllSurfaces(int[,,] map)
+    {
+        int surfaces = 0;
+        int size = map.GetLength(0);
+        for (int z = 0; z < size; z++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    if (x > 0)
+                    {
+                        if (map[x, y, z] + map[x - 1, y, z] == 1)
+                        {
+                            surfaces++;
+                        }
+                    }
+                    if (y > 0)
+                    {
+                        if (map[x, y, z] + map[x, y - 1, z] == 1)
+                        {
+                            surfaces++;
+                        }
+                    }
+                    if (z > 0)
+                    {
+                        if (map[x, y, z] + map[x, y, z - 1] == 1)
+                        {
+                            surfaces++;
+                        }
+                    }
+                }
+            }
+        }
+        return surfaces;
     }
 }
