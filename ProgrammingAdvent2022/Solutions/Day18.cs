@@ -27,8 +27,9 @@ internal partial class Day18 : Day
 
         int[,,] map = ParseInput(input);
         int surfaceArea = AllSurfaces(map);
+        int exteriorSurfaceArea = ExteriorSurfaces(map);
 
-        return result.WriteAnswers(surfaceArea, null);
+        return result.WriteAnswers(surfaceArea, exteriorSurfaceArea);
     }
 
     private static int[,,] ParseInput(string[] input)
@@ -95,5 +96,67 @@ internal partial class Day18 : Day
             }
         }
         return surfaces;
+    }
+
+    private static int ExteriorSurfaces(int[,,] map)
+    {
+        FloodFillExterior(map);
+        int surfaces = 0;
+        int size = map.GetLength(0);
+        for (int z = 0; z < size; z++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    if (x > 0)
+                    {
+                        if ((map[x, y, z] | map[x - 1, y, z]) == 3)
+                        {
+                            surfaces++;
+                        }
+                    }
+                    if (y > 0)
+                    {
+                        if ((map[x, y, z] | map[x, y - 1, z]) == 3)
+                        {
+                            surfaces++;
+                        }
+                    }
+                    if (z > 0)
+                    {
+                        if ((map[x, y, z] | map[x, y, z - 1]) == 3)
+                        {
+                            surfaces++;
+                        }
+                    }
+                }
+            }
+        }
+        return surfaces;
+    }
+
+    private static void FloodFillExterior(int[,,] map)
+    {
+        int size = map.GetLength(0);
+        Queue<Vector3Int> seen = [];
+        map[0, 0, 0] = 2;
+        seen.Enqueue(Vector3Int.Zero);
+        while (seen.Count > 0)
+        {
+            Vector3Int current = seen.Dequeue();
+            foreach (Vector3Int direction in _directions)
+            {
+                Vector3Int adjacent = current + direction;
+                if (0 <= adjacent.X && adjacent.X < size &&
+                    0 <= adjacent.Y && adjacent.Y < size &&
+                    0 <= adjacent.Z && adjacent.Z < size &&
+                    map[adjacent.X, adjacent.Y, adjacent.Z] == 0)
+                {
+                    map[adjacent.X, adjacent.Y, adjacent.Z] = 2;
+                    seen.Enqueue(adjacent);
+                }
+            }
+        }
     }
 }
