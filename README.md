@@ -12,6 +12,7 @@ My solutions for [Advent of Code](https://adventofcode.com/).
 | Advent of Code 2020 |  2023-08-23  |   2023-10-24   |        .NET 6 (C# 10)         |
 | Advent of Code 2021 |  2024-07-28  |   2024-10-09   |        .NET 8 (C# 12)         |
 | Advent of Code 2022 |  2024-10-10  |   2024-12-10   |        .NET 8 (C# 12)         |
+| Advent of Code 2023 |  2025-01-05  |                |        .NET 9 (C# 13)         |
 
 <br><hr>
 
@@ -27,3 +28,4 @@ Each year's set of solutions is in its own application, independent of the other
 2020: Console application (Visual Studio 2022) <br>
 2021: Console application (Visual Studio 2022) <br>
 2022: Console application (Visual Studio 2022) <br>
+2023: WPF application (Visual Studio 2022) <br>
