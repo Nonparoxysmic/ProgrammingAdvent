@@ -1,0 +1,166 @@
+{
+  "Day01": {
+    "Example01": {
+      "Input": "1abc2\r\npqr3stu8vwx\r\na1b2c3d4e5f\r\ntreb7uchet",
+      "PartOne": "142"
+    }
+  },
+  "Day02": {
+    "Example01": {
+      "Input": "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green\r\nGame 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue\r\nGame 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red\r\nGame 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red\r\nGame 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+      "PartOne": "8"
+    }
+  },
+  "Day03": {
+    "Example01": {
+      "Input": "467..114..\r\n...*......\r\n..35..633.\r\n......#...\r\n617*......\r\n.....+.58.\r\n..592.....\r\n......755.\r\n...$.*....\r\n.664.598..",
+      "PartOne": "4361"
+    }
+  },
+  "Day04": {
+    "Example01": {
+      "Input": "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53\r\nCard 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19\r\nCard 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1\r\nCard 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83\r\nCard 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36\r\nCard 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11",
+      "PartOne": "13"
+    }
+  },
+  "Day05": {
+    "Example01": {
+      "Input": "seeds: 79 14 55 13\r\n\r\nseed-to-soil map:\r\n50 98 2\r\n52 50 48\r\n\r\nsoil-to-fertilizer map:\r\n0 15 37\r\n37 52 2\r\n39 0 15\r\n\r\nfertilizer-to-water map:\r\n49 53 8\r\n0 11 42\r\n42 0 7\r\n57 7 4\r\n\r\nwater-to-light map:\r\n88 18 7\r\n18 25 70\r\n\r\nlight-to-temperature map:\r\n45 77 23\r\n81 45 19\r\n68 64 13\r\n\r\ntemperature-to-humidity map:\r\n0 69 1\r\n1 0 69\r\n\r\nhumidity-to-location map:\r\n60 56 37\r\n56 93 4",
+      "PartOne": "35"
+    }
+  },
+  "Day06": {
+    "Example01": {
+      "Input": "Time:      7  15   30\r\nDistance:  9  40  200",
+      "PartOne": "288"
+    }
+  },
+  "Day07": {
+    "Example01": {
+      "Input": "32T3K 765\r\nT55J5 684\r\nKK677 28\r\nKTJJT 220\r\nQQQJA 483",
+      "PartOne": "6440"
+    }
+  },
+  "Day08": {
+    "Example01": {
+      "Input": "RL\r\n\r\nAAA = (BBB, CCC)\r\nBBB = (DDD, EEE)\r\nCCC = (ZZZ, GGG)\r\nDDD = (DDD, DDD)\r\nEEE = (EEE, EEE)\r\nGGG = (GGG, GGG)\r\nZZZ = (ZZZ, ZZZ)",
+      "PartOne": "2"
+    },
+    "Example02": {
+      "Input": "LLR\r\n\r\nAAA = (BBB, BBB)\r\nBBB = (AAA, ZZZ)\r\nZZZ = (ZZZ, ZZZ)",
+      "PartOne": "6"
+    }
+  },
+  "Day09": {
+    "Example01": {
+      "Input": "0 3 6 9 12 15\r\n1 3 6 10 15 21\r\n10 13 16 21 30 45",
+      "PartOne": "114"
+    }
+  },
+  "Day10": {
+    "Example01": {
+      "Input": ".....\r\n.S-7.\r\n.|.|.\r\n.L-J.\r\n.....",
+      "PartOne": "4"
+    },
+    "Example02": {
+      "Input": "..F7.\r\n.FJ|.\r\nSJ.L7\r\n|F--J\r\nLJ...",
+      "PartOne": "8"
+    }
+  },
+  "Day11": {
+    "Example01": {
+      "Input": "...#......\r\n.......#..\r\n#.........\r\n..........\r\n......#...\r\n.#........\r\n.........#\r\n..........\r\n.......#..\r\n#...#.....",
+      "PartOne": "374"
+    }
+  },
+  "Day12": {
+    "Example01": {
+      "Input": "???.### 1,1,3\r\n.??..??...?##. 1,1,3\r\n?#?#?#?#?#?#?#? 1,3,1,6\r\n????.#...#... 4,1,1\r\n????.######..#####. 1,6,5\r\n?###???????? 3,2,1",
+      "PartOne": "21"
+    }
+  },
+  "Day13": {
+    "Example01": {
+      "Input": "#.##..##.\r\n..#.##.#.\r\n##......#\r\n##......#\r\n..#.##.#.\r\n..##..##.\r\n#.#.##.#.\r\n\r\n#...##..#\r\n#....#..#\r\n..##..###\r\n#####.##.\r\n#####.##.\r\n..##..###\r\n#....#..#",
+      "PartOne": "405"
+    }
+  },
+  "Day14": {
+    "Example01": {
+      "Input": "O....#....\r\nO.OO#....#\r\n.....##...\r\nOO.#O....O\r\n.O.....O#.\r\nO.#..O.#.#\r\n..O..#O..O\r\n.......O..\r\n#....###..\r\n#OO..#....",
+      "PartOne": "136"
+    }
+  },
+  "Day15": {
+    "Example01": {
+      "Input": "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7",
+      "PartOne": "1320"
+    }
+  },
+  "Day16": {
+    "Example01": {
+      "Input": ".|...\\....\r\n|.-.\\.....\r\n.....|-...\r\n........|.\r\n..........\r\n.........\\\r\n..../.\\\\..\r\n.-.-/..|..\r\n.|....-|.\\\r\n..//.|....",
+      "PartOne": "46"
+    }
+  },
+  "Day17": {
+    "Example01": {
+      "Input": "2413432311323\r\n3215453535623\r\n3255245654254\r\n3446585845452\r\n4546657867536\r\n1438598798454\r\n4457876987766\r\n3637877979653\r\n4654967986887\r\n4564679986453\r\n1224686865563\r\n2546548887735\r\n4322674655533",
+      "PartOne": "102"
+    }
+  },
+  "Day18": {
+    "Example01": {
+      "Input": "R 6 (#70c710)\r\nD 5 (#0dc571)\r\nL 2 (#5713f0)\r\nD 2 (#d2c081)\r\nR 2 (#59c680)\r\nD 2 (#411b91)\r\nL 5 (#8ceee2)\r\nU 2 (#caa173)\r\nL 1 (#1b58a2)\r\nU 2 (#caa171)\r\nR 2 (#7807d2)\r\nU 3 (#a77fa3)\r\nL 2 (#015232)\r\nU 2 (#7a21e3)",
+      "PartOne": "62"
+    }
+  },
+  "Day19": {
+    "Example01": {
+      "Input": "px{a<2006:qkq,m>2090:A,rfg}\r\npv{a>1716:R,A}\r\nlnx{m>1548:A,A}\r\nrfg{s<537:gd,x>2440:R,A}\r\nqs{s>3448:A,lnx}\r\nqkq{x<1416:A,crn}\r\ncrn{x>2662:A,R}\r\nin{s<1351:px,qqz}\r\nqqz{s>2770:qs,m<1801:hdj,R}\r\ngd{a>3333:R,R}\r\nhdj{m>838:A,pv}\r\n\r\n{x=787,m=2655,a=1222,s=2876}\r\n{x=1679,m=44,a=2067,s=496}\r\n{x=2036,m=264,a=79,s=2244}\r\n{x=2461,m=1339,a=466,s=291}\r\n{x=2127,m=1623,a=2188,s=1013}",
+      "PartOne": "19114"
+    }
+  },
+  "Day20": {
+    "Example01": {
+      "Input": "broadcaster -> a, b, c\r\n%a -> b\r\n%b -> c\r\n%c -> inv\r\n&inv -> a",
+      "PartOne": "32000000"
+    },
+    "Example02": {
+      "Input": "broadcaster -> a\r\n%a -> inv, con\r\n&inv -> b\r\n%b -> con\r\n&con -> output",
+      "PartOne": "11687500"
+    }
+  },
+  "Day21": {
+    "Example01": {
+      "Input": "...........\r\n.....###.#.\r\n.###.##..#.\r\n..#.#...#..\r\n....#.#....\r\n.##..S####.\r\n.##..#...#.\r\n.......##..\r\n.##.#.####.\r\n.##..##.##.\r\n...........",
+      "PartOne": "16",
+      "ExampleModifier": "6"
+    }
+  },
+  "Day22": {
+    "Example01": {
+      "Input": "1,0,1~1,2,1\r\n0,0,2~2,0,2\r\n0,2,3~2,2,3\r\n0,0,4~0,2,4\r\n2,0,5~2,2,5\r\n0,1,6~2,1,6\r\n1,1,8~1,1,9",
+      "PartOne": "5"
+    }
+  },
+  "Day23": {
+    "Example01": {
+      "Input": "#.#####################\r\n#.......#########...###\r\n#######.#########.#.###\r\n###.....#.>.>.###.#.###\r\n###v#####.#v#.###.#.###\r\n###.>...#.#.#.....#...#\r\n###v###.#.#.#########.#\r\n###...#.#.#.......#...#\r\n#####.#.#.#######.#.###\r\n#.....#.#.#.......#...#\r\n#.#####.#.#.#########v#\r\n#.#...#...#...###...>.#\r\n#.#.#v#######v###.###v#\r\n#...#.>.#...>.>.#.###.#\r\n#####v#.#.###v#.#.###.#\r\n#.....#...#...#.#.#...#\r\n#.#########.###.#.#.###\r\n#...###...#...#...#.###\r\n###.###.#.###v#####v###\r\n#...#...#.#.>.>.#.>.###\r\n#.###.###.#.###.#.#v###\r\n#.....###...###...#...#\r\n#####################.#",
+      "PartOne": "94"
+    }
+  },
+  "Day24": {
+    "Example01": {
+      "Input": "19, 13, 30 @ -2,  1, -2\r\n18, 19, 22 @ -1, -1, -2\r\n20, 25, 34 @ -2, -2, -4\r\n12, 31, 28 @ -1, -2, -1\r\n20, 19, 15 @  1, -5, -3",
+      "PartOne": "2",
+      "ExampleModifier": "TRUE"
+    }
+  },
+  "Day25": {
+    "Example01": {
+      "Input": "jqt: rhn xhk nvd\r\nrsh: frs pzl lsr\r\nxhk: hfx\r\ncmg: qnr nvd lhk bvb\r\nrhn: xhk bvb hfx\r\nbvb: xhk hfx\r\npzl: lsr hfx nvd\r\nqnr: nvd\r\nntq: jqt hfx bvb xhk\r\nnvd: lhk\r\nlsr: lhk\r\nrzs: qnr cmg lsr rsh\r\nfrs: qnr lhk lsr",
+      "PartOne": "54"
+    }
+  }
+}
